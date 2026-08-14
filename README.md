@@ -1,105 +1,113 @@
-# BypassFX
+# Bypass-FX
 
-This project demonstrates a client-side authentication flow (signup, login, logout) for a web application, styled with a modern and responsive design. It uses a simple `json-server` as a mock backend for user data.
+Login, signup, and a real multi-hop currency converter for **Bypass-FX**,
+backed by [json-server](https://github.com/typicode/json-server) so every
+account — and every conversion you run — is written to `db.json` and stays
+there.
 
-## Features
+## What's inside
 
--   **User Authentication**:
-    -   Signup with name, email, password, and terms agreement.
-    -   Login with email and password, including a "Remember Me" option.
-    -   Logout functionality.
--   **Form Validation**: Client-side validation for signup and login forms.
--   **Session Management**: Stores user session in `localStorage` or `sessionStorage`.
--   **Password Visibility Toggle**: Allows users to show/hide password input.
--   **Dynamic UI Feedback**:
-    -   Error messages for invalid input.
-    -   Success/error/info banners for user feedback.
-    -   Busy states for submit buttons during API calls.
--   **Responsive Design**: Adapts to different screen sizes.
--   **Themed UI**: Utilizes CSS variables for consistent styling.
--   **Dashboard**: A simple dashboard page accessible after successful login, displaying user information.
+```
+bypass-fx/
+├── index.html            Log in page
+├── login.html             Log in page (identical to index.html)
+├── signup.html              Sign up page
+├── dashboard.html             The converter — shown after login/signup
+├── css/style.css                All styling (green + white theme, tokens at the top)
+├── js/
+│   ├── auth.js                    Talks to json-server: signup, login, session, logout
+│   ├── ticker.js                    Live rate ticker on the brand panel (real data)
+│   ├── converter.js                   Wires dashboard.html's form to the pathfinder
+│   ├── rateService.js                   Cache-aware fetch wrapper (Frankfurter API)
+│   ├── graphBuilder.js                    Pure: rates → adjacency list
+│   ├── pathfinder.js                        Pure: finds the cheapest conversion path
+│   └── providers.js                           Fee config + hub currency list (data only)
+├── assets/logo.svg                              The Bypass-FX logo
+├── db.json                                        Your database — users + conversions land here
+└── package.json                                     json-server dependency + start script
+```
 
-## Setup
+`index.html` and `login.html` are intentionally identical — both are
+complete login pages, so either URL works as an entry point.
 
-This project requires a mock API server to run. It's configured to work with `json-server`.
+## Run it
 
-1.  **Install `json-server` (if you haven't already):**
-    ```bash
-    npm install -g json-server
-    ```
+1. Install json-server (needs Node.js installed):
+   ```bash
+   cd bypass-fx
+   npm install
+   ```
 
-2.  **Create a `db.json` file** in the root of your project with the following content:
-    ```json
-    {
-      "users": []
-    }
-    ```
+2. Start the API. This watches `db.json` and serves it as a REST API on port 3000:
+   ```bash
+   npm start
+   ```
+   Leave this running in its own terminal.
 
-3.  **Start the `json-server`:**
-    ```bash
-    json-server --watch db.json --port 3000
-    ```
-    The `auth.js` script expects the API to be running at `http://localhost:3000`.
+3. Serve the frontend with a static server — **required now**, since
+   `ticker.js` and `converter.js` are ES modules and browsers block
+   `type="module"` scripts from loading over `file://`:
+   ```bash
+   npx serve .
+   ```
+   Open the URL it gives you (not by double-clicking `index.html`).
 
-4.  **Open `index.html`** (or `login.html`/`signup.html`) in your web browser.
+4. Sign up on `signup.html`. Watch `db.json` — the new user appears there
+   instantly. Log back in on `login.html` (or `index.html`) with the same
+   email and password to land on `dashboard.html`.
 
-## Code Overview
+5. Run a conversion on the dashboard — e.g. INR → EUR, amount 100000. It
+   fetches live rates, finds the cheapest path across Wise / PayPal / Bank
+   wire, and (if you're logged in) saves the result to json-server's
+   `/conversions` collection, shown under "Recent conversions" underneath.
 
-### `js/auth.js`
+## How the auth flow works
 
-This JavaScript file handles all client-side authentication logic and interactions.
+- **Sign up** → `GET /users?email=...` checks the email isn't already
+  taken, then `POST /users` creates the record. json-server assigns the
+  `id`.
+- **Log in** → `GET /users?email=...&password=...`; if json-server returns
+  exactly one match, you're in.
+- A small session object (id, name, email, joined date — never the
+  password) is kept in `localStorage` (if "Remember me" is checked) or
+  `sessionStorage` otherwise, under the key `bypassfx_session`.
+- `dashboard.html` has an early guard script in its `<head>` that checks
+  for that session key and redirects to `login.html` before the page
+  paints, so a logged-out visitor never sees the converter even briefly.
+  `js/auth.js`'s own check runs after that as a second safety net, and
+  populates the greeting.
+- **Log out** clears the session and sends you back to `login.html`.
 
--   **Configuration**: Defines `API_BASE` for the backend endpoint and `SESSION_KEY` for session storage.
--   **Utility Functions**:
-    -   `$`: A shorthand for `document.getElementById`.
-    -   `setError`, `clearErrors`: Manages form field error messages and styling.
-    -   `showBanner`, `hideBanner`: Displays various types of feedback banners (success, error, info).
-    -   `setBusy`: Manages button states (disabled, text change) during asynchronous operations.
-    -   `saveSession`, `readSession`, `clearSession`: Handles user session persistence in `localStorage` or `sessionStorage`.
-    -   `friendlyNetworkError`: Provides a user-friendly message for network issues.
--   **Password Visibility Toggle**: Implements functionality for eye icons to show/hide password input fields.
--   **Signup Logic**:
-    -   Listens for `submit` events on the signup form.
-    -   Performs client-side validation for name, email, password length, password confirmation, and terms agreement.
-    -   Checks for existing users via API call.
-    -   Registers new users by sending a `POST` request to the API.
-    -   Saves the session and redirects to `dashboard.html` on success.
-    -   **Note**: Passwords are sent in plain text for this demo. In a production environment, passwords should always be hashed on the client-side before sending to the server, and the server should store only hashed passwords.
--   **Login Logic**:
-    -   Listens for `submit` events on the login form.
-    -   Performs client-side validation for email and password presence.
-    -   Authenticates users by querying the API for matching email and password.
-    -   Saves the session and redirects to `dashboard.html` on success.
-    -   Includes a placeholder for a "Forgot Password" link.
--   **Dashboard Logic**:
-    -   Checks for an active session on `dashboard.html`. If no session, redirects to `index.html`.
-    -   Displays user details (name, email, ID, join date) on the dashboard.
-    -   Handles logout, clearing the session and redirecting to `index.html`.
+If `API_BASE` (top of `js/auth.js` and `js/converter.js`) doesn't match
+where your json-server is running, update it in both places.
 
-### `css/style.css`
+## How the converter works
 
-This CSS file defines the visual styling for the entire application, using a design token approach.
+- `js/providers.js` holds a small, honest mock of three real fee
+  structures — there's no public API for real commercial FX fees, so this
+  is hand-picked data, not live provider pricing.
+- `js/rateService.js` fetches live mid-market rates from the free
+  [Frankfurter API](https://api.frankfurter.app), caching each base
+  currency in `localStorage` for 15 minutes so the converter and the
+  ticker aren't both hammering the API independently.
+- `js/graphBuilder.js` and `js/pathfinder.js` are pure functions — no DOM,
+  no fetch, no localStorage — that turn rate data into a graph and search
+  it for the cheapest path. Intermediate hops are restricted to a small
+  set of hub currencies (USD, EUR, GBP, JPY) to keep the search fast; the
+  pathfinder simulates the actual amount through each candidate path
+  (rather than a classic Dijkstra) because Bank wire's fixed fee makes a
+  hop's cost depend on the amount arriving at it.
+- `js/converter.js` wires all of that to `dashboard.html`'s form, renders
+  the result, and — if you're logged in — `POST`s it to json-server's
+  `/conversions` collection and re-renders the "Recent conversions" list.
 
--   **Design Tokens (`:root`)**:
-    -   Defines custom properties for colors (`--bg-canvas`, `--surface`, `--accent`, `--danger`, etc.), typography (`--font-display`, `--font-body`, `--font-mono`), and shape (`--radius-lg`, `--shadow-panel`).
--   **Global Styles**: Resets basic browser styles, sets default font, background, and text colors. Uses `flexbox` to center content on the page.
--   **Shell Layout (`.shell`)**: Defines the main container layout, using `grid` for the two-panel structure (brand/story and auth form).
--   **Left Panel (`.panel-brand`)**: Styles the branding and informational section, including:
-    -   Gradient background.
-    -   Brand mark (logo + name).
-    -   Headline and introductory text.
-    -   Feature list with SVG icons.
-    -   **Ticker Animation**: A continuously scrolling "live rate strip" (`.ticker`, `.ticker-track`, `.tick`) to add a dynamic element, with a `prefers-reduced-motion` media query for accessibility.
--   **Right Panel (`.panel-form`)**: Styles the authentication forms, including:
-    -   **Tabs (`.tabs`)**: For switching between login/signup.
-    -   Form headings and descriptions.
-    -   **Form Fields (`.field`, `.field-input`)**: Styles for labels, text inputs, and password inputs. Includes focus and invalid states.
-    -   **Toggle Visibility Button (`.toggle-visibility`)**: Styles for the password show/hide button, including SVG icons.
-    -   **Error Messages (`.field-error`)**: Styles for displaying validation errors.
-    -   **Checkboxes and Links (`.checkbox-row`, `.link-quiet`)**: Specific styles for interactive elements.
-    -   **Primary Button (`.btn-primary`)**: Styles for submit buttons, including hover, active, and disabled states.
-    -   **Divider (`.divider`)**: A styled "or" separator.
-    -   **Secondary Button (`.btn-secondary`)**: Styles for alternative actions (e.g., social login placeholders).
-    -   **Banners (`.banner`)**: Styles for success, error, and info messages, with `display: none` by default and `display: flex` when `.show`.
--   **Responsive Design (`@media`)**: Adjusts the layout for smaller screens, collapsing the two-panel grid into a single column and hiding some elements like the feature list on mobile.
--   **Dashboard Styles (`.dash-shell`, `.dash-top`, `.dash-card`, `.kv`)**: Specific styles for the post-login dashboard, including a header, a ghost button for logout, and a key-value display for user details.
+## One honest caveat
+
+json-server has no real backend logic, so passwords are stored as plain
+text in `db.json` — that's fine for learning and prototyping, but don't
+ship this to real users. For production you'd want a real backend that
+hashes passwords (e.g. bcrypt) before storing them and issues auth tokens
+instead of trusting the client. Swapping json-server for a real API later
+won't require touching the HTML/CSS or the converter logic — only the
+`fetch` calls in `js/auth.js` and the two `fetch`/`saveConversion` calls in
+`js/converter.js`.

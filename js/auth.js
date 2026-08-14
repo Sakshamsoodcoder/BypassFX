@@ -211,7 +211,7 @@
   if (logoutBtn) {
     const session = readSession();
     if (!session) {
-      window.location.href = "index.html";
+      window.location.href = "login.html";
     } else {
       const greeting = $("greeting");
       if (greeting) greeting.textContent = "Welcome back, " + session.name.split(" ")[0];
@@ -227,7 +227,7 @@
 
     logoutBtn.addEventListener("click", () => {
       clearSession();
-      window.location.href = "index.html";
+      window.location.href = "login.html";
     });
   }
 })();
