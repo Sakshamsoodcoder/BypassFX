@@ -1,0 +1,12 @@
+{
+  "name": "bypass-fx",
+  "version": "1.0.0",
+  "description": "Bypass-FX — login & signup UI backed by json-server",
+  "scripts": {
+    "server": "json-server --watch db.json --port 3000",
+    "start": "json-server --watch db.json --port 3000"
+  },
+  "dependencies": {
+    "json-server": "^0.17.4"
+  }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Bypass-FX</title>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<main class="dash-shell">
+  <div class="dash-top">
+    <div class="brand-mark">
+      <img src="assets/logo.svg" alt="">
+      <span>Bypass-FX</span>
+    </div>
+    <button class="btn-ghost" id="logoutBtn">Log out</button>
+  </div>
+
+  <div class="dash-card">
+    <h2 id="greeting">Welcome back</h2>
+    <p>You're logged in. This confirms the round trip to your json-server worked.</p>
+    <dl class="kv">
+      <dt>Name</dt><dd id="kv-name">—</dd>
+      <dt>Email</dt><dd id="kv-email">—</dd>
+      <dt>User ID</dt><dd id="kv-id">—</dd>
+      <dt>Joined</dt><dd id="kv-joined">—</dd>
+    </dl>
+  </div>
+</main>
+
+<script src="js/auth.js"></script>
+</body>
+</html>
