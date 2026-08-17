@@ -1,105 +1,193 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Log in · Bypass-FX</title>
-<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<main class="shell">
-
-  <!-- Left: brand story -->
-  <section class="panel-brand">
-    <div class="brand-mark">
-      <img src="assets/logo.svg" alt="">
-      <span>Bypass-FX</span>
-    </div>
-
-    <h1>Skip the markup.<br><em>Trade the real rate.</em></h1>
-    <p class="lede">Bypass-FX routes every transfer past the banks' hidden spread, straight to the cheapest verified path.</p>
-
-    <ul class="feature-list">
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Live mid-market rates, no markup
-      </li>
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Route comparison across every provider
-      </li>
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        See the fee before you commit, always
-      </li>
-    </ul>
-
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track" id="tickerTrack"><!-- filled by JS --></div>
-    </div>
-  </section>
-
-  <!-- Right: auth form -->
-  <section class="panel-form">
-    <nav class="tabs">
-      <a href="login.html" class="active">Log in</a>
-      <a href="signup.html">Sign up</a>
-    </nav>
-
-    <div class="form-head">
-      <h2>Welcome back</h2>
-      <p>Log in to see today's best route.</p>
-    </div>
-
-    <div class="banner error" id="formBanner"></div>
-
-    <form id="loginForm" novalidate>
-      <div class="field">
-        <label for="email">Email</label>
-        <div class="field-input">
-          <input type="email" id="email" name="email" placeholder="name@example.com" autocomplete="email" required>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log in · Bypass-FX</title>
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <!-- Left: brand story -->
+      <section class="panel-brand">
+        <div class="brand-mark">
+          <img src="assets/logo.svg" alt="" />
+          <span>Bypass-FX</span>
         </div>
-        <div class="field-error" id="err-email"></div>
-      </div>
 
-      <div class="field">
-        <label for="password">Password</label>
-        <div class="field-input">
-          <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
-          <button type="button" class="toggle-visibility" data-target="password" aria-label="Show password">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.5 4 10 4s8.5 6 8.5 6-3 6-8.5 6-8.5-6-8.5-6Z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        <h1>Skip the markup.<br /><em>Trade the real rate.</em></h1>
+        <p class="lede">
+          Bypass-FX routes every transfer past the banks' hidden spread,
+          straight to the cheapest verified path.
+        </p>
+
+        <ul class="feature-list">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M3 8.5L6.5 12L13 4.5"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Live mid-market rates, no markup
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M3 8.5L6.5 12L13 4.5"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Route comparison across every provider
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M3 8.5L6.5 12L13 4.5"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            See the fee before you commit, always
+          </li>
+        </ul>
+
+        <div class="ticker" aria-hidden="true">
+          <div class="ticker-track" id="tickerTrack"><!-- filled by JS --></div>
+        </div>
+      </section>
+
+      <!-- Right: auth form -->
+      <section class="panel-form">
+        <nav class="tabs">
+          <a href="login.html" class="active">Log in</a>
+          <a href="signup.html">Sign up</a>
+        </nav>
+
+        <div class="form-head">
+          <h2>Welcome back</h2>
+          <p>Log in to see today's best route.</p>
+        </div>
+
+        <div class="banner error" id="formBanner"></div>
+
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="email">Email</label>
+            <div class="field-input">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="name@example.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <div class="field-error" id="err-email"></div>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="field-input">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-visibility"
+                data-target="password"
+                aria-label="Show password"
+              >
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M1.5 10S4.5 4 10 4s8.5 6 8.5 6-3 6-8.5 6-8.5-6-8.5-6Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <circle
+                    cx="10"
+                    cy="10"
+                    r="2.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="field-error" id="err-password"></div>
+          </div>
+
+          <div class="row-between">
+            <label class="checkbox-row">
+              <input type="checkbox" id="remember" name="remember" />
+              Remember me
+            </label>
+            <a href="forgot-password.html" class="link-quiet" id="forgotLink"
+              >Forgot password?</a
+            >
+          </div>
+
+          <button type="submit" class="btn-primary" id="submitBtn">
+            Log in
           </button>
-        </div>
-        <div class="field-error" id="err-password"></div>
-      </div>
+        </form>
 
-      <div class="row-between">
-        <label class="checkbox-row">
-          <input type="checkbox" id="remember" name="remember">
-          Remember me
-        </label>
-        <a href="#" class="link-quiet" id="forgotLink">Forgot password?</a>
-      </div>
+        <div class="divider">or</div>
+        <button
+          type="button"
+          class="btn-secondary"
+          title="Not available in this demo backend"
+          disabled
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18">
+            <path
+              fill="#9BB3A8"
+              d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9C16.66 14.3 17.64 12 17.64 9.2Z"
+            />
+            <path
+              fill="#9BB3A8"
+              d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.55-1.84.87-3.06.87-2.35 0-4.34-1.59-5.05-3.72H.95v2.33A9 9 0 0 0 9 18Z"
+            />
+            <path
+              fill="#9BB3A8"
+              d="M3.95 10.71a5.4 5.4 0 0 1 0-3.42V4.96H.95a9 9 0 0 0 0 8.08l3-2.33Z"
+            />
+            <path
+              fill="#9BB3A8"
+              d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .95 4.96l3 2.33C4.66 5.17 6.65 3.58 9 3.58Z"
+            />
+          </svg>
+          Continue with Google
+        </button>
 
-      <button type="submit" class="btn-primary" id="submitBtn">Log in</button>
-    </form>
+        <p class="form-note">
+          Don't have an account?
+          <a href="signup.html" class="link-quiet">Sign up</a>
+        </p>
+      </section>
+    </main>
 
-    <div class="divider">or</div>
-    <button type="button" class="btn-secondary" title="Not available in this demo backend" disabled>
-      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#9BB3A8" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9C16.66 14.3 17.64 12 17.64 9.2Z"/><path fill="#9BB3A8" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.55-1.84.87-3.06.87-2.35 0-4.34-1.59-5.05-3.72H.95v2.33A9 9 0 0 0 9 18Z"/><path fill="#9BB3A8" d="M3.95 10.71a5.4 5.4 0 0 1 0-3.42V4.96H.95a9 9 0 0 0 0 8.08l3-2.33Z"/><path fill="#9BB3A8" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .95 4.96l3 2.33C4.66 5.17 6.65 3.58 9 3.58Z"/></svg>
-      Continue with Google
-    </button>
-
-    <p class="form-note">Don't have an account? <a href="signup.html" class="link-quiet">Sign up</a></p>
-  </section>
-
-</main>
-
-<script type="module" src="js/ticker.js"></script>
-<script src="js/auth.js"></script>
-</body>
+    <script type="module" src="js/ticker.js"></script>
+    <script src="js/auth.js"></script>
+  </body>
 </html>
