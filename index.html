@@ -1,105 +1,775 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Log in · Bypass-FX</title>
-<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BypassFX — Currency Arbitrage & Smart Multi-Hop Route Finder</title>
+  <meta name="description" content="Compare exchange rates, conversion fees, and multi-hop currency routes to discover the most efficient way to convert and move your money.">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
 
-<main class="shell">
+  <!-- ============================================================
+       1. Navigation Bar
+       ============================================================ -->
+  <header class="navbar-wrapper">
+    <div class="container navbar">
+      <a href="index.html" class="brand-link" id="navBrandLogo">
+        <img src="assets/logo.svg" alt="BypassFX Logo">
+        <span class="brand-name">BypassFX</span>
+      </a>
 
-  <!-- Left: brand story -->
-  <section class="panel-brand">
-    <div class="brand-mark">
-      <img src="assets/logo.svg" alt="">
-      <span>Bypass-FX</span>
+      <nav class="nav-center">
+        <a href="#converterSection" class="nav-link" id="navLinkConverter">Converter</a>
+        <a href="#howItWorksSection" class="nav-link" id="navLinkHowItWorks">How It Works</a>
+        <a href="#featuresSection" class="nav-link" id="navLinkFeatures">Features</a>
+        <a href="#currenciesSection" class="nav-link" id="navLinkCurrencies">Currencies</a>
+        <a href="#historySection" class="nav-link" id="navLinkHistory">History</a>
+      </nav>
+
+      <div class="nav-right">
+        <a href="login.html" class="btn-nav-login" id="navBtnLogin">Log in</a>
+        <a href="signup.html" class="btn-nav-signup" id="navBtnSignup">Sign up</a>
+      </div>
+
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Navigation Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
     </div>
 
-    <h1>Skip the markup.<br><em>Trade the real rate.</em></h1>
-    <p class="lede">Bypass-FX routes every transfer past the banks' hidden spread, straight to the cheapest verified path.</p>
-
-    <ul class="feature-list">
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Live mid-market rates, no markup
-      </li>
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Route comparison across every provider
-      </li>
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        See the fee before you commit, always
-      </li>
-    </ul>
-
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track" id="tickerTrack"><!-- filled by JS --></div>
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNavDrawer">
+      <a href="#converterSection">Converter</a>
+      <a href="#howItWorksSection">How It Works</a>
+      <a href="#featuresSection">Features</a>
+      <a href="#currenciesSection">Currencies</a>
+      <a href="#historySection">History</a>
+      <div class="mobile-nav-auth">
+        <a href="login.html" class="btn-secondary" style="text-align: center;">Log in</a>
+        <a href="signup.html" class="btn-primary" style="text-align: center;">Sign up</a>
+      </div>
     </div>
-  </section>
+  </header>
 
-  <!-- Right: auth form -->
-  <section class="panel-form">
-    <nav class="tabs">
-      <a href="index.html" class="active">Log in</a>
-      <a href="signup.html">Sign up</a>
-    </nav>
+  <main>
+    <!-- ============================================================
+         2. Hero Section
+         ============================================================ -->
+    <section class="hero-section" id="heroSection">
+      <div class="container hero-grid">
+        <!-- Left Hero Content -->
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="star-pill">★ 4.9</span>
+            <span>Real-Time Arbitrage Engine • Mid-Market Rates</span>
+          </div>
 
-    <div class="form-head">
-      <h2>Welcome back</h2>
-      <p>Log in to see today's best route.</p>
-    </div>
+          <h1 class="hero-title">
+            Find the Best Path for <em>Your Money.</em>
+          </h1>
 
-    <div class="banner error" id="formBanner"></div>
+          <p class="hero-desc">
+            Compare exchange rates, conversion fees, and multi-hop routes to discover the most efficient way to move your money.
+          </p>
 
-    <form id="loginForm" novalidate>
-      <div class="field">
-        <label for="email">Email</label>
-        <div class="field-input">
-          <input type="email" id="email" name="email" placeholder="name@example.com" autocomplete="email" required>
+          <div class="hero-actions">
+            <a href="#converterSection" class="btn-primary" id="heroBtnStart">
+              <span>Start Converting</span>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <path d="M4.167 10h11.666M10.833 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#historySection" class="btn-secondary" id="heroBtnHistory">
+              View History
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-value">0%</span>
+              <span class="stat-label">Hidden Bank Spreads</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">30+</span>
+              <span class="stat-label">Route Combinations</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">&lt; 150ms</span>
+              <span class="stat-label">Graph Execution</span>
+            </div>
+          </div>
         </div>
-        <div class="field-error" id="err-email"></div>
-      </div>
 
-      <div class="field">
-        <label for="password">Password</label>
-        <div class="field-input">
-          <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
-          <button type="button" class="toggle-visibility" data-target="password" aria-label="Show password">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.5 4 10 4s8.5 6 8.5 6-3 6-8.5 6-8.5-6-8.5-6Z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
-          </button>
+        <!-- Right Hero Visual Container -->
+        <div class="hero-image-wrapper" id="heroVisualContainer">
+          <!-- User Image Placeholder -->
+          <img src="assets/images/hero.png" alt="BypassFX Arbitrage Visualizer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          
+          <!-- Fallback Mockup Graphic if image is not yet supplied -->
+          <div class="hero-mockup-fallback" style="display: none;">
+            <div class="mockup-top">
+              <div class="mockup-chip">
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #34D399;"></span>
+                <span>GRAPH ENGINE ACTIVE</span>
+              </div>
+              <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-inverse-muted);">Dijkstra v2.4</span>
+            </div>
+
+            <div class="mockup-route-card">
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-electric); font-weight: 700;">
+                OPTIMAL ROUTE SIMULATION
+              </div>
+              <div class="mockup-nodes">
+                <div class="mockup-node">
+                  <div class="curr">₹10,000</div>
+                  <div class="sub">INR · Source</div>
+                </div>
+                <div class="mockup-arrow">➔</div>
+                <div class="mockup-node">
+                  <div class="curr">$115.14</div>
+                  <div class="sub">USD · Hub</div>
+                </div>
+                <div class="mockup-arrow">➔</div>
+                <div class="mockup-node" style="border: 1.5px solid #34D399; background: rgba(52, 211, 153, 0.2);">
+                  <div class="curr" style="color: #A7F3D3;">€108.42</div>
+                  <div class="sub" style="color: #A7F3D3;">EUR · Target</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mockup-bottom">
+              <span>Direct Bank Yield: €106.29</span>
+              <strong>+€2.13 Added Savings</strong>
+            </div>
+          </div>
         </div>
-        <div class="field-error" id="err-password"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. Live Ticker Section
+         ============================================================ -->
+    <div class="ticker-section" aria-label="Live Mid-Market Foreign Exchange Ticker">
+      <div class="container ticker-wrapper">
+        <div class="ticker-track-home" id="tickerTrackHome">
+          <!-- Populated dynamically via JS -->
+          <span class="tick-item up"><b>USD/INR</b> <span class="rate">86.85</span> <span>▲</span></span>
+          <span class="tick-item down"><b>EUR/USD</b> <span class="rate">1.082</span> <span>▼</span></span>
+          <span class="tick-item up"><b>GBP/INR</b> <span class="rate">109.60</span> <span>▲</span></span>
+          <span class="tick-item down"><b>USD/JPY</b> <span class="rate">153.40</span> <span>▼</span></span>
+          <span class="tick-item up"><b>EUR/GBP</b> <span class="rate">0.856</span> <span>▲</span></span>
+          <span class="tick-item up"><b>AUD/USD</b> <span class="rate">0.648</span> <span>▲</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         4. Value Pillars (Take Control of Your Money)
+         ============================================================ -->
+    <section class="pillars-section">
+      <div class="container">
+        <div class="pillars-grid">
+          <!-- Pillar 1 -->
+          <div class="pillar-card">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M16 8l-8 8"></path>
+                <path d="M16 16V8H8"></path>
+              </svg>
+            </div>
+            <div class="pillar-content">
+              <h3>Multi-Hop Graph Arbitrage</h3>
+              <p>Routing capital through liquid intermediary currencies to bypass direct high-margin corridors.</p>
+            </div>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="pillar-card">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <div class="pillar-content">
+              <h3>Zero Hidden Bank Spreads</h3>
+              <p>Compare verified provider fees side-by-side with transparent breakdown before every transfer.</p>
+            </div>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="pillar-card">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div class="pillar-content">
+              <h3>Real-Time Live Rates</h3>
+              <p>Always benchmarked against real mid-market exchange rates without markup or legacy delays.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. Main Converter Section (100% Transparent Arbitrage Hub)
+         ============================================================ -->
+    <section class="converter-section" id="converterSection">
+      <div class="container">
+        <!-- Outer Banner Card (Wise 100% Transparent Inspiration) -->
+        <div class="converter-container-card">
+          <div class="converter-inner-grid">
+            <!-- Left Info Panel -->
+            <div class="converter-hero-text">
+              <span class="section-tag dark">Smart FX Calculator</span>
+              <h2>100% Transparent.<br><em>Find the Best Route.</em></h2>
+              <p>Use our graph engine to see how much more you'd receive by routing through optimal liquidity paths vs standard bank rates.</p>
+
+              <ul class="converter-highlights">
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>Dijkstra-optimized multi-hop pathfinding</span>
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>Fixed & percentage fee deduction modeled per leg</span>
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>Saved locally to your personal conversion log</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Right Interactive Form Card -->
+            <div class="converter-card" id="mainConverterCard">
+              <div class="converter-card-header">
+                <h3>Currency Converter</h3>
+                <p>Find the most efficient route for your conversion.</p>
+              </div>
+
+              <form id="converterFormMain" novalidate>
+                <!-- Amount Input -->
+                <div class="input-row">
+                  <label for="convertAmount">Amount</label>
+                  <div class="input-box">
+                    <input type="number" id="convertAmount" name="amount" value="10000" min="1" step="any" placeholder="10,000" required>
+                  </div>
+                  <!-- Quick Amount Chips -->
+                  <div class="quick-chips">
+                    <button type="button" class="chip-btn" data-value="1000">1,000</button>
+                    <button type="button" class="chip-btn" data-value="10000">10,000</button>
+                    <button type="button" class="chip-btn" data-value="50000">50,000</button>
+                    <button type="button" class="chip-btn" data-value="100000">1,00,000</button>
+                  </div>
+                </div>
+
+                <!-- From Currency -->
+                <div class="input-row">
+                  <label for="fromCurrency">From</label>
+                  <div class="currency-select-wrapper">
+                    <select id="fromCurrency" name="fromCurrency" aria-label="Source Currency">
+                      <!-- Populated by JS -->
+                    </select>
+                    <span class="select-chevron">▼</span>
+                  </div>
+                </div>
+
+                <!-- Swap Button -->
+                <div class="swap-row">
+                  <button type="button" class="btn-swap" id="btnSwapCurrencies" aria-label="Swap Currencies" title="Swap currencies">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- To Currency -->
+                <div class="input-row">
+                  <label for="toCurrency">To</label>
+                  <div class="currency-select-wrapper">
+                    <select id="toCurrency" name="toCurrency" aria-label="Target Currency">
+                      <!-- Populated by JS -->
+                    </select>
+                    <span class="select-chevron">▼</span>
+                  </div>
+                </div>
+
+                <!-- Converter Options (Hops) -->
+                <div class="converter-options">
+                  <label for="maxHopsSelect">Path Depth (Max Hops)</label>
+                  <select id="maxHopsSelect" class="hop-select" aria-label="Maximum Hops">
+                    <option value="1">1 (Direct Only)</option>
+                    <option value="2">2 Hops</option>
+                    <option value="3" selected>3 Hops (Recommended)</option>
+                    <option value="4">4 Hops</option>
+                  </select>
+                </div>
+
+                <!-- Primary CTA -->
+                <button type="submit" class="btn-primary btn-find-route" id="btnSubmitConvert">
+                  <span>Find Best Route</span>
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                    <path d="M4.167 10h11.666M10.833 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Result Section (Reveals Dynamically) -->
+          <div class="result-section-wrapper" id="resultSection">
+            <div class="result-card-main highlight">
+              <!-- Top Badges -->
+              <div class="result-top-badge-row">
+                <span class="badge-best-route">
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                  </svg>
+                  BEST ROUTE FOUND
+                </span>
+                <span class="badge-savings-pill" id="resultSavingsBadge">
+                  +€2.13 EUR vs Direct Route
+                </span>
+              </div>
+
+              <!-- Summary Heading -->
+              <div class="result-summary-heading" id="resultSummaryHeading">
+                <div class="input-ref">Converting ₹10,000 INR</div>
+                <div class="output-hero">€108.42 <span>EUR</span></div>
+              </div>
+
+              <!-- Path Node Visualization: [ INR ] ─────→ [ USD ] ─────→ [ EUR ] -->
+              <div class="path-visualizer-container">
+                <div class="path-visualizer-title">
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                    <circle cx="4" cy="10" r="3"/>
+                    <circle cx="16" cy="10" r="3"/>
+                    <path d="M7 10h6" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  <span>Optimal Graph Route</span>
+                </div>
+                <div class="route-chain-nodes" id="routeChainNodes">
+                  <!-- Rendered dynamically by JS -->
+                </div>
+              </div>
+
+              <!-- Key Metrics Grid -->
+              <div class="result-metrics-grid">
+                <div class="metric-box">
+                  <div class="metric-label">Final Received Amount</div>
+                  <div class="metric-val" id="metricFinalAmount">€108.42</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">Total Conversion Fee</div>
+                  <div class="metric-val" id="metricTotalFee">₹35.00</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">Estimated Savings</div>
+                  <div class="metric-val green" id="metricSavings">+€2.13</div>
+                </div>
+              </div>
+
+              <!-- Alternative Routes Comparison -->
+              <div class="comparison-section">
+                <div class="comparison-header">
+                  <h4>Compare Routes</h4>
+                  <span>Sorted by highest final yield</span>
+                </div>
+                <div class="routes-list" id="alternativeRoutesList">
+                  <!-- Rendered dynamically by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. How It Works Section
+         ============================================================ -->
+    <section class="how-it-works-section" id="howItWorksSection">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Algorithm Process</span>
+          <h2>How BypassFX Finds a Better Route</h2>
+          <p>Traditional banks charge high markups on direct conversions. BypassFX uses mathematical graph pathfinding to uncover hidden arbitrage paths.</p>
+        </div>
+
+        <div class="steps-grid">
+          <!-- Step 01 -->
+          <div class="step-card">
+            <div class="step-num">01</div>
+            <h3>Enter Your Amount</h3>
+            <p>Choose your source and target currency, and specify how much you want to transfer.</p>
+          </div>
+
+          <!-- Step 02 -->
+          <div class="step-card">
+            <div class="step-num">02</div>
+            <h3>Explore Conversion Paths</h3>
+            <p>The application checks all possible multi-hop routes across global currency hubs.</p>
+          </div>
+
+          <!-- Step 03 -->
+          <div class="step-card">
+            <div class="step-num">03</div>
+            <h3>Account for Fees</h3>
+            <p>Each route considers real-time exchange rates, fixed fees, and provider percentage markups.</p>
+          </div>
+
+          <!-- Step 04 -->
+          <div class="step-card">
+            <div class="step-num">04</div>
+            <h3>Find the Best Route</h3>
+            <p>The graph algorithm identifies the highest-yield, lowest-cost conversion path instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. Alternating Story Sections (Wise Reference Inspiration)
+         ============================================================ -->
+    <!-- Story 1: Save on Travels -->
+    <section class="story-section alt-bg">
+      <div class="container">
+        <div class="story-grid">
+          <div class="story-content">
+            <span class="section-tag">Cross-Border Arbitrage</span>
+            <h2>Save on Your Transfers & Travels Abroad</h2>
+            <p class="story-lead">
+              Moving money between foreign currencies shouldn't cost you an arm and a leg in hidden spreads.
+            </p>
+
+            <ul class="story-feature-list">
+              <li class="story-feature-item">
+                <div class="story-feature-icon">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="story-feature-text">
+                  <h4>Get the real mid-market exchange rate</h4>
+                  <p>Pay at the rate you usually check on Google, with zero hidden markup.</p>
+                </div>
+              </li>
+              <li class="story-feature-item">
+                <div class="story-feature-icon">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="story-feature-text">
+                  <h4>40+ currencies across 180+ countries</h4>
+                  <p>Our smart multi-hop graph conversions operate globally across all major trade hubs.</p>
+                </div>
+              </li>
+            </ul>
+
+            <a href="#converterSection" class="btn-primary">Learn About Smart Routing</a>
+          </div>
+
+          <!-- Visual Container -->
+          <div class="story-visual-container">
+            <img src="assets/images/travel.png" alt="Travel savings" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="story-visual-fallback" style="display: none;">
+              <div class="fallback-badge-row">
+                <span class="fallback-pill">GLOBAL CORRIDORS</span>
+              </div>
+              <div class="fallback-graphic-card">
+                <div class="row">
+                  <span>Direct Bank Wire Spread</span>
+                  <span style="color: #F87171;">-3.8% Loss</span>
+                </div>
+                <div class="row">
+                  <span>BypassFX Multi-Hop Route</span>
+                  <span>+2.4% Net Gain</span>
+                </div>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-inverse-muted);">Optimized across USD, EUR, GBP, JPY & INR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Story 2: Make Your Transfer Count -->
+    <section class="story-section">
+      <div class="container">
+        <div class="story-grid reversed">
+          <div class="story-content">
+            <span class="section-tag">Efficiency Engine</span>
+            <h2>Make Every Transfer Count</h2>
+            <p class="story-lead">
+              Save up to 45% when you route international payments through optimized liquidity pairs. Lightning-fast and completely transparent.
+            </p>
+
+            <ul class="story-feature-list">
+              <li class="story-feature-item">
+                <div class="story-feature-icon">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="story-feature-text">
+                  <h4>Pay international education costs</h4>
+                  <p>Send university tuition without losing hundreds in bank conversion markups.</p>
+                </div>
+              </li>
+              <li class="story-feature-item">
+                <div class="story-feature-icon">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="story-feature-text">
+                  <h4>Support overseas family & medical expenses</h4>
+                  <p>Ensure that maximum funds reach your loved ones with minimal fee erosion.</p>
+                </div>
+              </li>
+            </ul>
+
+            <a href="signup.html" class="btn-dark">Create Free Account</a>
+          </div>
+
+          <!-- Visual Container -->
+          <div class="story-visual-container">
+            <img src="assets/images/transfer.png" alt="Make transfer count" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="story-visual-fallback" style="display: none;">
+              <div class="fallback-badge-row">
+                <span class="fallback-pill">VERIFIED SAVINGS</span>
+              </div>
+              <div class="fallback-graphic-card">
+                <div style="font-size: 1.1rem; font-family: var(--font-mono); font-weight: 700; margin-bottom: 8px;">
+                  ₹80,000 → €878.15
+                </div>
+                <div style="font-size: 0.85rem; color: var(--accent-electric);">
+                  Delivered with 0.5% fee vs 3.5% bank spread
+                </div>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-inverse-muted);">Instant graph execution</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8. Product Features Grid
+         ============================================================ -->
+    <section class="features-section" id="featuresSection">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Core Capabilities</span>
+          <h2>Engineered for Maximum Capital Efficiency</h2>
+          <p>Everything you need to outsmart predatory currency conversion margins.</p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Feature 1 -->
+          <div class="feature-card-item">
+            <div class="feature-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+            <h3>Live Rates</h3>
+            <p>Get instant mid-market exchange rate data refreshed continuously with zero delay.</p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-card-item">
+            <div class="feature-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+              </svg>
+            </div>
+            <h3>Multi-Hop Routes</h3>
+            <p>Compare direct conversions against multi-step pathways through high-liquidity currency hubs.</p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-card-item">
+            <div class="feature-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+            </div>
+            <h3>Fee Optimization</h3>
+            <p>Factor in variable percentage commissions and fixed transfer fees across multiple providers.</p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-card-item">
+            <div class="feature-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <h3>Smart Path Finding</h3>
+            <p>Utilize a modified Dijkstra-style algorithm designed specifically for capital maximization.</p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="feature-card-item">
+            <div class="feature-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+            </div>
+            <h3>Local History</h3>
+            <p>Keep your recent arbitrage calculations saved right in your browser for quick re-execution.</p>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="feature-card-item">
+            <div class="feature-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                <path d="M2 12h20"></path>
+              </svg>
+            </div>
+            <h3>Global Hub Network</h3>
+            <p>Connect corridors between North America, Europe, the Asia-Pacific, and the Middle East.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         9. Supported Currencies Showcase (Wise-style Grid)
+         ============================================================ -->
+    <section class="currencies-section" id="currenciesSection">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Global Liquidity</span>
+          <h2>BypassFX Works Across Major Currencies</h2>
+          <p>Click any currency below to calculate arbitrage routes directly in the converter.</p>
+        </div>
+
+        <div class="currencies-search-bar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="currencySearchInput" placeholder="Search currency (e.g. INR, USD, EUR, Yen)…" aria-label="Search supported currencies">
+        </div>
+
+        <div class="currencies-grid-wrapper" id="currenciesGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         10. Conversion History Section
+         ============================================================ -->
+    <section class="history-section" id="historySection">
+      <div class="container">
+        <div class="history-card-wrap">
+          <div class="history-header-row">
+            <div>
+              <span class="section-tag" style="margin-bottom: 8px;">Saved Calculations</span>
+              <h3>Recent Arbitrage Lookups</h3>
+            </div>
+            <button type="button" class="btn-clear-history" id="btnClearHistory">Clear Log</button>
+          </div>
+
+          <div class="history-list-items" id="historyContainer">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       11. Footer
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-link">
+            <img src="assets/logo.svg" alt="BypassFX Logo">
+            <span class="brand-name">BypassFX</span>
+          </a>
+          <p class="footer-desc">
+            BypassFX is an intelligent currency arbitrage and multi-hop route calculator engineered to minimize conversion fees and eliminate hidden bank markups.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#converterSection">Route Calculator</a></li>
+            <li><a href="#howItWorksSection">Pathfinding Graph</a></li>
+            <li><a href="#featuresSection">Fee Optimization</a></li>
+            <li><a href="#currenciesSection">Supported Currencies</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="login.html">Log In</a></li>
+            <li><a href="signup.html">Create Account</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#historySection">Saved Routes</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Trust & Safety</h4>
+          <ul>
+            <li><a href="#">Mid-Market Guarantee</a></li>
+            <li><a href="#">Fee Structure</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
       </div>
 
-      <div class="row-between">
-        <label class="checkbox-row">
-          <input type="checkbox" id="remember" name="remember">
-          Remember me
-        </label>
-        <a href="#" class="link-quiet" id="forgotLink">Forgot password?</a>
+      <div class="footer-bottom">
+        <div>&copy; 2026 BypassFX Technologies. All rights reserved.</div>
+        <div>Mid-market exchange rates powered by Frankfurter API & BypassFX Graph Engine.</div>
       </div>
+    </div>
+  </footer>
 
-      <button type="submit" class="btn-primary" id="submitBtn">Log in</button>
-    </form>
-
-    <div class="divider">or</div>
-    <button type="button" class="btn-secondary" title="Not available in this demo backend" disabled>
-      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#9BB3A8" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9C16.66 14.3 17.64 12 17.64 9.2Z"/><path fill="#9BB3A8" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.55-1.84.87-3.06.87-2.35 0-4.34-1.59-5.05-3.72H.95v2.33A9 9 0 0 0 9 18Z"/><path fill="#9BB3A8" d="M3.95 10.71a5.4 5.4 0 0 1 0-3.42V4.96H.95a9 9 0 0 0 0 8.08l3-2.33Z"/><path fill="#9BB3A8" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .95 4.96l3 2.33C4.66 5.17 6.65 3.58 9 3.58Z"/></svg>
-      Continue with Google
-    </button>
-
-    <p class="form-note">Don't have an account? <a href="signup.html" class="link-quiet">Sign up</a></p>
-  </section>
-
-</main>
-
-<script type="module" src="js/ticker.js"></script>
-<script src="js/auth.js"></script>
+  <!-- Scripts -->
+  <script src="js/home.js"></script>
 </body>
 </html>
