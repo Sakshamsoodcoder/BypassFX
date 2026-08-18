@@ -72,7 +72,24 @@
 
   function friendlyNetworkError(err) {
     console.error(err);
-    return "Can't reach the server. Make sure json-server is running (npm start) on port 3000.";
+    // More specific error messages based on common scenarios
+    if (
+      err instanceof TypeError &&
+      (err.message === "Failed to fetch" ||
+        err.message.includes("network error"))
+    ) {
+      return "Can't reach the server. Make sure json-server is running (npm start) on port 3000.";
+    }
+    if (err.message && err.message.startsWith("Server responded with status")) {
+      return `Server error: ${err.message}. Please try again.`;
+    }
+    if (
+      err.message &&
+      err.message.startsWith("Password update failed with status")
+    ) {
+      return `Password update failed: ${err.message}. Please try again.`;
+    }
+    return "An unexpected error occurred. Please try again.";
   }
 
   // ----------------------------------------------------------------
@@ -251,7 +268,6 @@
     forgotPasswordForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       hideBanner(banner);
-      clearErrors(["email"]);
 
       const email = $("email").value.trim().toLowerCase();
       const submitBtn = $("submitBtn");
@@ -259,6 +275,7 @@
       if (formState === "email") {
         if (!EMAIL_RE.test(email)) {
           setError("email", "Enter a valid email address.");
+          clearErrors(["email"]); // Clear previous email error if any
           return;
         }
         setBusy(submitBtn, "Checking email…");
@@ -266,6 +283,9 @@
           const userRes = await fetch(
             `${API_BASE}/users?email=${encodeURIComponent(email)}`,
           );
+          if (!userRes.ok) {
+            throw new Error(`Server responded with status ${userRes.status}`);
+          }
           const users = await userRes.json();
 
           if (users.length === 0) {
@@ -290,6 +310,7 @@
             `Updating password for ${userToUpdate.email}`;
           setBusy(submitBtn, null, "Set New Password");
         } catch (error) {
+          console.error("Forgot Password (email step) error:", error); // Log the actual error
           showBanner(banner, friendlyNetworkError(error), "error");
           setBusy(submitBtn, null, "Find Account");
         }
@@ -317,6 +338,9 @@
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ password: password }),
+          }).then((r) => {
+            if (!r.ok)
+              throw new Error("Password update failed with status " + r.status);
           });
 
           showBanner(
@@ -328,6 +352,7 @@
             window.location.href = "login.html";
           }, 1500);
         } catch (error) {
+          console.error("Forgot Password (password step) error:", error); // Log the actual error
           showBanner(banner, friendlyNetworkError(error), "error");
           setBusy(submitBtn, null, "Set New Password");
         }
