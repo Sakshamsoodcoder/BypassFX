@@ -35,7 +35,7 @@
         <a href="#historySection" class="nav-link" id="navLinkHistory">History</a>
       </nav>
 
-      <div class="nav-right">
+      <div class="nav-right" id="navRightContainer">
         <a href="login.html" class="btn-nav-login" id="navBtnLogin">Log in</a>
         <a href="signup.html" class="btn-nav-signup" id="navBtnSignup">Sign up</a>
       </div>
@@ -56,7 +56,7 @@
       <a href="#featuresSection">Features</a>
       <a href="#currenciesSection">Currencies</a>
       <a href="#historySection">History</a>
-      <div class="mobile-nav-auth">
+      <div class="mobile-nav-auth" id="mobileNavAuthContainer">
         <a href="login.html" class="btn-secondary" style="text-align: center;">Log in</a>
         <a href="signup.html" class="btn-primary" style="text-align: center;">Sign up</a>
       </div>
@@ -114,7 +114,6 @@
 
         <!-- Right Hero Visual Container -->
         <div class="hero-image-wrapper" id="heroVisualContainer">
-          <!-- User Image Placeholder -->
           <img src="assets/images/hero.png" alt="BypassFX Arbitrage Visualizer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           
           <!-- Fallback Mockup Graphic if image is not yet supplied -->
@@ -159,18 +158,20 @@
     </section>
 
     <!-- ============================================================
-         3. Live Ticker Section
+         3. Live Ticker Section (Moves from Left to Right Infinitely)
          ============================================================ -->
-    <div class="ticker-section" aria-label="Live Mid-Market Foreign Exchange Ticker">
+    <div class="ticker-section" aria-label="Live Mid-Market Foreign Exchange Trends">
       <div class="container ticker-wrapper">
         <div class="ticker-track-home" id="tickerTrackHome">
-          <!-- Populated dynamically via JS -->
-          <span class="tick-item up"><b>USD/INR</b> <span class="rate">86.85</span> <span>▲</span></span>
-          <span class="tick-item down"><b>EUR/USD</b> <span class="rate">1.082</span> <span>▼</span></span>
-          <span class="tick-item up"><b>GBP/INR</b> <span class="rate">109.60</span> <span>▲</span></span>
+          <!-- Populated dynamically via JS: USD/INR 86.8500 ▲  EUR/USD 1.0811 ▼  GBP/INR 109.6591 ▲ ... -->
+          <span class="tick-item up"><b>USD/INR</b> <span class="rate">86.8500</span> <span>▲</span></span>
+          <span class="tick-item down"><b>EUR/USD</b> <span class="rate">1.0811</span> <span>▼</span></span>
+          <span class="tick-item up"><b>GBP/INR</b> <span class="rate">109.6591</span> <span>▲</span></span>
           <span class="tick-item down"><b>USD/JPY</b> <span class="rate">153.40</span> <span>▼</span></span>
-          <span class="tick-item up"><b>EUR/GBP</b> <span class="rate">0.856</span> <span>▲</span></span>
-          <span class="tick-item up"><b>AUD/USD</b> <span class="rate">0.648</span> <span>▲</span></span>
+          <span class="tick-item up"><b>EUR/GBP</b> <span class="rate">0.8562</span> <span>▲</span></span>
+          <span class="tick-item down"><b>AUD/USD</b> <span class="rate">0.6485</span> <span>▼</span></span>
+          <span class="tick-item up"><b>USD/AED</b> <span class="rate">3.6720</span> <span>▲</span></span>
+          <span class="tick-item down"><b>USD/CAD</b> <span class="rate">1.3850</span> <span>▼</span></span>
         </div>
       </div>
     </div>
@@ -285,14 +286,41 @@
                   </div>
                 </div>
 
-                <!-- From Currency -->
+                <!-- From Currency Custom Dropdown -->
                 <div class="input-row">
-                  <label for="fromCurrency">From</label>
-                  <div class="currency-select-wrapper">
-                    <select id="fromCurrency" name="fromCurrency" aria-label="Source Currency">
-                      <!-- Populated by JS -->
-                    </select>
-                    <span class="select-chevron">▼</span>
+                  <label for="fromCurrencyTrigger">From</label>
+                  <div class="custom-currency-dropdown" id="fromDropdownContainer">
+                    <button type="button" class="currency-dropdown-trigger" id="fromCurrencyTrigger" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="trigger-flag" id="fromFlag">🇮🇳</span>
+                      <span class="trigger-code" id="fromCode">INR</span>
+                      <span class="trigger-name" id="fromName">- Indian Rupee</span>
+                      <svg class="trigger-arrow" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                      </svg>
+                    </button>
+                    <input type="hidden" id="fromCurrency" name="fromCurrency" value="INR">
+
+                    <!-- Floating Dropdown Popover -->
+                    <div class="currency-dropdown-menu" id="fromDropdownMenu" role="listbox">
+                      <div class="dropdown-search-box">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" class="dropdown-search-input" id="fromSearchInput" placeholder="Search currency or country..." aria-label="Search source currency">
+                      </div>
+                      <div class="dropdown-quick-hubs">
+                        <span class="hubs-label">Popular:</span>
+                        <button type="button" class="hub-pill" data-target="from" data-code="INR">INR</button>
+                        <button type="button" class="hub-pill" data-target="from" data-code="USD">USD</button>
+                        <button type="button" class="hub-pill" data-target="from" data-code="EUR">EUR</button>
+                        <button type="button" class="hub-pill" data-target="from" data-code="GBP">GBP</button>
+                        <button type="button" class="hub-pill" data-target="from" data-code="AED">AED</button>
+                      </div>
+                      <div class="dropdown-currency-list" id="fromCurrencyList">
+                        <!-- Populated by JS -->
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -305,14 +333,41 @@
                   </button>
                 </div>
 
-                <!-- To Currency -->
+                <!-- To Currency Custom Dropdown -->
                 <div class="input-row">
-                  <label for="toCurrency">To</label>
-                  <div class="currency-select-wrapper">
-                    <select id="toCurrency" name="toCurrency" aria-label="Target Currency">
-                      <!-- Populated by JS -->
-                    </select>
-                    <span class="select-chevron">▼</span>
+                  <label for="toCurrencyTrigger">To</label>
+                  <div class="custom-currency-dropdown" id="toDropdownContainer">
+                    <button type="button" class="currency-dropdown-trigger" id="toCurrencyTrigger" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="trigger-flag" id="toFlag">🇪🇺</span>
+                      <span class="trigger-code" id="toCode">EUR</span>
+                      <span class="trigger-name" id="toName">- Euro</span>
+                      <svg class="trigger-arrow" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                      </svg>
+                    </button>
+                    <input type="hidden" id="toCurrency" name="toCurrency" value="EUR">
+
+                    <!-- Floating Dropdown Popover -->
+                    <div class="currency-dropdown-menu" id="toDropdownMenu" role="listbox">
+                      <div class="dropdown-search-box">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" class="dropdown-search-input" id="toSearchInput" placeholder="Search currency or country..." aria-label="Search target currency">
+                      </div>
+                      <div class="dropdown-quick-hubs">
+                        <span class="hubs-label">Popular:</span>
+                        <button type="button" class="hub-pill" data-target="to" data-code="EUR">EUR</button>
+                        <button type="button" class="hub-pill" data-target="to" data-code="USD">USD</button>
+                        <button type="button" class="hub-pill" data-target="to" data-code="GBP">GBP</button>
+                        <button type="button" class="hub-pill" data-target="to" data-code="INR">INR</button>
+                        <button type="button" class="hub-pill" data-target="to" data-code="JPY">JPY</button>
+                      </div>
+                      <div class="dropdown-currency-list" id="toCurrencyList">
+                        <!-- Populated by JS -->
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -327,7 +382,7 @@
                   </select>
                 </div>
 
-                <!-- Primary CTA -->
+                <!-- Primary CTA Button -->
                 <button type="submit" class="btn-primary btn-find-route" id="btnSubmitConvert">
                   <span>Find Best Route</span>
                   <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
@@ -338,7 +393,7 @@
             </div>
           </div>
 
-          <!-- Result Section (Reveals Dynamically) -->
+          <!-- Result Section (Reveals Dynamically When Authenticated) -->
           <div class="result-section-wrapper" id="resultSection">
             <div class="result-card-main highlight">
               <!-- Top Badges -->
@@ -694,7 +749,7 @@
     </section>
 
     <!-- ============================================================
-         10. Conversion History Section
+         10. Conversion History Section (Auth Protected)
          ============================================================ -->
     <section class="history-section" id="historySection">
       <div class="container">
@@ -704,11 +759,11 @@
               <span class="section-tag" style="margin-bottom: 8px;">Saved Calculations</span>
               <h3>Recent Arbitrage Lookups</h3>
             </div>
-            <button type="button" class="btn-clear-history" id="btnClearHistory">Clear Log</button>
+            <button type="button" class="btn-clear-history" id="btnClearHistory" style="display: none;">Clear Log</button>
           </div>
 
           <div class="history-list-items" id="historyContainer">
-            <!-- Populated by JS -->
+            <!-- Populated by JS: Locked state if logged out, or list if logged in -->
           </div>
         </div>
       </div>
@@ -716,7 +771,28 @@
   </main>
 
   <!-- ============================================================
-       11. Footer
+       11. Auth Required Modal Popup
+       ============================================================ -->
+  <div class="auth-modal-overlay" id="authRequiredModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="auth-modal-card">
+      <button type="button" class="auth-modal-close" id="btnCloseAuthModal" aria-label="Close Modal">✕</button>
+      <div class="auth-modal-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h3>Sign in to Calculate Routes</h3>
+      <p>Arbitrage graph simulations, liquidity hop pathfinding, and fee savings analysis require an active BypassFX account.</p>
+      <div class="auth-modal-actions">
+        <a href="login.html" class="btn-primary" style="width: 100%; text-align: center;">Log in to Continue</a>
+        <a href="signup.html" class="btn-secondary" style="width: 100%; text-align: center;">Create Free Account</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       12. Footer
        ============================================================ -->
   <footer class="footer">
     <div class="container">

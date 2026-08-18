@@ -1,6 +1,7 @@
 /**
  * BypassFX — Homepage Engine (Pure Vanilla JS)
  * Graph Arbitrage Calculator, Multi-Hop Pathfinder & Interactive UI Controller
+ * With Custom Searchable Currency Dropdowns, Auth Protection & LTR Ticker
  */
 
 // ============================================================
@@ -41,29 +42,29 @@ const PROVIDERS = [
   { name: 'PayPal FX', feePercent: 0.0380, feeFixed: 0 }
 ];
 
-// Robust Baseline Mid-Market Rates (per 1 USD) for offline resilience & immediate calculations
+// Baseline Mid-Market Rates (per 1 USD) for offline resilience & immediate calculations
 const USD_BASELINE_RATES = {
   USD: 1.0,
-  INR: 86.85,
-  EUR: 0.925,
-  GBP: 0.792,
+  INR: 86.8500,
+  EUR: 0.9250,
+  GBP: 0.7920,
   JPY: 153.40,
-  AUD: 1.542,
-  CAD: 1.385,
-  CHF: 0.885,
-  CNY: 7.245,
-  SGD: 1.348,
-  NZD: 1.695,
-  HKD: 7.780,
-  AED: 3.672,
-  SEK: 10.65,
-  BRL: 5.620,
-  MXN: 20.15,
-  ZAR: 18.25,
-  NOK: 10.85,
-  DKK: 6.900,
-  PLN: 3.980,
-  THB: 34.60,
+  AUD: 1.5420,
+  CAD: 1.3850,
+  CHF: 0.8850,
+  CNY: 7.2450,
+  SGD: 1.3480,
+  NZD: 1.6950,
+  HKD: 7.7800,
+  AED: 3.6720,
+  SEK: 10.6500,
+  BRL: 5.6200,
+  MXN: 20.1500,
+  ZAR: 18.2500,
+  NOK: 10.8500,
+  DKK: 6.9000,
+  PLN: 3.9800,
+  THB: 34.6000,
   KRW: 1395.0
 };
 
@@ -76,8 +77,40 @@ const STORAGE_KEYS = {
 const ZERO_DECIMAL_CURRENCIES = new Set(['JPY', 'KRW']);
 
 // ============================================================
-// 2. Helpers & Formatting
+// 2. Auth Session Management & Helpers
 // ============================================================
+function getAuthSession() {
+  const raw = localStorage.getItem(STORAGE_KEYS.SESSION) || sessionStorage.getItem(STORAGE_KEYS.SESSION);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearAuthSession() {
+  localStorage.removeItem(STORAGE_KEYS.SESSION);
+  sessionStorage.removeItem(STORAGE_KEYS.SESSION);
+  window.location.reload();
+}
+
+function showAuthModal() {
+  const modal = document.getElementById('authRequiredModal');
+  if (modal) {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+}
+
+function hideAuthModal() {
+  const modal = document.getElementById('authRequiredModal');
+  if (modal) {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+}
+
 function getCurrencyMeta(code) {
   return CURRENCIES.find(c => c.code === code) || { code, name: code, flag: '🌐', symbol: code };
 }
@@ -101,7 +134,193 @@ function escapeHtml(str) {
 }
 
 // ============================================================
-// 3. Exchange Rate Service (Fetch API + Local Cache + Fallback)
+// 3. Custom Searchable Currency Dropdowns
+// ============================================================
+let currentFromCurrency = 'INR';
+let currentToCurrency = 'EUR';
+
+function setFromCurrency(code) {
+  const meta = getCurrencyMeta(code);
+  currentFromCurrency = meta.code;
+
+  const hiddenInput = document.getElementById('fromCurrency');
+  const flagEl = document.getElementById('fromFlag');
+  const codeEl = document.getElementById('fromCode');
+  const nameEl = document.getElementById('fromName');
+  const container = document.getElementById('fromDropdownContainer');
+
+  if (hiddenInput) hiddenInput.value = meta.code;
+  if (flagEl) flagEl.textContent = meta.flag;
+  if (codeEl) codeEl.textContent = meta.code;
+  if (nameEl) nameEl.textContent = `- ${meta.name}`;
+  if (container) container.classList.remove('active');
+
+  renderDropdownList('from');
+}
+
+function setToCurrency(code) {
+  const meta = getCurrencyMeta(code);
+  currentToCurrency = meta.code;
+
+  const hiddenInput = document.getElementById('toCurrency');
+  const flagEl = document.getElementById('toFlag');
+  const codeEl = document.getElementById('toCode');
+  const nameEl = document.getElementById('toName');
+  const container = document.getElementById('toDropdownContainer');
+
+  if (hiddenInput) hiddenInput.value = meta.code;
+  if (flagEl) flagEl.textContent = meta.flag;
+  if (codeEl) codeEl.textContent = meta.code;
+  if (nameEl) nameEl.textContent = `- ${meta.name}`;
+  if (container) container.classList.remove('active');
+
+  renderDropdownList('to');
+}
+
+function renderDropdownList(type, searchTerm = '') {
+  const listEl = document.getElementById(type === 'from' ? 'fromCurrencyList' : 'toCurrencyList');
+  if (!listEl) return;
+
+  const activeCode = type === 'from' ? currentFromCurrency : currentToCurrency;
+  const term = searchTerm.toLowerCase().trim();
+
+  const filtered = CURRENCIES.filter(c => {
+    if (!term) return true;
+    return c.code.toLowerCase().includes(term) || c.name.toLowerCase().includes(term);
+  });
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = `<div class="dropdown-no-results">No currencies found matching "${escapeHtml(searchTerm)}"</div>`;
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(c => {
+    const isSelected = c.code === activeCode;
+    return `
+      <div class="dropdown-currency-item ${isSelected ? 'selected' : ''}" data-code="${c.code}" data-target="${type}">
+        <div class="item-left">
+          <span class="item-flag">${c.flag}</span>
+          <div>
+            <span class="item-code">${c.code}</span>
+            <span class="item-name">- ${c.name}</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <span class="item-symbol">${c.symbol}</span>
+          <svg class="item-check" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Attach click listeners to items
+  listEl.querySelectorAll('.dropdown-currency-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const code = item.getAttribute('data-code');
+      const target = item.getAttribute('data-target');
+      if (target === 'from') {
+        setFromCurrency(code);
+      } else {
+        setToCurrency(code);
+      }
+    });
+  });
+}
+
+function initCustomDropdowns() {
+  const fromContainer = document.getElementById('fromDropdownContainer');
+  const toContainer = document.getElementById('toDropdownContainer');
+  const fromTrigger = document.getElementById('fromCurrencyTrigger');
+  const toTrigger = document.getElementById('toCurrencyTrigger');
+  const fromSearch = document.getElementById('fromSearchInput');
+  const toSearch = document.getElementById('toSearchInput');
+
+  // Initial list population
+  setFromCurrency(currentFromCurrency);
+  setToCurrency(currentToCurrency);
+
+  // Trigger toggle for FROM
+  if (fromTrigger && fromContainer) {
+    fromTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = fromContainer.classList.contains('active');
+      if (toContainer) toContainer.classList.remove('active');
+      fromContainer.classList.toggle('active');
+      if (!isOpen && fromSearch) {
+        fromSearch.value = '';
+        renderDropdownList('from', '');
+        setTimeout(() => fromSearch.focus(), 50);
+      }
+    });
+  }
+
+  // Trigger toggle for TO
+  if (toTrigger && toContainer) {
+    toTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = toContainer.classList.contains('active');
+      if (fromContainer) fromContainer.classList.remove('active');
+      toContainer.classList.toggle('active');
+      if (!isOpen && toSearch) {
+        toSearch.value = '';
+        renderDropdownList('to', '');
+        setTimeout(() => toSearch.focus(), 50);
+      }
+    });
+  }
+
+  // Search input typing filters
+  if (fromSearch) {
+    fromSearch.addEventListener('input', (e) => {
+      renderDropdownList('from', e.target.value);
+    });
+    fromSearch.addEventListener('click', (e) => e.stopPropagation());
+  }
+
+  if (toSearch) {
+    toSearch.addEventListener('input', (e) => {
+      renderDropdownList('to', e.target.value);
+    });
+    toSearch.addEventListener('click', (e) => e.stopPropagation());
+  }
+
+  // Popular Hub Quick Pills
+  document.querySelectorAll('.hub-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const code = pill.getAttribute('data-code');
+      const target = pill.getAttribute('data-target');
+      if (target === 'from') {
+        setFromCurrency(code);
+      } else {
+        setToCurrency(code);
+      }
+    });
+  });
+
+  // Click outside to close both dropdowns
+  document.addEventListener('click', (e) => {
+    if (fromContainer && !fromContainer.contains(e.target)) {
+      fromContainer.classList.remove('active');
+    }
+    if (toContainer && !toContainer.contains(e.target)) {
+      toContainer.classList.remove('active');
+    }
+  });
+
+  // Escape key closes open dropdowns
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (fromContainer) fromContainer.classList.remove('active');
+      if (toContainer) toContainer.classList.remove('active');
+    }
+  });
+}
+
+// ============================================================
+// 4. Exchange Rate Service (Fetch API + Local Cache + Fallback)
 // ============================================================
 async function fetchExchangeRates(baseCurrency) {
   const cacheKey = `${STORAGE_KEYS.RATES_CACHE}_${baseCurrency}`;
@@ -110,20 +329,17 @@ async function fetchExchangeRates(baseCurrency) {
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
-      if (Date.now() - parsed.timestamp < 15 * 60 * 1000) { // 15 mins fresh
+      if (Date.now() - parsed.timestamp < 15 * 60 * 1000) {
         return parsed.rates;
       }
-    } catch (e) {
-      console.warn('Cache parse error:', e);
-    }
+    } catch (e) {}
   }
 
-  // Attempt live fetch from Frankfurter API
+  // Live fetch from Frankfurter API
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    
-    // Frankfurter works best with EUR or USD as base
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
+
     const res = await fetch(`https://api.frankfurter.app/latest?from=${baseCurrency}`, {
       signal: controller.signal
     });
@@ -139,10 +355,10 @@ async function fetchExchangeRates(baseCurrency) {
       return liveRates;
     }
   } catch (err) {
-    console.log(`Live rates fetch for ${baseCurrency} timed out or offline, using cross-rate model.`);
+    // Graceful fallback to cross rates
   }
 
-  // Resilient Cross-Rate Calculation Model
+  // Cross-rate fallback model
   const baseRateToUSD = USD_BASELINE_RATES[baseCurrency] || 1.0;
   const rates = {};
   for (const [code, rateInUSD] of Object.entries(USD_BASELINE_RATES)) {
@@ -152,7 +368,7 @@ async function fetchExchangeRates(baseCurrency) {
 }
 
 // ============================================================
-// 4. Graph Construction & Dijkstra-Style Arbitrage Pathfinder
+// 5. Graph Construction & Dijkstra Arbitrage Pathfinder
 // ============================================================
 function buildCurrencyGraph(ratesByBase, allowedNodes) {
   const allowed = new Set(allowedNodes);
@@ -189,7 +405,6 @@ function findBestPath(graph, from, to, initialAmount, maxHops = 3) {
 
   const allFoundRoutes = [];
 
-  // DFS search simulating real net capital flow including fee structures
   function explore(currentNode, currentCapital, currentPath, visitedNodes) {
     if (currentNode === to) {
       allFoundRoutes.push({
@@ -206,7 +421,6 @@ function findBestPath(graph, from, to, initialAmount, maxHops = 3) {
     for (const edge of edges) {
       if (visitedNodes.has(edge.to)) continue;
 
-      // Fee deduction model: Amount arriving is after variable fee and fixed fee
       const feeInSource = (currentCapital * edge.feePercent) + (edge.feeFixed / (edge.rate || 1));
       const capitalAfterFee = currentCapital - feeInSource;
 
@@ -240,13 +454,11 @@ function findBestPath(graph, from, to, initialAmount, maxHops = 3) {
     return { best: null, alternatives: [], direct: null };
   }
 
-  // Sort descending by highest received amount
   allFoundRoutes.sort((a, b) => b.finalAmount - a.finalAmount);
 
   const best = allFoundRoutes[0];
   const direct = allFoundRoutes.find(r => r.hops === 1) || null;
 
-  // Filter distinct interesting alternative routes
   const seenSignatures = new Set();
   const alternatives = [];
 
@@ -263,18 +475,21 @@ function findBestPath(graph, from, to, initialAmount, maxHops = 3) {
 }
 
 // ============================================================
-// 5. Local Storage & History Management
+// 6. History Storage & Auth-Gated Rendering
 // ============================================================
 function saveToHistory(entry) {
+  const session = getAuthSession();
+  if (!session) return;
+
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.HISTORY);
     const list = raw ? JSON.parse(raw) : [];
     list.unshift({
       id: 'bfx_' + Date.now(),
+      userId: session.id,
       date: new Date().toISOString(),
       ...entry
     });
-    // Keep last 20 entries
     localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(list.slice(0, 20)));
     renderHistory();
   } catch (err) {
@@ -283,9 +498,13 @@ function saveToHistory(entry) {
 }
 
 function loadHistoryList() {
+  const session = getAuthSession();
+  if (!session) return [];
+
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.HISTORY);
-    return raw ? JSON.parse(raw) : [];
+    const list = raw ? JSON.parse(raw) : [];
+    return list.filter(item => !item.userId || item.userId === session.id);
   } catch (err) {
     return [];
   }
@@ -296,111 +515,37 @@ function clearHistory() {
   renderHistory();
 }
 
-// ============================================================
-// 6. UI Rendering & DOM Controllers
-// ============================================================
-function initCurrencySelects() {
-  const fromSelect = document.getElementById('fromCurrency');
-  const toSelect = document.getElementById('toCurrency');
-  if (!fromSelect || !toSelect) return;
-
-  fromSelect.innerHTML = '';
-  toSelect.innerHTML = '';
-
-  CURRENCIES.forEach(curr => {
-    const optFrom = document.createElement('option');
-    optFrom.value = curr.code;
-    optFrom.textContent = `${curr.flag} ${curr.code} - ${curr.name}`;
-    if (curr.code === 'INR') optFrom.selected = true;
-    fromSelect.appendChild(optFrom);
-
-    const optTo = document.createElement('option');
-    optTo.value = curr.code;
-    optTo.textContent = `${curr.flag} ${curr.code} - ${curr.name}`;
-    if (curr.code === 'EUR') optTo.selected = true;
-    toSelect.appendChild(optTo);
-  });
-}
-
-function initCurrenciesGrid() {
-  const grid = document.getElementById('currenciesGrid');
-  if (!grid) return;
-
-  grid.innerHTML = CURRENCIES.map(curr => `
-    <div class="currency-grid-tile" data-code="${curr.code}">
-      <span class="flag">${curr.flag}</span>
-      <div class="info">
-        <span class="code">${curr.code}</span>
-        <span class="name">${curr.name}</span>
-      </div>
-    </div>
-  `).join('');
-
-  // Click on currency tile to auto-select as "To" currency and scroll to converter
-  grid.querySelectorAll('.currency-grid-tile').forEach(tile => {
-    tile.addEventListener('click', () => {
-      const code = tile.getAttribute('data-code');
-      const toSelect = document.getElementById('toCurrency');
-      if (toSelect) {
-        toSelect.value = code;
-        document.getElementById('converterSection').scrollIntoView({ behavior: 'smooth' });
-        triggerConversionCalculation();
-      }
-    });
-  });
-
-  // Search filter
-  const searchInput = document.getElementById('currencySearchInput');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase().trim();
-      grid.querySelectorAll('.currency-grid-tile').forEach(tile => {
-        const code = tile.getAttribute('data-code').toLowerCase();
-        const text = tile.textContent.toLowerCase();
-        const match = code.includes(term) || text.includes(term);
-        tile.style.display = match ? 'flex' : 'none';
-      });
-    });
-  }
-}
-
-function initQuickChips() {
-  document.querySelectorAll('.chip-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const val = btn.getAttribute('data-value');
-      const input = document.getElementById('convertAmount');
-      if (input && val) {
-        input.value = val;
-        triggerConversionCalculation();
-      }
-    });
-  });
-}
-
-function initSwapButton() {
-  const swapBtn = document.getElementById('btnSwapCurrencies');
-  const fromSelect = document.getElementById('fromCurrency');
-  const toSelect = document.getElementById('toCurrency');
-
-  if (swapBtn && fromSelect && toSelect) {
-    let rotation = 0;
-    swapBtn.addEventListener('click', () => {
-      rotation += 180;
-      swapBtn.style.transform = `rotate(${rotation}deg)`;
-
-      const temp = fromSelect.value;
-      fromSelect.value = toSelect.value;
-      toSelect.value = temp;
-
-      triggerConversionCalculation();
-    });
-  }
-}
-
 function renderHistory() {
   const container = document.getElementById('historyContainer');
+  const clearBtn = document.getElementById('btnClearHistory');
   if (!container) return;
 
+  const session = getAuthSession();
+
+  // LOCKED STATE: If user is NOT logged in
+  if (!session) {
+    if (clearBtn) clearBtn.style.display = 'none';
+    container.innerHTML = `
+      <div class="history-locked-card">
+        <div class="lock-icon-circle">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h3>Login Required to View History</h3>
+        <p>Your multi-hop conversion history and saved route logs are protected and linked to your BypassFX account. Sign in to view and re-run your previous calculations.</p>
+        <div class="history-locked-actions">
+          <a href="login.html" class="btn-primary">Log in to Access History</a>
+          <a href="signup.html" class="btn-secondary">Create Account</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // UNLOCKED STATE: Logged-in user
+  if (clearBtn) clearBtn.style.display = 'inline-block';
   const history = loadHistoryList();
 
   if (history.length === 0) {
@@ -410,7 +555,7 @@ function renderHistory() {
           <circle cx="12" cy="12" r="9"/>
           <polyline points="12 7 12 12 15 15"/>
         </svg>
-        <p>No conversions calculated yet. Use the converter above to discover the best routes.</p>
+        <p>No conversions calculated yet. Use the converter above to discover optimal arbitrage paths.</p>
       </div>
     `;
     return;
@@ -433,7 +578,7 @@ function renderHistory() {
         <div class="history-item-left">
           <div>
             <div class="history-path-badge">${fromMeta.flag} ${formatCurrencyAmount(item.amount, item.from)} ${item.from} → ${toMeta.flag} ${routeStr}</div>
-            <div class="history-date">${formattedDate} · Saved ${toMeta.symbol}${formatCurrencyAmount(item.savings, item.to)}</div>
+            <div class="history-date">${formattedDate} · Savings: +${toMeta.symbol}${formatCurrencyAmount(item.savings, item.to)}</div>
           </div>
         </div>
         <div class="history-item-right">
@@ -447,13 +592,17 @@ function renderHistory() {
 
 // Global hook to re-run an entry from history
 window.rerunConversion = function(from, to, amount) {
-  const fromSelect = document.getElementById('fromCurrency');
-  const toSelect = document.getElementById('toCurrency');
-  const amountInput = document.getElementById('convertAmount');
+  const session = getAuthSession();
+  if (!session) {
+    showAuthModal();
+    return;
+  }
 
-  if (fromSelect && toSelect && amountInput) {
-    fromSelect.value = from;
-    toSelect.value = to;
+  setFromCurrency(from);
+  setToCurrency(to);
+
+  const amountInput = document.getElementById('convertAmount');
+  if (amountInput) {
     amountInput.value = amount;
     document.getElementById('converterSection').scrollIntoView({ behavior: 'smooth' });
     triggerConversionCalculation();
@@ -461,20 +610,137 @@ window.rerunConversion = function(from, to, amount) {
 };
 
 // ============================================================
-// 7. Core Conversion Flow & Visualizer Output
+// 7. UI Rendering & Event Initializers
+// ============================================================
+function updateNavbarAuth() {
+  const navRight = document.querySelector('.nav-right');
+  const mobileAuth = document.querySelector('.mobile-nav-auth');
+  const session = getAuthSession();
+
+  if (session && navRight) {
+    const firstName = session.name ? session.name.split(' ')[0] : 'Member';
+    navRight.innerHTML = `
+      <div class="user-nav-profile">
+        <a href="dashboard.html" class="user-badge-pill" title="View Account Dashboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>${escapeHtml(firstName)}</span>
+        </a>
+        <button type="button" class="btn-nav-logout" id="btnLogoutNav">Log out</button>
+      </div>
+    `;
+
+    const logoutBtn = document.getElementById('btnLogoutNav');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', clearAuthSession);
+    }
+  }
+
+  if (session && mobileAuth) {
+    const firstName = session.name ? session.name.split(' ')[0] : 'Member';
+    mobileAuth.innerHTML = `
+      <a href="dashboard.html" class="btn-primary" style="text-align:center;">👤 ${escapeHtml(firstName)} (Dashboard)</a>
+      <button type="button" class="btn-secondary" id="btnLogoutMobile" style="text-align:center;">Log out</button>
+    `;
+    const logoutMobile = document.getElementById('btnLogoutMobile');
+    if (logoutMobile) {
+      logoutMobile.addEventListener('click', clearAuthSession);
+    }
+  }
+}
+
+function initCurrenciesGrid() {
+  const grid = document.getElementById('currenciesGrid');
+  if (!grid) return;
+
+  grid.innerHTML = CURRENCIES.map(curr => `
+    <div class="currency-grid-tile" data-code="${curr.code}">
+      <span class="flag">${curr.flag}</span>
+      <div class="info">
+        <span class="code">${curr.code}</span>
+        <span class="name">${curr.name}</span>
+      </div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.currency-grid-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      const code = tile.getAttribute('data-code');
+      setToCurrency(code);
+      document.getElementById('converterSection').scrollIntoView({ behavior: 'smooth' });
+
+      const session = getAuthSession();
+      if (session) {
+        triggerConversionCalculation();
+      } else {
+        showAuthModal();
+      }
+    });
+  });
+
+  const searchInput = document.getElementById('currencySearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase().trim();
+      grid.querySelectorAll('.currency-grid-tile').forEach(tile => {
+        const code = tile.getAttribute('data-code').toLowerCase();
+        const text = tile.textContent.toLowerCase();
+        const match = code.includes(term) || text.includes(term);
+        tile.style.display = match ? 'flex' : 'none';
+      });
+    });
+  }
+}
+
+function initQuickChips() {
+  document.querySelectorAll('.chip-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-value');
+      const input = document.getElementById('convertAmount');
+      if (input && val) {
+        input.value = val;
+      }
+    });
+  });
+}
+
+function initSwapButton() {
+  const swapBtn = document.getElementById('btnSwapCurrencies');
+
+  if (swapBtn) {
+    let rotation = 0;
+    swapBtn.addEventListener('click', () => {
+      rotation += 180;
+      swapBtn.style.transform = `rotate(${rotation}deg)`;
+
+      const temp = currentFromCurrency;
+      setFromCurrency(currentToCurrency);
+      setToCurrency(temp);
+    });
+  }
+}
+
+// ============================================================
+// 8. Core Conversion Flow & Visualizer Output
 // ============================================================
 async function triggerConversionCalculation() {
+  const session = getAuthSession();
+  if (!session) {
+    showAuthModal();
+    return;
+  }
+
   const amountInput = document.getElementById('convertAmount');
-  const fromSelect = document.getElementById('fromCurrency');
-  const toSelect = document.getElementById('toCurrency');
   const hopSelect = document.getElementById('maxHopsSelect');
   const submitBtn = document.getElementById('btnSubmitConvert');
   const resultWrapper = document.getElementById('resultSection');
 
-  if (!amountInput || !fromSelect || !toSelect || !resultWrapper) return;
+  if (!amountInput || !resultWrapper) return;
 
-  const from = fromSelect.value;
-  const to = toSelect.value;
+  const from = currentFromCurrency;
+  const to = currentToCurrency;
   const amount = parseFloat(amountInput.value);
   const maxHops = parseInt(hopSelect ? hopSelect.value : '3', 10);
 
@@ -488,28 +754,23 @@ async function triggerConversionCalculation() {
     return;
   }
 
-  // Button loading state
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = `
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin" style="animation: spin 1s linear infinite;">
         <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
       </svg>
-      Finding Optimal Path…
+      <span>Calculating Best Route…</span>
     `;
   }
 
   try {
-    // 1. Gather all nodes needed
     const nodes = Array.from(new Set([from, to, ...HUB_CURRENCIES]));
-
-    // 2. Fetch rates for all hubs
     const ratesMap = {};
     await Promise.all(nodes.map(async (node) => {
       ratesMap[node] = await fetchExchangeRates(node);
     }));
 
-    // 3. Build graph & compute paths
     const graph = buildCurrencyGraph(ratesMap, nodes);
     const { best, alternatives, direct } = findBestPath(graph, from, to, amount, maxHops);
 
@@ -518,10 +779,8 @@ async function triggerConversionCalculation() {
       return;
     }
 
-    // 4. Render results to DOM
     renderBestResult(from, to, amount, best, direct, alternatives);
 
-    // 5. Save to history
     const directAmt = direct ? direct.finalAmount : best.finalAmount;
     const savings = Math.max(0, best.finalAmount - directAmt);
     const pathStr = best.path.length === 1
@@ -541,7 +800,7 @@ async function triggerConversionCalculation() {
     resultWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   } catch (err) {
-    console.error('Arbitrage calculation failed:', err);
+    console.error('Arbitrage calculation error:', err);
     alert('Failed to calculate conversion rates. Please try again.');
   } finally {
     if (submitBtn) {
@@ -564,7 +823,6 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
   const savings = Math.max(0, best.finalAmount - directAmt);
   const isMultiHop = best.path.length > 1;
 
-  // 1. Output summary headline
   const summaryEl = document.getElementById('resultSummaryHeading');
   if (summaryEl) {
     summaryEl.innerHTML = `
@@ -573,7 +831,6 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
     `;
   }
 
-  // 2. Savings badge
   const savingsBadgeEl = document.getElementById('resultSavingsBadge');
   if (savingsBadgeEl) {
     if (savings > 0 && isMultiHop) {
@@ -591,12 +848,10 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
     }
   }
 
-  // 3. Render Visual Node Chain: [ INR ] ──→ [ USD ] ──→ [ EUR ]
   const visualizerEl = document.getElementById('routeChainNodes');
   if (visualizerEl) {
     let nodesHtml = '';
 
-    // First node (Source)
     nodesHtml += `
       <div class="route-node">
         <div class="node-flag">${fromMeta.flag}</div>
@@ -605,7 +860,6 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
       </div>
     `;
 
-    // Edge & subsequent nodes
     best.path.forEach(leg => {
       const legToMeta = getCurrencyMeta(leg.to);
       const feePct = (leg.feePercent * 100).toFixed(1);
@@ -633,7 +887,6 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
     visualizerEl.innerHTML = nodesHtml;
   }
 
-  // 4. Metrics Grid (Final Amount, Total Fee, Savings)
   const metricFinalEl = document.getElementById('metricFinalAmount');
   const metricFeeEl = document.getElementById('metricTotalFee');
   const metricSavingsEl = document.getElementById('metricSavings');
@@ -650,7 +903,6 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
     }
   }
 
-  // 5. Compare Alternative Routes Table
   const compareListEl = document.getElementById('alternativeRoutesList');
   if (compareListEl) {
     compareListEl.innerHTML = alternatives.map((route, idx) => {
@@ -683,17 +935,17 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
 }
 
 // ============================================================
-// 8. Ticker Animation & Data Loading
+// 9. Trends Marquee (Left-to-Right Animated Bar)
 // ============================================================
 const TICKER_PAIRS = [
-  { base: 'USD', quote: 'INR', label: 'USD/INR' },
-  { base: 'EUR', quote: 'USD', label: 'EUR/USD' },
-  { base: 'GBP', quote: 'INR', label: 'GBP/INR' },
-  { base: 'USD', quote: 'JPY', label: 'USD/JPY' },
-  { base: 'EUR', quote: 'GBP', label: 'EUR/GBP' },
-  { base: 'AUD', quote: 'USD', label: 'AUD/USD' },
-  { base: 'USD', quote: 'AED', label: 'USD/AED' },
-  { base: 'USD', quote: 'CAD', label: 'USD/CAD' }
+  { base: 'USD', quote: 'INR', label: 'USD/INR', decimals: 4, up: true },
+  { base: 'EUR', quote: 'USD', label: 'EUR/USD', decimals: 4, up: false },
+  { base: 'GBP', quote: 'INR', label: 'GBP/INR', decimals: 4, up: true },
+  { base: 'USD', quote: 'JPY', label: 'USD/JPY', decimals: 2, up: false },
+  { base: 'EUR', quote: 'GBP', label: 'EUR/GBP', decimals: 4, up: true },
+  { base: 'AUD', quote: 'USD', label: 'AUD/USD', decimals: 4, up: false },
+  { base: 'USD', quote: 'AED', label: 'USD/AED', decimals: 4, up: true },
+  { base: 'USD', quote: 'CAD', label: 'USD/CAD', decimals: 4, up: false }
 ];
 
 async function initTicker() {
@@ -708,10 +960,10 @@ async function initTicker() {
 
     const ratesByBase = { USD: usdRates, EUR: eurRates, GBP: gbpRates, AUD: audRates };
 
-    const items = TICKER_PAIRS.map((pair, idx) => {
+    const items = TICKER_PAIRS.map(pair => {
       const r = ratesByBase[pair.base] ? ratesByBase[pair.base][pair.quote] : USD_BASELINE_RATES[pair.quote];
-      const rateVal = r != null ? Number(r).toFixed(pair.quote === 'JPY' ? 2 : 4) : '--';
-      const isUp = idx % 2 === 0;
+      const rateVal = r != null ? Number(r).toFixed(pair.decimals) : '--';
+      const isUp = pair.up;
       return `
         <span class="tick-item ${isUp ? 'up' : 'down'}">
           <b>${pair.label}</b>
@@ -721,25 +973,25 @@ async function initTicker() {
       `;
     }).join('');
 
-    // Double for seamless marquee loop
     track.innerHTML = items + items;
   } catch (e) {
-    console.error('Ticker populate failed:', e);
+    console.error('Ticker error:', e);
   }
 }
 
 // ============================================================
-// 9. Page Initialization & Event Listeners
+// 10. Page Initialization
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  initCurrencySelects();
+  updateNavbarAuth();
+  initCustomDropdowns();
   initCurrenciesGrid();
   initQuickChips();
   initSwapButton();
   initTicker();
   renderHistory();
 
-  // Converter Form Submit
+  // Converter Form Submit — requires auth
   const convertForm = document.getElementById('converterFormMain');
   if (convertForm) {
     convertForm.addEventListener('submit', (e) => {
@@ -758,6 +1010,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Auth Modal Close Buttons
+  const closeAuthBtn = document.getElementById('btnCloseAuthModal');
+  const authModal = document.getElementById('authRequiredModal');
+  if (closeAuthBtn) {
+    closeAuthBtn.addEventListener('click', hideAuthModal);
+  }
+  if (authModal) {
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) hideAuthModal();
+    });
+  }
+
   // Mobile Menu Toggle
   const menuBtn = document.getElementById('menuToggleBtn');
   const mobileNav = document.getElementById('mobileNavDrawer');
@@ -773,8 +1037,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Auto-calculate initial demonstration on page load for immediate delight
-  setTimeout(() => {
-    triggerConversionCalculation();
-  }, 400);
+  // If user is already logged in, run initial route calculation
+  const session = getAuthSession();
+  if (session) {
+    setTimeout(() => {
+      triggerConversionCalculation();
+    }, 300);
+  }
 });

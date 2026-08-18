@@ -228,7 +228,7 @@
         saveSession(matches[0], remember);
         showBanner(banner, "Logged in! Taking you in…", "success");
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+          window.location.href = "index.html";
         }, 400);
       } catch (err) {
         showBanner(banner, friendlyNetworkError(err), "error");
