@@ -918,7 +918,7 @@ function renderBestResult(from, to, amount, best, direct, alternatives) {
       return `
         <div class="route-compare-item ${isBest ? 'best' : ''}">
           <div class="route-path-str">
-            <span>${pathLabel}</span>
+            <span class="user-route">${pathLabel}</span>
             ${isBest ? '<span class="badge-mini-best">BEST ROUTE</span>' : ''}
             ${route.hops === 1 ? '<span style="font-size: 0.72rem; color: var(--text-secondary);">(Direct)</span>' : ''}
           </div>

@@ -6,6 +6,13 @@
       "password": "12345678",
       "createdAt": "2026-08-14T09:35:33.137Z",
       "id": 1
+    },
+    {
+      "name": "Harshit",
+      "email": "harshit@gmail.com",
+      "password": "GreatHarsh",
+      "createdAt": "2026-08-19T10:50:57.483Z",
+      "id": 2
     }
   ],
   "conversions": []
