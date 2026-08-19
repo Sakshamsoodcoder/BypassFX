@@ -1,0 +1,526 @@
+/* ============================================================
+   Bypass-FX — rates.css
+   Styles for the Live Rates & Charts page (rates.html)
+   Uses the same design tokens from style.css
+   ============================================================ */
+
+/* ── Layout Shell ──────────────────────────────────────────── */
+.rates-shell {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+body:has(.rates-shell) {
+  display: block;
+  padding: 24px 16px;
+  align-items: initial;
+  justify-content: initial;
+}
+
+/* ── Top Bar ───────────────────────────────────────────────── */
+.rates-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.rates-top .brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.rates-top .brand-mark img {
+  width: 32px;
+  height: 32px;
+}
+
+.rates-top .brand-mark span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.rates-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.rates-nav a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.rates-nav a:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.rates-nav a.active {
+  color: white;
+  background: var(--accent);
+}
+
+/* ── Page Header ───────────────────────────────────────────── */
+.rates-header {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.rates-header h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.rates-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.rates-header a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.rates-header a:hover {
+  text-decoration: underline;
+}
+
+/* ── Controls ──────────────────────────────────────────────── */
+.rates-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: var(--surface);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-group label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.control-group select {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.control-group select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ── Rate Hero ─────────────────────────────────────────────── */
+.rate-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel-dark);
+  color: var(--text-inverse);
+  padding: 28px 32px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.rate-hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rate-pair {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-inverse-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.rate-value {
+  font-family: var(--font-mono);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.rate-change {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.rate-change.up {
+  color: #34D399;
+}
+
+.rate-change.up::before {
+  content: '▲ ';
+}
+
+.rate-change.down {
+  color: #F87171;
+}
+
+.rate-change.down::before {
+  content: '▼ ';
+}
+
+.rate-hero-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.rate-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-inverse-muted);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* ── Chart Cards ───────────────────────────────────────────── */
+.chart-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  position: relative;
+}
+
+.chart-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.chart-header p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.chart-container {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
+.chart-container-bar {
+  height: 380px;
+}
+
+/* ── Live Badge ────────────────────────────────────────────── */
+.live-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.8); }
+}
+
+.live-badge.error {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.live-badge.error .live-dot {
+  background: var(--danger);
+  animation: none;
+}
+
+/* ── Timeframe Tabs ────────────────────────────────────────── */
+.timeframe-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: var(--bg-canvas);
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.tab-btn {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--accent);
+  background: white;
+}
+
+.tab-btn.active {
+  color: white;
+  background: var(--accent);
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+}
+
+/* ── Historical Stats ──────────────────────────────────────── */
+.history-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hist-stat {
+  flex: 1 1 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px;
+  background: var(--bg-canvas);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.hist-stat .stat-label {
+  color: var(--text-secondary);
+}
+
+.hist-stat .stat-value {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.hist-stat .stat-value.up {
+  color: #16A34A;
+}
+
+.hist-stat .stat-value.down {
+  color: #DC2626;
+}
+
+/* ── Rates Table ───────────────────────────────────────────── */
+.rates-table {
+  margin-top: 8px;
+}
+
+.rates-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.rates-table thead th {
+  text-align: left;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+.rates-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.rates-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.rates-table tbody tr:hover {
+  background: var(--accent-soft);
+}
+
+.rates-table .mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+/* ── Error ─────────────────────────────────────────────────── */
+.error-msg {
+  color: var(--danger);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 20px;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.rates-footer {
+  text-align: center;
+  padding: 24px 0 8px;
+  border-top: 1px solid var(--border);
+}
+
+.rates-footer p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.rates-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.rates-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .rates-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .rate-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .rate-value {
+    font-size: 1.8rem;
+  }
+
+  .rate-hero-right {
+    width: 100%;
+  }
+
+  .rates-nav {
+    gap: 4px;
+  }
+
+  .rates-nav a {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+
+  .chart-container {
+    height: 240px;
+  }
+
+  .chart-container-bar {
+    height: 300px;
+  }
+
+  .rates-header h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .rates-top {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .rate-hero-right {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+  }
+
+  .history-stats {
+    flex-direction: column;
+  }
+}
+
+/* ── Reduced motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
+  }
+}
