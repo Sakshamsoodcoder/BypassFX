@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Rates · Bypass-FX</title>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/rates.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<main class="rates-shell">
+  <!-- Top Bar -->
+  <div class="rates-top">
+    <a href="index.html" class="brand-mark">
+      <img src="assets/logo.svg" alt="">
+      <span>Bypass-FX</span>
+    </a>
+    <nav class="rates-nav">
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Converter</a>
+      <a href="rates.html" class="active">Live Rates</a>
+    </nav>
+  </div>
+
+  <!-- Page Header -->
+  <div class="rates-header">
+    <h1>📈 Live Currency Rates</h1>
+    <p>Real-time exchange rates with historical charts — powered by the <a href="https://frankfurter.app" target="_blank">Frankfurter API</a></p>
+  </div>
+
+  <!-- Controls -->
+  <div class="rates-controls">
+    <div class="control-group">
+      <label for="baseCurrency">Base Currency</label>
+      <select id="baseCurrency">
+        <option value="USD" selected>🇺🇸 USD — US Dollar</option>
+        <option value="EUR">🇪🇺 EUR — Euro</option>
+        <option value="GBP">🇬🇧 GBP — British Pound</option>
+        <option value="INR">🇮🇳 INR — Indian Rupee</option>
+        <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+        <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+        <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+        <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
+        <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+        <option value="AED">🇦🇪 AED — UAE Dirham</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="targetCurrency">Target Currency</label>
+      <select id="targetCurrency">
+        <option value="EUR">🇪🇺 EUR — Euro</option>
+        <option value="USD">🇺🇸 USD — US Dollar</option>
+        <option value="GBP">🇬🇧 GBP — British Pound</option>
+        <option value="INR" selected>🇮🇳 INR — Indian Rupee</option>
+        <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+        <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+        <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+        <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
+        <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+        <option value="AED">🇦🇪 AED — UAE Dirham</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Current Rate Display -->
+  <div class="rate-hero" id="rateHero">
+    <div class="rate-hero-left">
+      <span class="rate-pair" id="ratePair">USD / INR</span>
+      <span class="rate-value" id="rateValue">—</span>
+      <span class="rate-change" id="rateChange"></span>
+    </div>
+    <div class="rate-hero-right">
+      <div class="rate-stat">
+        <span class="stat-label">Last Updated</span>
+        <span class="stat-value" id="lastUpdated">—</span>
+      </div>
+      <div class="rate-stat">
+        <span class="stat-label">Session High</span>
+        <span class="stat-value" id="sessionHigh">—</span>
+      </div>
+      <div class="rate-stat">
+        <span class="stat-label">Session Low</span>
+        <span class="stat-value" id="sessionLow">—</span>
+      </div>
+      <div class="rate-stat">
+        <span class="stat-label">Data Points</span>
+        <span class="stat-value" id="dataPoints">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Chart -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h2>⚡ Live Tracker</h2>
+      <p>Polling every 30 seconds — watch the rate move in real time</p>
+      <div class="live-badge" id="liveBadge">
+        <span class="live-dot"></span> LIVE
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="liveChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Historical Charts -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h2>📊 Historical Rates</h2>
+      <p>Daily closing rates from the Frankfurter API</p>
+    </div>
+    <div class="timeframe-tabs">
+      <button class="tab-btn active" data-range="7">1W</button>
+      <button class="tab-btn" data-range="30">1M</button>
+      <button class="tab-btn" data-range="90">3M</button>
+      <button class="tab-btn" data-range="180">6M</button>
+      <button class="tab-btn" data-range="365">1Y</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="historyChart"></canvas>
+    </div>
+    <div class="history-stats" id="historyStats"></div>
+  </div>
+
+  <!-- Multi-Currency Comparison -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h2>🌍 Multi-Currency Overview</h2>
+      <p>See how your base currency performs against all targets</p>
+    </div>
+    <div class="chart-container chart-container-bar">
+      <canvas id="multiChart"></canvas>
+    </div>
+    <div class="rates-table" id="ratesTable"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="rates-footer">
+    <p>Rates provided by <a href="https://frankfurter.app" target="_blank">Frankfurter API</a> · Data from the European Central Bank · Bypass-FX &copy; 2026</p>
+  </footer>
+</main>
+
+<script type="module" src="js/charts.js"></script>
+</body>
+</html>
