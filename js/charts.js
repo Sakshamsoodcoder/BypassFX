@@ -438,8 +438,4 @@ $target.addEventListener('change', onCurrencyChange);
 // Kick off
 startPolling();
 fetchHistorical(7);
-<<<<<<< HEAD
 fetchMultiRates();
-=======
-fetchMultiRates();
->>>>>>> faf694213d43a1dcc476fbbb79e09ebe585cc5af
