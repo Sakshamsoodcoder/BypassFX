@@ -1,150 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Rates · Bypass-FX</title>
-<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/rates.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-</head>
-<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Market Intelligence & Rates · BypassFX</title>
+  <meta name="description" content="Real-time currency exchange rates, live streaming tick charts, multi-hop arbitrage curves, and historical FX data powered by BypassFX and Frankfurter API.">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 
-<main class="rates-shell">
-  <!-- Top Bar -->
-  <div class="rates-top">
-    <a href="index.html" class="brand-mark">
-      <img src="assets/logo.svg" alt="">
-      <span>Bypass-FX</span>
-    </a>
-    <nav class="rates-nav">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/rates.css">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body class="rates-page-body">
+
+  <!-- ============================================================
+       1. Global Header Navigation
+       ============================================================ -->
+  <header class="navbar-wrapper">
+    <div class="container navbar">
+      <a href="index.html" class="brand-link" id="navBrandLogo">
+        <img src="assets/logo.svg" alt="BypassFX Logo">
+        <span class="brand-name">BypassFX</span>
+      </a>
+
+      <nav class="nav-center">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="index.html#converterSection" class="nav-link">Converter</a>
+        <a href="rates.html" class="nav-link active">Live Rates</a>
+        <a href="index.html#howItWorksSection" class="nav-link">How It Works</a>
+        <a href="index.html#featuresSection" class="nav-link">Features</a>
+        <a href="index.html#currenciesSection" class="nav-link">Currencies</a>
+      </nav>
+
+      <div class="nav-right" id="navAuthContainer">
+        <a href="login.html" class="btn-nav-login" id="navBtnLogin">Log in</a>
+        <a href="signup.html" class="btn-nav-signup" id="navBtnSignup">Sign up</a>
+      </div>
+
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Navigation Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNavDrawer">
       <a href="index.html">Home</a>
       <a href="index.html#converterSection">Converter</a>
       <a href="rates.html" class="active">Live Rates</a>
-    </nav>
-  </div>
-
-  <!-- Page Header -->
-  <div class="rates-header">
-    <h1>📈 Live Currency Rates</h1>
-    <p>Real-time exchange rates with historical charts — powered by the <a href="https://frankfurter.app" target="_blank">Frankfurter API</a></p>
-  </div>
-
-  <!-- Controls -->
-  <div class="rates-controls">
-    <div class="control-group">
-      <label for="baseCurrency">Base Currency</label>
-      <select id="baseCurrency">
-        <option value="USD" selected>🇺🇸 USD — US Dollar</option>
-        <option value="EUR">🇪🇺 EUR — Euro</option>
-        <option value="GBP">🇬🇧 GBP — British Pound</option>
-        <option value="INR">🇮🇳 INR — Indian Rupee</option>
-        <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
-        <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
-        <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
-        <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
-        <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
-        <option value="AED">🇦🇪 AED — UAE Dirham</option>
-      </select>
-    </div>
-    <div class="control-group">
-      <label for="targetCurrency">Target Currency</label>
-      <select id="targetCurrency">
-        <option value="EUR">🇪🇺 EUR — Euro</option>
-        <option value="USD">🇺🇸 USD — US Dollar</option>
-        <option value="GBP">🇬🇧 GBP — British Pound</option>
-        <option value="INR" selected>🇮🇳 INR — Indian Rupee</option>
-        <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
-        <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
-        <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
-        <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
-        <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
-        <option value="AED">🇦🇪 AED — UAE Dirham</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Current Rate Display -->
-  <div class="rate-hero" id="rateHero">
-    <div class="rate-hero-left">
-      <span class="rate-pair" id="ratePair">USD / INR</span>
-      <span class="rate-value" id="rateValue">—</span>
-      <span class="rate-change" id="rateChange"></span>
-    </div>
-    <div class="rate-hero-right">
-      <div class="rate-stat">
-        <span class="stat-label">Last Updated</span>
-        <span class="stat-value" id="lastUpdated">—</span>
-      </div>
-      <div class="rate-stat">
-        <span class="stat-label">Session High</span>
-        <span class="stat-value" id="sessionHigh">—</span>
-      </div>
-      <div class="rate-stat">
-        <span class="stat-label">Session Low</span>
-        <span class="stat-value" id="sessionLow">—</span>
-      </div>
-      <div class="rate-stat">
-        <span class="stat-label">Data Points</span>
-        <span class="stat-value" id="dataPoints">0</span>
+      <a href="index.html#howItWorksSection">How It Works</a>
+      <a href="index.html#featuresSection">Features</a>
+      <a href="index.html#currenciesSection">Currencies</a>
+      <div class="mobile-nav-auth" id="mobileNavAuthContainer">
+        <a href="login.html" class="btn-secondary" style="text-align: center;">Log in</a>
+        <a href="signup.html" class="btn-primary" style="text-align: center;">Sign up</a>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Live Chart -->
-  <div class="chart-card">
-    <div class="chart-header">
-      <h2>⚡ Live Tracker</h2>
-      <p>Polling every 30 seconds — watch the rate move in real time</p>
-      <div class="live-badge" id="liveBadge">
-        <span class="live-dot"></span> LIVE
+  <main class="rates-main-shell">
+    <div class="container">
+
+      <!-- ============================================================
+           2. Page Header & Currency Selector Toolbar
+           ============================================================ -->
+      <section class="rates-hero-header">
+        <div class="rates-header-titles">
+          <div class="rates-badge-pill">
+            <span class="pulse-dot-green"></span>
+            <span>Real-Time Market Stream</span>
+          </div>
+          <h1>Live Market Intelligence</h1>
+          <p>Real-time exchange rate analytics, simulated live tick streams, and multi-hop corridor benchmarking.</p>
+        </div>
+
+        <!-- Quick Pair Selector Controls -->
+        <div class="rates-control-panel">
+          <div class="currency-selectors-wrap">
+            <div class="select-group">
+              <label for="baseCurrencySelect">Base Currency</label>
+              <div class="custom-select-box">
+                <span class="select-flag" id="baseFlag">🇺🇸</span>
+                <select id="baseCurrencySelect" aria-label="Select Base Currency">
+                  <option value="USD" selected>USD — US Dollar</option>
+                  <option value="EUR">EUR — Euro</option>
+                  <option value="GBP">GBP — British Pound</option>
+                  <option value="INR">INR — Indian Rupee</option>
+                  <option value="JPY">JPY — Japanese Yen</option>
+                  <option value="CAD">CAD — Canadian Dollar</option>
+                  <option value="AUD">AUD — Australian Dollar</option>
+                  <option value="CHF">CHF — Swiss Franc</option>
+                  <option value="SGD">SGD — Singapore Dollar</option>
+                  <option value="AED">AED — UAE Dirham</option>
+                  <option value="CNY">CNY — Chinese Yuan</option>
+                  <option value="NZD">NZD — New Zealand Dollar</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button" class="btn-swap-pairs" id="btnSwapPairs" title="Swap Currencies" aria-label="Swap Currencies">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+              </svg>
+            </button>
+
+            <div class="select-group">
+              <label for="targetCurrencySelect">Target Currency</label>
+              <div class="custom-select-box">
+                <span class="select-flag" id="targetFlag">🇮🇳</span>
+                <select id="targetCurrencySelect" aria-label="Select Target Currency">
+                  <option value="INR" selected>INR — Indian Rupee</option>
+                  <option value="USD">USD — US Dollar</option>
+                  <option value="EUR">EUR — Euro</option>
+                  <option value="GBP">GBP — British Pound</option>
+                  <option value="JPY">JPY — Japanese Yen</option>
+                  <option value="CAD">CAD — Canadian Dollar</option>
+                  <option value="AUD">AUD — Australian Dollar</option>
+                  <option value="CHF">CHF — Swiss Franc</option>
+                  <option value="SGD">SGD — Singapore Dollar</option>
+                  <option value="AED">AED — UAE Dirham</option>
+                  <option value="CNY">CNY — Chinese Yuan</option>
+                  <option value="NZD">NZD — New Zealand Dollar</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Hub Chips -->
+          <div class="quick-pairs-strip">
+            <span class="strip-label">Popular:</span>
+            <button type="button" class="quick-pair-chip active" data-base="USD" data-target="INR">USD/INR</button>
+            <button type="button" class="quick-pair-chip" data-base="EUR" data-target="USD">EUR/USD</button>
+            <button type="button" class="quick-pair-chip" data-base="GBP" data-target="INR">GBP/INR</button>
+            <button type="button" class="quick-pair-chip" data-base="USD" data-target="JPY">USD/JPY</button>
+            <button type="button" class="quick-pair-chip" data-base="EUR" data-target="GBP">EUR/GBP</button>
+            <button type="button" class="quick-pair-chip" data-base="AUD" data-target="USD">AUD/USD</button>
+            <button type="button" class="quick-pair-chip" data-base="USD" data-target="AED">USD/AED</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           3. Top 5-Metric Intelligence Deck (Reference Design Layout)
+           ============================================================ -->
+      <section class="metric-deck-grid" id="metricDeckGrid">
+        <!-- Metric 1: Live Rate -->
+        <div class="metric-deck-card primary">
+          <div class="metric-card-label">
+            <span>Live Mid-Market Rate</span>
+            <span class="live-stream-badge" id="streamBadge">STREAMING</span>
+          </div>
+          <div class="metric-card-value-row">
+            <span class="metric-big-num" id="deckLiveRate">86.8520</span>
+            <span class="metric-quote-cur" id="deckTargetCode">INR</span>
+          </div>
+          <div class="metric-card-footer">
+            <span class="change-pill up" id="deckLiveChange">+0.14%</span>
+            <span class="footer-note">vs 24h open</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: 24H High -->
+        <div class="metric-deck-card">
+          <div class="metric-card-label">
+            <span>24H Peak High</span>
+            <span class="stat-glyph">▲</span>
+          </div>
+          <div class="metric-card-value-row">
+            <span class="metric-big-num" id="deckHighRate">86.9450</span>
+          </div>
+          <div class="metric-card-footer">
+            <span class="footer-note">Session Ceiling</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: 24H Low -->
+        <div class="metric-deck-card">
+          <div class="metric-card-label">
+            <span>24H Floor Low</span>
+            <span class="stat-glyph down">▼</span>
+          </div>
+          <div class="metric-card-value-row">
+            <span class="metric-big-num" id="deckLowRate">86.6810</span>
+          </div>
+          <div class="metric-card-footer">
+            <span class="footer-note">Session Support</span>
+          </div>
+        </div>
+
+        <!-- Metric 4: Corridor Volatility -->
+        <div class="metric-deck-card">
+          <div class="metric-card-label">
+            <span>Corridor Volatility</span>
+            <span class="stat-glyph">⚡</span>
+          </div>
+          <div class="metric-card-value-row">
+            <span class="metric-big-num" id="deckVolatility">0.31%</span>
+          </div>
+          <div class="metric-card-footer">
+            <span class="change-pill neutral">Low Volatility</span>
+          </div>
+        </div>
+
+        <!-- Metric 5: Bypass Arbitrage Yield -->
+        <div class="metric-deck-card highlight">
+          <div class="metric-card-label">
+            <span>Bypass Arbitrage Gain</span>
+            <span class="stat-glyph green">★</span>
+          </div>
+          <div class="metric-card-value-row">
+            <span class="metric-big-num green" id="deckArbitrageYield">+1.85%</span>
+          </div>
+          <div class="metric-card-footer">
+            <span class="change-pill up">vs Traditional Wire</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           4. Main Hero Live Rate Chart Studio (WebPulse Style)
+           ============================================================ -->
+      <section class="chart-studio-card" id="chartStudio">
+        <!-- Studio Header & Toolbar -->
+        <div class="studio-header">
+          <div class="studio-title-block">
+            <div class="studio-pair-heading">
+              <span class="studio-pair-text" id="studioPairTitle">USD / INR Mid-Market Live Stream</span>
+              <div class="live-status-pill" id="liveStatusPill">
+                <span class="live-pulse-dot"></span>
+                <span>LIVE</span>
+              </div>
+            </div>
+            <p class="studio-subtitle">ECB Benchmark Data & Simulated Continuous Tick Frequency</p>
+          </div>
+
+          <!-- Studio Controls Right -->
+          <div class="studio-actions-right">
+            <!-- Curve Dataset Toggles -->
+            <div class="curve-toggles-bar">
+              <button type="button" class="curve-toggle-btn active" data-curve="mid" id="toggleMidCurve">
+                <span class="curve-dot color-mid"></span>
+                <span>Mid-Market</span>
+              </button>
+              <button type="button" class="curve-toggle-btn active" data-curve="wise" id="toggleWiseCurve">
+                <span class="curve-dot color-wise"></span>
+                <span>Wise Route</span>
+              </button>
+              <button type="button" class="curve-toggle-btn" data-curve="bank" id="toggleBankCurve">
+                <span class="curve-dot color-bank"></span>
+                <span>Bank Spread</span>
+              </button>
+            </div>
+
+            <!-- Timeframe Range Switcher -->
+            <div class="timeframe-switch-deck" role="tablist" aria-label="Chart Timeframes">
+              <button type="button" class="tf-btn active" data-tf="1H" role="tab" aria-selected="true">1H</button>
+              <button type="button" class="tf-btn" data-tf="24H" role="tab" aria-selected="false">24H</button>
+              <button type="button" class="tf-btn" data-tf="7D" role="tab" aria-selected="false">7D</button>
+              <button type="button" class="tf-btn" data-tf="1M" role="tab" aria-selected="false">1M</button>
+              <button type="button" class="tf-btn" data-tf="1Y" role="tab" aria-selected="false">1Y</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Studio Main Chart Overlay & Canvas Area -->
+        <div class="studio-body-layout">
+          <!-- Chart Big Stats Floating Overlay -->
+          <div class="chart-stats-overlay">
+            <div class="overlay-rate-group">
+              <span class="overlay-label">CURRENT RATE</span>
+              <div class="overlay-value-wrap">
+                <span class="overlay-rate-main" id="chartMainRate">86.8520</span>
+                <span class="overlay-cur-code" id="chartTargetCode">INR</span>
+              </div>
+              <div class="overlay-delta-badge up" id="chartDeltaBadge">
+                <span class="delta-arrow">▲</span>
+                <span id="chartDeltaValue">+0.1240 (+0.14%)</span>
+              </div>
+            </div>
+
+            <!-- Benchmark Curve Indicators (P50/P75/P90/P99 inspired) -->
+            <div class="benchmark-pills-row">
+              <div class="benchmark-item">
+                <div class="bench-head">
+                  <span class="bench-dot color-mid"></span>
+                  <span class="bench-name">Mid-Market</span>
+                </div>
+                <span class="bench-val" id="benchMidVal">86.8520</span>
+              </div>
+              <div class="benchmark-item">
+                <div class="bench-head">
+                  <span class="bench-dot color-wise"></span>
+                  <span class="bench-name">Wise Yield</span>
+                </div>
+                <span class="bench-val highlight" id="benchWiseVal">86.4611</span>
+              </div>
+              <div class="benchmark-item">
+                <div class="bench-head">
+                  <span class="bench-dot color-bank"></span>
+                  <span class="bench-name">Bank Wire</span>
+                </div>
+                <span class="bench-val muted" id="benchBankVal">84.2464</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- HTML5 Canvas Container -->
+          <div class="chart-canvas-wrapper" id="canvasWrapper">
+            <canvas id="mainRateChart"></canvas>
+            
+            <!-- Custom Frosted Glass Tooltip -->
+            <div class="chart-custom-tooltip" id="chartCustomTooltip" style="opacity: 0;">
+              <div class="tooltip-header">
+                <span class="tooltip-time" id="ttTime">10:45:20 AM</span>
+                <span class="tooltip-pair" id="ttPair">USD/INR</span>
+              </div>
+              <div class="tooltip-rate-row">
+                <span class="tooltip-rate" id="ttRate">86.8520</span>
+                <span class="tooltip-delta up" id="ttDelta">+0.14%</span>
+              </div>
+              <div class="tooltip-sub-details" id="ttDetails">
+                <div class="tt-detail-row">
+                  <span>Wise Optimal:</span>
+                  <strong id="ttWise">86.4611</strong>
+                </div>
+                <div class="tt-detail-row">
+                  <span>Bank Spread:</span>
+                  <strong id="ttBank">84.2464</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Studio Footer Info Bar -->
+        <div class="studio-footer-bar">
+          <div class="footer-left-stats">
+            <div class="stat-pill">
+              <span class="label">MARKET STATUS:</span>
+              <span class="val green"><span class="tiny-dot"></span> OPEN (24/5 FX)</span>
+            </div>
+            <div class="stat-pill">
+              <span class="label">DATA POINTS:</span>
+              <span class="val" id="statDataPoints">60</span>
+            </div>
+            <div class="stat-pill">
+              <span class="label">TICK CADENCE:</span>
+              <span class="val">2.5s Stream</span>
+            </div>
+          </div>
+
+          <div class="footer-right-sync">
+            <span>Last Synced:</span>
+            <strong id="lastSyncedTime">Just now</strong>
+            <button type="button" class="btn-refresh-pulse" id="btnManualRefresh" title="Force Refresh Rates">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           5. Corridor Analytics & Arbitrage Performance Matrix (Table)
+           ============================================================ -->
+      <section class="corridor-matrix-section">
+        <div class="matrix-header-row">
+          <div>
+            <span class="section-tag">Global Liquidity</span>
+            <h2>Corridor Performance & Arbitrage Matrix</h2>
+            <p>Live rates, daily spreads, and 7-day trendlines across major international currency corridors.</p>
+          </div>
+
+          <!-- Corridor Category Tabs -->
+          <div class="matrix-filter-tabs">
+            <button type="button" class="matrix-tab-btn active" data-filter="all">All Corridors</button>
+            <button type="button" class="matrix-tab-btn" data-filter="majors">Major Hubs</button>
+            <button type="button" class="matrix-tab-btn" data-filter="apac">Asia-Pacific</button>
+            <button type="button" class="matrix-tab-btn" data-filter="americas">Americas</button>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="corridor-table-wrapper">
+          <table class="corridor-table" id="corridorTable">
+            <thead>
+              <tr>
+                <th>Corridor Pair</th>
+                <th>Mid-Market Rate</th>
+                <th>24H Change</th>
+                <th>24H Session Range</th>
+                <th>Cheapest Path</th>
+                <th>7-Day Trend</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="corridorTableBody">
+              <!-- Dynamically populated via JS with SVG sparklines -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       6. Modern Footer
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-link">
+            <img src="assets/logo.svg" alt="BypassFX Logo">
+            <span class="brand-name">BypassFX</span>
+          </a>
+          <p class="footer-desc">
+            BypassFX is an intelligent currency arbitrage and multi-hop route calculator engineered to minimize conversion fees and eliminate hidden bank markups.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="index.html#converterSection">Route Calculator</a></li>
+            <li><a href="rates.html">Live Rates & Analytics</a></li>
+            <li><a href="index.html#howItWorksSection">Pathfinding Graph</a></li>
+            <li><a href="index.html#featuresSection">Fee Optimization</a></li>
+            <li><a href="index.html#currenciesSection">Supported Currencies</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="login.html">Log In</a></li>
+            <li><a href="signup.html">Create Account</a></li>
+            <li><a href="index.html#converterSection">Converter</a></li>
+            <li><a href="index.html#historySection">Saved Routes</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Trust & Safety</h4>
+          <ul>
+            <li><a href="#">Mid-Market Guarantee</a></li>
+            <li><a href="#">Fee Structure</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 BypassFX Technologies. All rights reserved.</div>
+        <div>Mid-market exchange rates powered by Frankfurter API, ECB & BypassFX Graph Engine.</div>
       </div>
     </div>
-    <div class="chart-container">
-      <canvas id="liveChart"></canvas>
-    </div>
-  </div>
-
-  <!-- Historical Charts -->
-  <div class="chart-card">
-    <div class="chart-header">
-      <h2>📊 Historical Rates</h2>
-      <p>Daily closing rates from the Frankfurter API</p>
-    </div>
-    <div class="timeframe-tabs">
-      <button class="tab-btn active" data-range="7">1W</button>
-      <button class="tab-btn" data-range="30">1M</button>
-      <button class="tab-btn" data-range="90">3M</button>
-      <button class="tab-btn" data-range="180">6M</button>
-      <button class="tab-btn" data-range="365">1Y</button>
-    </div>
-    <div class="chart-container">
-      <canvas id="historyChart"></canvas>
-    </div>
-    <div class="history-stats" id="historyStats"></div>
-  </div>
-
-  <!-- Multi-Currency Comparison -->
-  <div class="chart-card">
-    <div class="chart-header">
-      <h2>🌍 Multi-Currency Overview</h2>
-      <p>See how your base currency performs against all targets</p>
-    </div>
-    <div class="chart-container chart-container-bar">
-      <canvas id="multiChart"></canvas>
-    </div>
-    <div class="rates-table" id="ratesTable"></div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="rates-footer">
-    <p>Rates provided by <a href="https://frankfurter.app" target="_blank">Frankfurter API</a> · Data from the European Central Bank · Bypass-FX &copy; 2026</p>
   </footer>
-</main>
 
-<script src="js/charts.js"></script>
+  <!-- Scripts -->
+  <script src="js/charts.js"></script>
 </body>
 </html>
