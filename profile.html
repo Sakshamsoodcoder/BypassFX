@@ -1,228 +1,565 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Profile · Bypass-FX</title>
-<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/home.css">
-<link rel="stylesheet" href="css/profile.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile & Account Intelligence · BypassFX</title>
+  <meta name="description" content="Manage your BypassFX account, pin favourite currencies, view comprehensive conversion history, and configure light/dark theme preferences.">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+
+  <!-- Immediate Theme Initialization (Prevents FOUC) -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('bypassfx_theme') || 
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/profile.css">
 </head>
 <body class="profile-page">
 
-<!-- Navigation Bar -->
-<header class="navbar-wrapper">
-  <div class="container navbar">
-    <a href="index.html" class="brand-link" id="navBrandLogo">
-      <img src="assets/logo.svg" alt="BypassFX Logo">
-      <span class="brand-name" style="color: var(--text-primary)">BypassFX</span>
-    </a>
-
-    <nav class="nav-center">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="index.html#converterSection" class="nav-link">Converter</a>
-      <a href="index.html#historySection" class="nav-link">History</a>
-      <a href="profile.html" class="nav-link profile-active">Profile</a>
-    </nav>
-
-    <div class="nav-right" style="gap: 16px;">
-      <a href="login.html" class="nav-link" style="color: var(--text-primary); font-weight: 600;">Log in</a>
-      <a href="signup.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Sign up</a>
-    </div>
-  </div>
-</header>
-
-<main class="profile-container">
-
-  <!-- Hero Section -->
-  <section class="profile-hero">
-    <div class="hero-left">
-      <div class="avatar-ring">
-        <div class="avatar" id="userAvatar">KV</div>
-      </div>
-      <div class="hero-info">
-        <h1 id="userName">Kartik Verma</h1>
-        <p class="role">Currency Explorer • Verified Account</p>
-        <p class="joined">Member since <span id="userJoined">August 2026</span></p>
-      </div>
-    </div>
-    <div class="hero-actions">
-      <button class="btn-outline-light">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-        Edit Profile
-      </button>
-      <a href="index.html#converterSection" class="btn-glow-green">Launch Converter</a>
-    </div>
-  </section>
-
-  <!-- Stats Row -->
-  <section class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">TOTAL CONVERSIONS</div>
-      <div class="stat-value" id="totalConversions">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">BEST SINGLE SAVINGS</div>
-      <div class="stat-value text-green" id="bestSavings">₹0.00</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">FAVORITE CURRENCY</div>
-      <div class="stat-value"><span style="font-size:16px;">us</span> USD</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">ROUTES EXPLORED</div>
-      <div class="stat-value" id="routesExplored">0</div>
-    </div>
-  </section>
-
-  <!-- Info Grid -->
-  <section class="content-grid">
-    
-    <!-- Left: Account Info -->
-    <div class="info-card">
-      <h2>Account Information</h2>
-      <div class="info-list">
-        <div class="info-row">
-          <span class="info-key">Full Name</span>
-          <span class="info-val font-bold" id="infoName">Kartik Verma</span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Email Address</span>
-          <span class="info-val font-bold" id="infoEmail">kartikverma1074@gmail.com</span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Account Tier</span>
-          <span class="info-val font-bold">Pro Arbitrage Member</span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Default Base Currency</span>
-          <span class="info-val font-bold">INR (Indian Rupee)</span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Data Privacy</span>
-          <span class="info-val text-green font-bold">Encrypted LocalStorage</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right: Recent Activity -->
-    <div class="info-card">
-      <div class="card-header">
-        <h2>Recent Activity</h2>
-        <a href="index.html#historySection" class="link-green">View All History →</a>
-      </div>
-      <div class="recent-activity-box">
-        <a href="index.html#historySection" class="btn-outline-full">Manage Full Conversion Log</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Bottom Actions -->
-  <section class="bottom-actions">
-    <div class="bottom-left">
-      <a href="index.html#converterSection" class="btn-solid-green">
-        → Go to Converter
-      </a>
-      <a href="index.html#historySection" class="btn-outline-gray">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        View Full History
-      </a>
-    </div>
-    <button type="button" class="btn-logout-red" id="btnLogoutProfile">
-      [→ Log Out
-    </button>
-  </section>
-
-</main>
-
-<!-- Footer -->
-<footer class="navbar-wrapper" style="margin-top: 40px; padding: 40px 0; background: #0b3b2a; color: white;">
-  <div class="container" style="display: flex; justify-content: space-between;">
-    <div>
-      <div class="brand-link" style="color: white; margin-bottom: 24px;">
-        <img src="assets/logo.svg" alt="Logo" style="filter: brightness(0) invert(1);">
+  <!-- ============================================================
+       1. Global Header Navigation
+       ============================================================ -->
+  <header class="navbar-wrapper">
+    <div class="container navbar">
+      <a href="index.html" class="brand-link" id="navBrandLogo">
+        <img src="assets/logo.svg" alt="BypassFX Logo">
         <span class="brand-name">BypassFX</span>
+      </a>
+
+      <nav class="nav-center">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="index.html#converterSection" class="nav-link">Converter</a>
+        <a href="rates.html" class="nav-link">Live Rates</a>
+        <a href="index.html#howItWorksSection" class="nav-link">How It Works</a>
+        <a href="profile.html" class="nav-link active">Profile</a>
+      </nav>
+
+      <div class="nav-right" id="navRightSection" style="display: flex; align-items: center; gap: 12px;">
+        <!-- Theme Toggle Nav Button -->
+        <button type="button" class="btn-theme-quick-toggle" id="btnNavThemeToggle" title="Toggle Light / Dark Mode" aria-label="Toggle Theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <div id="navAuthSlot">
+          <a href="login.html" class="btn-nav-login" id="navBtnLogin">Log in</a>
+          <a href="signup.html" class="btn-nav-signup" id="navBtnSignup">Sign up</a>
+        </div>
+      </div>
+
+      <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Navigation Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNavDrawer">
+      <a href="index.html">Home</a>
+      <a href="index.html#converterSection">Converter</a>
+      <a href="rates.html">Live Rates</a>
+      <a href="profile.html" class="active">Profile</a>
+      <div class="mobile-nav-auth" id="mobileAuthSlot">
+        <a href="login.html" class="btn-secondary" style="text-align: center;">Log in</a>
+        <a href="signup.html" class="btn-primary" style="text-align: center;">Sign up</a>
       </div>
     </div>
-    <div style="display: flex; gap: 64px;">
-      <div>
-        <h4 style="margin-bottom: 16px; font-size: 14px;">Pages</h4>
+  </header>
+
+  <main class="profile-main-shell">
+    <div class="container profile-container">
+
+      <!-- ============================================================
+           2. Profile Header Card (Inspired by Reference Top Card)
+           ============================================================ -->
+      <section class="profile-hero-card" id="profileHeroSection">
+        <!-- Top Action Strip -->
+        <div class="hero-top-strip">
+          <div class="hero-strip-title">
+            <span>User Profile</span>
+          </div>
+
+          <div class="hero-actions-right">
+            <button type="button" class="btn-hero-secondary" id="btnOpenEditProfile">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>Edit Profile</span>
+            </button>
+
+            <button type="button" class="btn-hero-primary" id="btnExportStatement">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Info</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Identity Body (Avatar + Attributes Grid) -->
+        <div class="hero-profile-body">
+          <div class="profile-identity-group">
+            <div class="profile-avatar-container">
+              <div class="profile-avatar-ring">
+                <div class="profile-avatar-inner" id="profileAvatarText">KV</div>
+              </div>
+              <span class="avatar-online-dot" title="Active Session"></span>
+            </div>
+
+            <div class="profile-name-block">
+              <h1 class="profile-user-name" id="profileUserName">
+                <span>Kartik Verma</span>
+                <span class="verified-icon-badge" title="Verified Member">✓</span>
+              </h1>
+              <p class="profile-tagline" id="profileUserTagline">Head of Arbitrage Routing • Verified Trader</p>
+            </div>
+          </div>
+
+          <!-- Attributes Grid (Role, Phone/ID, Email matching reference layout) -->
+          <div class="profile-attributes-grid">
+            <div class="attr-col">
+              <span class="attr-label">Trader Tier</span>
+              <span class="attr-val highlight" id="profileUserTier">Pro Member</span>
+            </div>
+            <div class="attr-col">
+              <span class="attr-label">Account ID</span>
+              <span class="attr-val highlight" id="profileUserId">FX-8492</span>
+            </div>
+            <div class="attr-col">
+              <span class="attr-label">Email Address</span>
+              <span class="attr-val" id="profileUserEmail">kartikverma@gmail.com</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           3. User Statistics 4-Deck (Reference Card Style)
+           ============================================================ -->
+      <section class="profile-stats-grid" id="profileStatsDeck">
+        <!-- Stat 1: Total Conversions -->
+        <div class="profile-stat-box">
+          <div class="stat-icon-square">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-num-val" id="statTotalConversions">0</span>
+            <span class="stat-title-label">Total Conversions</span>
+          </div>
+        </div>
+
+        <!-- Stat 2: Total Arbitrage Savings -->
+        <div class="profile-stat-box">
+          <div class="stat-icon-square green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-num-val green" id="statTotalSavings">₹0.00</span>
+            <span class="stat-title-label">Total Saved vs Bank</span>
+          </div>
+        </div>
+
+        <!-- Stat 3: Top Corridor -->
+        <div class="profile-stat-box">
+          <div class="stat-icon-square">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-num-val" id="statTopCorridor" style="font-size: 1.25rem;">USD ➔ INR</span>
+            <span class="stat-title-label">Top Corridor Hub</span>
+          </div>
+        </div>
+
+        <!-- Stat 4: Efficiency Score -->
+        <div class="profile-stat-box">
+          <div class="stat-icon-square green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-num-val green" id="statEfficiencyScore">98.5%</span>
+            <span class="stat-title-label">Optimal Route Index</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           4. Favourite Currencies Section
+           ============================================================ -->
+      <section class="fav-currencies-card" id="favSection">
+        <div class="section-indicator-row">
+          <div class="section-indicator-title">
+            <span>Favourite Currencies</span>
+            <span class="section-count-badge" id="favCountBadge">4 Pinned</span>
+          </div>
+        </div>
+
+        <!-- Quick Add Toolbar -->
+        <div class="fav-add-toolbar">
+          <div class="fav-select-wrap">
+            <select id="favAddSelect" aria-label="Select currency to pin">
+              <option value="" disabled selected>+ Select a currency to pin…</option>
+              <option value="USD">🇺🇸 USD — US Dollar</option>
+              <option value="EUR">🇪🇺 EUR — Euro</option>
+              <option value="GBP">🇬🇧 GBP — British Pound</option>
+              <option value="INR">🇮🇳 INR — Indian Rupee</option>
+              <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+              <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+              <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+              <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
+              <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+              <option value="AED">🇦🇪 AED — UAE Dirham</option>
+              <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
+              <option value="NZD">🇳🇿 NZD — New Zealand Dollar</option>
+            </select>
+          </div>
+          <button type="button" class="btn-add-fav" id="btnAddFav">
+            <span>Pin Currency</span>
+          </button>
+        </div>
+
+        <!-- Favourites Grid Container -->
+        <div class="fav-grid" id="favGridContainer">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Empty State for Favourites -->
+        <div class="fav-empty-state" id="favEmptyState" style="display: none;">
+          <div class="empty-state-icon">★</div>
+          <h3>No favourite currencies pinned yet</h3>
+          <p>Pin your most frequently traded global currencies for fast 1-click access and live market pricing.</p>
+          <button type="button" class="btn-empty-quick-add" id="btnPinPopular">Pin Popular Currencies (USD, EUR, GBP, INR)</button>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           5. Conversion History Section (Reference Bottom Card)
+           ============================================================ -->
+      <section class="history-studio-card" id="historyStudioSection">
+        <div class="section-indicator-row">
+          <div class="section-indicator-title">
+            <span>Conversion History</span>
+          </div>
+
+          <!-- History Controls Toolbar (View Switcher, Filters, Sort) -->
+          <div class="history-controls-toolbar">
+            <div class="history-left-tools">
+              <!-- View Mode Toggle (Grid vs List matching reference) -->
+              <div class="view-mode-toggle">
+                <button type="button" class="btn-view-mode active" id="btnViewGrid" title="Grid View" aria-label="Grid View">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                  </svg>
+                </button>
+                <button type="button" class="btn-view-mode" id="btnViewList" title="List View" aria-label="List View">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Filter Chips -->
+              <div class="filter-chips-strip">
+                <button type="button" class="filter-chip-btn active" data-filter="all">All</button>
+                <button type="button" class="filter-chip-btn" data-filter="optimal">Optimal Route</button>
+                <button type="button" class="filter-chip-btn" data-filter="direct">Direct</button>
+              </div>
+            </div>
+
+            <div class="history-right-tools">
+              <div class="sort-select-box">
+                <select id="historySortSelect" aria-label="Sort conversions">
+                  <option value="newest">Newest First</option>
+                  <option value="highest">Highest Amount</option>
+                  <option value="savings">Highest Savings</option>
+                </select>
+              </div>
+
+              <button type="button" class="btn-clear-history-action" id="btnOpenClearHistory">
+                Clear Log
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- History Cards Container (Grid View) -->
+        <div class="history-cards-grid" id="historyCardsContainer">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Empty State for History -->
+        <div class="fav-empty-state" id="historyEmptyState" style="display: none;">
+          <div class="empty-state-icon">🕒</div>
+          <h3>No conversions recorded yet</h3>
+          <p>Your calculated arbitrage routes and conversions will automatically appear here with full savings breakdowns.</p>
+          <a href="index.html#converterSection" class="btn-empty-quick-add">Start First Conversion ➔</a>
+        </div>
+
+        <!-- Pagination Bar (Matching reference: 1 2 3 ... 8 9 10) -->
+        <div class="history-pagination-row" id="historyPagination">
+          <button type="button" class="page-pill active">1</button>
+          <button type="button" class="page-pill">2</button>
+          <button type="button" class="page-pill">3</button>
+          <span style="color: var(--text-muted); font-family: var(--font-mono); padding: 0 4px;">…</span>
+          <button type="button" class="page-pill">8</button>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           6. Account Settings & Preferences (Theme & Routing)
+           ============================================================ -->
+      <section class="settings-studio-card" id="settingsSection">
+        <div class="section-indicator-row">
+          <div class="section-indicator-title">
+            <span>Account Settings & Preferences</span>
+          </div>
+        </div>
+
+        <!-- Theme Selector Visual Cards -->
+        <div class="settings-group">
+          <span class="settings-group-title">Display Theme</span>
+          <div class="theme-selector-grid">
+            <!-- Light Theme Card -->
+            <div class="theme-preview-card" data-theme-val="light" id="themeCardLight">
+              <div class="theme-icon-circle">☀️</div>
+              <div class="theme-card-info">
+                <span class="theme-card-name">Light Theme</span>
+                <span class="theme-card-desc">Crisp white canvas & emerald borders</span>
+              </div>
+            </div>
+
+            <!-- Dark Theme Card -->
+            <div class="theme-preview-card" data-theme-val="dark" id="themeCardDark">
+              <div class="theme-icon-circle">🌙</div>
+              <div class="theme-card-info">
+                <span class="theme-card-name">Dark Forest Theme</span>
+                <span class="theme-card-desc">Obsidian dark & vibrant mint glow</span>
+              </div>
+            </div>
+
+            <!-- System Theme Card -->
+            <div class="theme-preview-card" data-theme-val="system" id="themeCardSystem">
+              <div class="theme-icon-circle">💻</div>
+              <div class="theme-card-info">
+                <span class="theme-card-name">System Default</span>
+                <span class="theme-card-desc">Sync automatically with OS preferences</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Currency & Engine Defaults -->
+        <div class="settings-group">
+          <span class="settings-group-title">Converter Defaults & Path Preferences</span>
+          <div class="preferences-form-grid">
+            <div class="pref-input-box">
+              <label for="prefDefaultFrom">Default Source Currency</label>
+              <select id="prefDefaultFrom">
+                <option value="INR" selected>🇮🇳 INR — Indian Rupee</option>
+                <option value="USD">🇺🇸 USD — US Dollar</option>
+                <option value="EUR">🇪🇺 EUR — Euro</option>
+                <option value="GBP">🇬🇧 GBP — British Pound</option>
+                <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+                <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+                <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+                <option value="AED">🇦🇪 AED — UAE Dirham</option>
+              </select>
+            </div>
+
+            <div class="pref-input-box">
+              <label for="prefDefaultTo">Default Target Currency</label>
+              <select id="prefDefaultTo">
+                <option value="EUR" selected>🇪🇺 EUR — Euro</option>
+                <option value="USD">🇺🇸 USD — US Dollar</option>
+                <option value="GBP">🇬🇧 GBP — British Pound</option>
+                <option value="INR">🇮🇳 INR — Indian Rupee</option>
+                <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+                <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+                <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+                <option value="AED">🇦🇪 AED — UAE Dirham</option>
+              </select>
+            </div>
+
+            <div class="pref-input-box">
+              <label for="prefRoutingStrategy">Optimization Strategy</label>
+              <select id="prefRoutingStrategy">
+                <option value="max_yield" selected>Maximum Final Yield (Recommended)</option>
+                <option value="fewest_hops">Fewest Multi-Hop Legs (Faster)</option>
+                <option value="lowest_fee">Lowest Gross Provider Fee</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone & Log Out -->
+        <div class="danger-zone-bar">
+          <button type="button" class="btn-export-data" id="btnExportJson">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Export Account Data (JSON)</span>
+          </button>
+
+          <button type="button" class="btn-logout-action" id="btnLogoutProfile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span>Log Out of Session</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       7. Edit Profile Modal
+       ============================================================ -->
+  <div class="profile-modal-overlay" id="editProfileModal" aria-hidden="true" role="dialog">
+    <div class="profile-modal-card">
+      <div class="modal-header-row">
+        <h3>Edit Profile Details</h3>
+        <button type="button" class="btn-modal-close" id="btnCloseEditModal" aria-label="Close">✕</button>
       </div>
-      <div>
-        <h4 style="margin-bottom: 16px; font-size: 14px;">Account</h4>
+
+      <form id="editProfileForm" class="modal-form">
+        <div class="modal-field">
+          <label for="inputEditName">Full Display Name</label>
+          <input type="text" id="inputEditName" required placeholder="e.g. Kartik Verma">
+        </div>
+
+        <div class="modal-field">
+          <label for="inputEditEmail">Email Address</label>
+          <input type="email" id="inputEditEmail" required placeholder="e.g. kartik@example.com">
+        </div>
+
+        <div class="modal-field">
+          <label for="inputEditTagline">Trader Title / Bio</label>
+          <input type="text" id="inputEditTagline" placeholder="e.g. Head of Arbitrage Routing">
+        </div>
+
+        <div class="modal-actions-row">
+          <button type="button" class="btn-hero-secondary" id="btnCancelEdit" style="color: var(--text-primary);">Cancel</button>
+          <button type="submit" class="btn-primary" style="padding: 10px 24px;">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       8. Clear History Confirmation Modal
+       ============================================================ -->
+  <div class="profile-modal-overlay" id="clearHistoryModal" aria-hidden="true" role="dialog">
+    <div class="profile-modal-card">
+      <div class="modal-header-row">
+        <h3>Clear Conversion History?</h3>
+        <button type="button" class="btn-modal-close" id="btnCloseClearModal" aria-label="Close">✕</button>
       </div>
-      <div>
-        <h4 style="margin-bottom: 16px; font-size: 14px;">Trust & Safety</h4>
+
+      <p style="color: var(--text-secondary); font-size: 0.92rem; line-height: 1.5;">
+        Are you sure you want to delete all saved conversion lookups? This action cannot be undone.
+      </p>
+
+      <div class="modal-actions-row">
+        <button type="button" class="btn-hero-secondary" id="btnCancelClear" style="color: var(--text-primary);">Cancel</button>
+        <button type="button" class="btn-logout-action" id="btnConfirmClear">Yes, Clear History</button>
       </div>
     </div>
   </div>
-</footer>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const rawSession = localStorage.getItem('bypassfx_session') || sessionStorage.getItem('bypassfx_session');
-    
-    if (!rawSession) {
-      window.location.href = 'login.html';
-      return;
-    }
+  <!-- ============================================================
+       9. Footer
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-link">
+            <img src="assets/logo.svg" alt="BypassFX Logo">
+            <span class="brand-name">BypassFX</span>
+          </a>
+          <p class="footer-desc">
+            BypassFX is an intelligent currency arbitrage and multi-hop route calculator engineered to minimize conversion fees and eliminate hidden bank markups.
+          </p>
+        </div>
 
-    try {
-      const session = JSON.parse(rawSession);
-      
-      const name = session.name || 'Member';
-      const email = session.email || '—';
-      
-      // Get Initials (e.g. Kartik Verma -> KV)
-      const nameParts = name.split(' ');
-      const initial = nameParts.length > 1 
-        ? nameParts[0].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].charAt(0).toUpperCase()
-        : nameParts[0].charAt(0).toUpperCase();
-      
-      let joined = '—';
-      if (session.createdAt) {
-        const d = new Date(session.createdAt);
-        joined = d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-      }
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="index.html#converterSection">Route Calculator</a></li>
+            <li><a href="rates.html">Live Rates & Analytics</a></li>
+            <li><a href="profile.html">User Profile</a></li>
+            <li><a href="index.html#howItWorksSection">Pathfinding Graph</a></li>
+          </ul>
+        </div>
 
-      document.getElementById('userName').textContent = name;
-      document.getElementById('infoName').textContent = name;
-      document.getElementById('infoEmail').textContent = email;
-      document.getElementById('userAvatar').textContent = initial;
-      document.getElementById('userJoined').textContent = joined;
+        <div class="footer-col">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="login.html">Log In</a></li>
+            <li><a href="signup.html">Create Account</a></li>
+            <li><a href="profile.html">Account Settings</a></li>
+          </ul>
+        </div>
 
-      // Stats
-      const rawHistory = localStorage.getItem('bypassfx_history');
-      if (rawHistory) {
-        const historyList = JSON.parse(rawHistory);
-        const myHistory = historyList.filter(item => !item.userId || item.userId === session.id);
-        
-        document.getElementById('totalConversions').textContent = myHistory.length;
-        document.getElementById('routesExplored').textContent = myHistory.length;
-        
-        if (myHistory.length > 0) {
-          const maxSavings = Math.max(...myHistory.map(item => item.savings || 0));
-          document.getElementById('bestSavings').textContent = `₹${maxSavings.toFixed(2)}`;
-        }
-      }
+        <div class="footer-col">
+          <h4>Trust & Safety</h4>
+          <ul>
+            <li><a href="#">Mid-Market Guarantee</a></li>
+            <li><a href="#">Fee Structure</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
 
-    } catch (e) {
-      console.error('Session error', e);
-    }
+      <div class="footer-bottom">
+        <div>&copy; 2026 BypassFX Technologies. All rights reserved.</div>
+        <div>Encrypted Session • Mid-Market Rates powered by Frankfurter API.</div>
+      </div>
+    </div>
+  </footer>
 
-    // Logout
-    const logoutBtn = document.getElementById('btnLogoutProfile');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('bypassfx_session');
-        sessionStorage.removeItem('bypassfx_session');
-        window.location.href = 'index.html';
-      });
-    }
-  });
-</script>
+  <!-- Scripts -->
+  <script src="js/profile.js"></script>
 </body>
 </html>

@@ -7,6 +7,15 @@
   <meta name="description" content="Compare exchange rates, conversion fees, and multi-hop currency routes to discover the most efficient way to convert and move your money.">
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 
+  <!-- Immediate Theme Initialization (Prevents FOUC) -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('bypassfx_theme') || 
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,11 +43,28 @@
         <a href="#featuresSection" class="nav-link" id="navLinkFeatures">Features</a>
         <a href="#currenciesSection" class="nav-link" id="navLinkCurrencies">Currencies</a>
         <a href="#historySection" class="nav-link" id="navLinkHistory">History</a>
+        <a href="profile.html" class="nav-link" id="navLinkProfile">Profile</a>
       </nav>
 
-      <div class="nav-right" id="navRightContainer">
-        <a href="login.html" class="btn-nav-login" id="navBtnLogin">Log in</a>
-        <a href="signup.html" class="btn-nav-signup" id="navBtnSignup">Sign up</a>
+      <div class="nav-right" style="display: flex; align-items: center; gap: 12px;">
+        <button type="button" class="btn-theme-quick-toggle" id="btnNavThemeToggle" title="Toggle Light / Dark Mode" aria-label="Toggle Theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <div id="navRightContainer" style="display: flex; align-items: center; gap: 10px;">
+          <a href="login.html" class="btn-nav-login" id="navBtnLogin">Log in</a>
+          <a href="signup.html" class="btn-nav-signup" id="navBtnSignup">Sign up</a>
+        </div>
       </div>
 
       <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Navigation Menu">

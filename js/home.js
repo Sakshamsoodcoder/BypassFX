@@ -1037,11 +1037,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // If user is already logged in, run initial route calculation
+  // If user is already logged in, update nav and run initial route calculation
   const session = getAuthSession();
   if (session) {
+    const navRight = document.getElementById('navRightContainer');
+    const mobAuth = document.getElementById('mobileNavAuthContainer');
+    if (navRight) {
+      navRight.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <a href="profile.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--panel-dark); color: var(--accent-electric); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; border: 1.5px solid var(--accent);">
+              ${session.name ? session.name.charAt(0).toUpperCase() : 'U'}
+            </div>
+            <span style="font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">
+              ${escapeHtml(session.name.split(' ')[0])}
+            </span>
+          </a>
+          <a href="profile.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Profile</a>
+        </div>
+      `;
+    }
+    if (mobAuth) {
+      mobAuth.innerHTML = `
+        <div style="font-family: var(--font-display); font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+          Logged in as ${escapeHtml(session.name)}
+        </div>
+        <a href="profile.html" class="btn-primary" style="text-align: center;">View Profile</a>
+      `;
+    }
+
     setTimeout(() => {
       triggerConversionCalculation();
     }, 300);
+  }
+
+  // Navbar Theme Quick Toggle
+  const navThemeBtn = document.getElementById('btnNavThemeToggle');
+  if (navThemeBtn) {
+    navThemeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('bypassfx_theme', next);
+    });
   }
 });

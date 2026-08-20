@@ -75,6 +75,56 @@
   --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ============================================================
+   Dark Theme Overrides ([data-theme="dark"])
+   Tailored deep obsidian forest palette with high-contrast emerald glow
+   ============================================================ */
+[data-theme="dark"] {
+  --bg-canvas: #071811;
+  --bg-canvas-subtle: #0B2219;
+  --surface: #0E291F;
+  --surface-alt: #091F17;
+  --surface-raised: #12382A;
+  --surface-card: #0E291F;
+  --surface-card-hover: #143C2E;
+
+  --panel-dark: #04100B;
+  --panel-dark-2: #082117;
+  --panel-dark-deep: #020A07;
+  --panel-dark-light: #0D3325;
+
+  --accent: #22C55E;
+  --accent-hover: #16A34A;
+  --accent-vibrant: #4ADE80;
+  --accent-electric: #7EE8B8;
+  --accent-lime: #A7F3D0;
+  --accent-soft: rgba(34, 197, 94, 0.14);
+  --accent-soft-hover: rgba(34, 197, 94, 0.22);
+
+  --text-primary: #F0FDF4;
+  --text-secondary: #A7D6C0;
+  --text-muted: #6E9C85;
+  --text-inverse: #071811;
+  --text-inverse-muted: #55705F;
+  --text-inverse-subtle: #829E8E;
+
+  --border: rgba(52, 211, 153, 0.16);
+  --border-strong: rgba(52, 211, 153, 0.28);
+  --border-accent: rgba(126, 232, 184, 0.45);
+  --border-dark: rgba(255, 255, 255, 0.15);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.75), 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-panel: 0 30px 60px -25px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 40px -8px rgba(34, 197, 94, 0.35);
+}
+
+/* Smooth Theme Transitions */
+body, .navbar-wrapper, .pillar-card, .converter-card, .feature-card-item, .step-card, .history-card-wrap, .stat-card, .info-card {
+  transition: background-color var(--transition-normal), color var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
 /* Reset & Base Setup */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -371,6 +421,28 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.btn-theme-quick-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-theme-quick-toggle:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(15deg) scale(1.05);
 }
 
 .btn-nav-login {

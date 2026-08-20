@@ -831,7 +831,15 @@
       $('mobileNavDrawer')?.classList.toggle('open');
     });
 
-    // 9. Auth Session Status in Nav
+    // 9. Theme Toggle
+    $('btnNavThemeToggle')?.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('bypassfx_theme', next);
+    });
+
+    // 10. Auth Session Status in Nav
     const session = localStorage.getItem('bypassfx_session') || sessionStorage.getItem('bypassfx_session');
     if (session) {
       try {
@@ -841,19 +849,21 @@
         if (navAuth) {
           navAuth.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; color: var(--panel-dark);">
-                👋 ${user.name.split(' ')[0]}
-              </span>
-              <a href="index.html" class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;">Dashboard</a>
+              <a href="profile.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <span style="font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">
+                  👋 ${user.name.split(' ')[0]}
+                </span>
+              </a>
+              <a href="profile.html" class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;">Profile</a>
             </div>
           `;
         }
         if (mobAuth) {
           mobAuth.innerHTML = `
-            <div style="font-family: var(--font-display); font-weight: 700; color: var(--panel-dark); margin-bottom: 8px;">
+            <div style="font-family: var(--font-display); font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
               Logged in as ${user.name}
             </div>
-            <a href="index.html" class="btn-primary" style="text-align: center;">Go to Dashboard</a>
+            <a href="profile.html" class="btn-primary" style="text-align: center;">View Profile</a>
           `;
         }
       } catch (e) {}
