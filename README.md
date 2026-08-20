@@ -166,7 +166,7 @@ Five HTML pages handle all user interactions:
 | `login.html` | Two-panel login with brand storytelling + auth form |
 | `signup.html` | Registration with client-side validation & terms modal |
 | `forgot-password.html` | Multi-step password reset (email verify → new password) |
-| `dashboard.html` | Authenticated converter with route visualization & history |
+| `rates.html` | Live rate charts and historical timeseries |
 
 ### Layer 2 — JavaScript Engine
 Eight modular JS files power all logic:

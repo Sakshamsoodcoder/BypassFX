@@ -621,7 +621,7 @@ function updateNavbarAuth() {
     const firstName = session.name ? session.name.split(' ')[0] : 'Member';
     navRight.innerHTML = `
       <div class="user-nav-profile">
-        <a href="dashboard.html" class="user-badge-pill" title="View Account Dashboard">
+        <a href="#historySection" class="user-badge-pill" title="View Account History">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
@@ -641,7 +641,7 @@ function updateNavbarAuth() {
   if (session && mobileAuth) {
     const firstName = session.name ? session.name.split(' ')[0] : 'Member';
     mobileAuth.innerHTML = `
-      <a href="dashboard.html" class="btn-primary" style="text-align:center;">👤 ${escapeHtml(firstName)} (Dashboard)</a>
+      <a href="#historySection" class="btn-primary" style="text-align:center;">👤 ${escapeHtml(firstName)} (History)</a>
       <button type="button" class="btn-secondary" id="btnLogoutMobile" style="text-align:center;">Log out</button>
     `;
     const logoutMobile = document.getElementById('btnLogoutMobile');

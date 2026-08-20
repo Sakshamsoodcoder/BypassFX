@@ -188,7 +188,7 @@
         showBanner(banner, "Account created! Taking you in…", "success");
         saveSession(created, true);
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+          window.location.href = "index.html";
         }, 500);
       } catch (err) {
         showBanner(banner, friendlyNetworkError(err), "error");
