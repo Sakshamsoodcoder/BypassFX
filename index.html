@@ -788,26 +788,78 @@
 
           <!-- Visual Container -->
           <div class="story-visual-container">
-            <img src="assets/images/travel.png" alt="Travel savings" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="story-visual-fallback" style="display: none;">
-              <div class="fallback-badge-row">
-                <span class="fallback-pill">GLOBAL CORRIDORS</span>
-              </div>
-              <div class="fallback-graphic-card">
-                <div class="row">
-                  <span>Direct Bank Wire Spread</span>
-                  <span style="color: #F87171;">-3.8% Loss</span>
+            <div class="story-visual-fallback">
+              <!-- Top Header -->
+              <div class="fallback-header-wrap">
+                <div class="fallback-badge-row">
+                  <span class="fallback-pill">GLOBAL CORRIDORS</span>
+                  <span class="fallback-live-indicator"><span class="pulse-dot"></span> LIVE SCAN</span>
                 </div>
-                <div class="row">
-                  <span>BypassFX Multi-Hop Route</span>
-                  <span>+2.4% Net Gain</span>
-                </div>
+                <div class="fallback-route-code">USD ➔ EUR ➔ INR</div>
               </div>
-              
-              <div style="font-size: 0.82rem; color: var(--text-inverse-muted);">Optimized across USD, EUR, GBP, JPY & INR</div>
-            </div>
 
-            
+              <!-- Main Comparison & Yield Card -->
+              <div class="fallback-graphic-card">
+                <div class="fallback-card-title">
+                  <span>Corridor Cost & Arbitrage Analysis</span>
+                  <span class="badge-saving-tag">BEST ROUTE</span>
+                </div>
+
+                <div class="fallback-metric-row danger">
+                  <div class="metric-left">
+                    <span class="metric-label">Direct Bank Wire Spread</span>
+                    <span class="metric-sub">Standard SWIFT FX corridor markup</span>
+                  </div>
+                  <div class="metric-right">
+                    <span class="metric-value red">-3.8% Loss</span>
+                  </div>
+                </div>
+
+                <div class="fallback-metric-divider"></div>
+
+                <div class="fallback-metric-row success">
+                  <div class="metric-left">
+                    <span class="metric-label">BypassFX Multi-Hop Route</span>
+                    <span class="metric-sub">USD ➔ EUR ➔ INR via Dijkstra routing</span>
+                  </div>
+                  <div class="metric-right">
+                    <span class="metric-value green">+2.4% Net Gain</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step-by-Step Route Simulation Strip -->
+              <div class="fallback-hops-strip">
+                <div class="hop-chip">
+                  <span class="hop-chip-num">01</span>
+                  <span class="hop-chip-cur">$1,000 USD</span>
+                </div>
+                <div class="hop-arrow">➔</div>
+                <div class="hop-chip highlight">
+                  <span class="hop-chip-num">02</span>
+                  <span class="hop-chip-cur">€925.10 EUR</span>
+                </div>
+                <div class="hop-arrow">➔</div>
+                <div class="hop-chip success">
+                  <span class="hop-chip-num">03</span>
+                  <span class="hop-chip-cur">₹86,850 INR</span>
+                </div>
+              </div>
+
+              <!-- Footer Details -->
+              <div class="fallback-footer-row">
+                <div class="fallback-footer-item">
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>Real-Time Graph Optimization</span>
+                </div>
+                <div class="fallback-footer-stats">
+                  <span>Latency: <strong>&lt; 45ms</strong></span>
+                  <span>Hubs: <strong>USD, EUR, GBP, JPY, INR</strong></span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -854,20 +906,71 @@
 
           <!-- Visual Container -->
           <div class="story-visual-container">
-            <img src="assets/images/transfer.png" alt="Make transfer count" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="story-visual-fallback" style="display: none;">
-              <div class="fallback-badge-row">
-                <span class="fallback-pill">VERIFIED SAVINGS</span>
+            <div class="story-visual-fallback">
+              <!-- Top Header -->
+              <div class="fallback-header-wrap">
+                <div class="fallback-badge-row">
+                  <span class="fallback-pill">VERIFIED SAVINGS</span>
+                  <span class="fallback-live-indicator"><span class="pulse-dot"></span> BENCHMARK AUDITED</span>
+                </div>
+                <div class="fallback-route-code">₹80,000 INR ➔ EUR</div>
               </div>
+
+              <!-- Main Amount & Net Savings Spotlight Card -->
               <div class="fallback-graphic-card">
-                <div style="font-size: 1.1rem; font-family: var(--font-mono); font-weight: 700; margin-bottom: 8px;">
-                  ₹80,000 → €878.15
+                <div class="fallback-spotlight-top">
+                  <div class="spotlight-from-to">
+                    <span class="spotlight-amount-in">Send ₹80,000 INR</span>
+                    <span class="spotlight-arrow">➔</span>
+                    <span class="spotlight-amount-out">Receive €878.15 EUR</span>
+                  </div>
+                  <div class="spotlight-pill-gain">+€30.85 Extra in Pocket</div>
                 </div>
-                <div style="font-size: 0.85rem; color: var(--accent-electric);">
-                  Delivered with 0.5% fee vs 3.5% bank spread
+
+                <div class="fallback-breakdown-table">
+                  <div class="breakdown-row">
+                    <span class="breakdown-label">BypassFX Optimized Yield</span>
+                    <span class="breakdown-val green">€878.15</span>
+                  </div>
+                  <div class="breakdown-row">
+                    <span class="breakdown-label">Standard Bank Yield</span>
+                    <span class="breakdown-val muted">€847.30</span>
+                  </div>
+                  <div class="breakdown-row highlight">
+                    <span class="breakdown-label">Total Fee Incurred</span>
+                    <span class="breakdown-val">0.5% (vs 3.5% Bank Spread)</span>
+                  </div>
                 </div>
               </div>
-              <div style="font-size: 0.82rem; color: var(--text-inverse-muted);">Instant graph execution</div>
+
+              <!-- Savings Metrics Bar -->
+              <div class="fallback-metrics-grid">
+                <div class="metric-stat-box">
+                  <span class="stat-num">3.6%</span>
+                  <span class="stat-lbl">Higher Yield</span>
+                </div>
+                <div class="metric-stat-box">
+                  <span class="stat-num">€0.00</span>
+                  <span class="stat-lbl">Hidden Fees</span>
+                </div>
+                <div class="metric-stat-box">
+                  <span class="stat-num">&lt; 1 min</span>
+                  <span class="stat-lbl">Route Discovery</span>
+                </div>
+              </div>
+
+              <!-- Footer Details -->
+              <div class="fallback-footer-row">
+                <div class="fallback-footer-item">
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>Instant Multi-Hop Graph Settlement</span>
+                </div>
+                <div class="fallback-footer-stats">
+                  <span>Verified: <strong>100% Mid-Market</strong></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
