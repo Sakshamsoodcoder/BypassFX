@@ -705,7 +705,34 @@
   }
 
   // ============================================================
-  // 11. Page Bootstrap
+  // 11. Back to Top Controller
+  // ============================================================
+  function initBackToTop() {
+    const btn = document.getElementById('btnBackToTop');
+    if (!btn) return;
+
+    const toggleVisibility = () => {
+      if (window.scrollY > 350) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
+    toggleVisibility();
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  // ============================================================
+  // 12. Page Bootstrap
   // ============================================================
   document.addEventListener('DOMContentLoaded', () => {
     updateNavbarAuth();
@@ -715,6 +742,7 @@
     initTicker();
     initNavigation();
     initFlipCard();
+    initBackToTop();
   });
 })();
 

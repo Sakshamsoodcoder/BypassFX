@@ -84,51 +84,90 @@
         <!-- Quick Pair Selector Controls -->
         <div class="rates-control-panel">
           <div class="currency-selectors-wrap">
+            <!-- Base Currency Custom Dropdown -->
             <div class="select-group">
-              <label for="baseCurrencySelect">Base Currency</label>
-              <div class="custom-select-box">
-                <span class="select-flag" id="baseFlag">🇺🇸</span>
-                <select id="baseCurrencySelect" aria-label="Select Base Currency">
-                  <option value="USD" selected>USD — US Dollar</option>
-                  <option value="EUR">EUR — Euro</option>
-                  <option value="GBP">GBP — British Pound</option>
-                  <option value="INR">INR — Indian Rupee</option>
-                  <option value="JPY">JPY — Japanese Yen</option>
-                  <option value="CAD">CAD — Canadian Dollar</option>
-                  <option value="AUD">AUD — Australian Dollar</option>
-                  <option value="CHF">CHF — Swiss Franc</option>
-                  <option value="SGD">SGD — Singapore Dollar</option>
-                  <option value="AED">AED — UAE Dirham</option>
-                  <option value="CNY">CNY — Chinese Yuan</option>
-                  <option value="NZD">NZD — New Zealand Dollar</option>
-                </select>
+              <label for="baseCurrencyTrigger">Base Currency</label>
+              <div class="custom-currency-dropdown" id="baseDropdownContainer">
+                <button type="button" class="currency-dropdown-trigger" id="baseCurrencyTrigger" aria-haspopup="listbox" aria-expanded="false">
+                  <div class="trigger-left">
+                    <span class="trigger-flag" id="baseFlag"><img src="https://flagcdn.com/w40/us.png" srcset="https://flagcdn.com/w80/us.png 2x" width="22" height="16" alt="USD flag" class="currency-flag-img"></span>
+                    <span class="trigger-code" id="baseCode">USD</span>
+                    <span class="trigger-name" id="baseName">— US Dollar</span>
+                  </div>
+                  <svg class="trigger-arrow" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                  </svg>
+                </button>
+                <input type="hidden" id="baseCurrencySelect" name="baseCurrencySelect" value="USD">
+
+                <!-- Floating Dropdown Popover -->
+                <div class="currency-dropdown-menu" id="baseDropdownMenu" role="listbox">
+                  <div class="dropdown-search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" class="dropdown-search-input" id="baseSearchInput" placeholder="Search currency or country..." aria-label="Search base currency">
+                  </div>
+                  <div class="dropdown-quick-hubs">
+                    <span class="hubs-label">Popular:</span>
+                    <button type="button" class="hub-pill active" data-target="base" data-code="USD">USD</button>
+                    <button type="button" class="hub-pill" data-target="base" data-code="EUR">EUR</button>
+                    <button type="button" class="hub-pill" data-target="base" data-code="GBP">GBP</button>
+                    <button type="button" class="hub-pill" data-target="base" data-code="INR">INR</button>
+                    <button type="button" class="hub-pill" data-target="base" data-code="JPY">JPY</button>
+                  </div>
+                  <div class="dropdown-currency-list" id="baseCurrencyList">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
               </div>
             </div>
 
+            <!-- Swap Button -->
             <button type="button" class="btn-swap-pairs" id="btnSwapPairs" title="Swap Currencies" aria-label="Swap Currencies">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
               </svg>
             </button>
 
+            <!-- Target Currency Custom Dropdown -->
             <div class="select-group">
-              <label for="targetCurrencySelect">Target Currency</label>
-              <div class="custom-select-box">
-                <span class="select-flag" id="targetFlag">🇮🇳</span>
-                <select id="targetCurrencySelect" aria-label="Select Target Currency">
-                  <option value="INR" selected>INR — Indian Rupee</option>
-                  <option value="USD">USD — US Dollar</option>
-                  <option value="EUR">EUR — Euro</option>
-                  <option value="GBP">GBP — British Pound</option>
-                  <option value="JPY">JPY — Japanese Yen</option>
-                  <option value="CAD">CAD — Canadian Dollar</option>
-                  <option value="AUD">AUD — Australian Dollar</option>
-                  <option value="CHF">CHF — Swiss Franc</option>
-                  <option value="SGD">SGD — Singapore Dollar</option>
-                  <option value="AED">AED — UAE Dirham</option>
-                  <option value="CNY">CNY — Chinese Yuan</option>
-                  <option value="NZD">NZD — New Zealand Dollar</option>
-                </select>
+              <label for="targetCurrencyTrigger">Target Currency</label>
+              <div class="custom-currency-dropdown" id="targetDropdownContainer">
+                <button type="button" class="currency-dropdown-trigger" id="targetCurrencyTrigger" aria-haspopup="listbox" aria-expanded="false">
+                  <div class="trigger-left">
+                    <span class="trigger-flag" id="targetFlag"><img src="https://flagcdn.com/w40/in.png" srcset="https://flagcdn.com/w80/in.png 2x" width="22" height="16" alt="INR flag" class="currency-flag-img"></span>
+                    <span class="trigger-code" id="targetCode">INR</span>
+                    <span class="trigger-name" id="targetName">— Indian Rupee</span>
+                  </div>
+                  <svg class="trigger-arrow" width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                  </svg>
+                </button>
+                <input type="hidden" id="targetCurrencySelect" name="targetCurrencySelect" value="INR">
+
+                <!-- Floating Dropdown Popover -->
+                <div class="currency-dropdown-menu" id="targetDropdownMenu" role="listbox">
+                  <div class="dropdown-search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" class="dropdown-search-input" id="targetSearchInput" placeholder="Search currency or country..." aria-label="Search target currency">
+                  </div>
+                  <div class="dropdown-quick-hubs">
+                    <span class="hubs-label">Popular:</span>
+                    <button type="button" class="hub-pill active" data-target="target" data-code="INR">INR</button>
+                    <button type="button" class="hub-pill" data-target="target" data-code="USD">USD</button>
+                    <button type="button" class="hub-pill" data-target="target" data-code="EUR">EUR</button>
+                    <button type="button" class="hub-pill" data-target="target" data-code="GBP">GBP</button>
+                    <button type="button" class="hub-pill" data-target="target" data-code="JPY">JPY</button>
+                  </div>
+                  <div class="dropdown-currency-list" id="targetCurrencyList">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -468,6 +507,13 @@
       </div>
     </div>
   </footer>
+
+  <!-- Floating Back to Top Button -->
+  <button class="back-to-top-btn" id="btnBackToTop" aria-label="Back to top" type="button">
+    <svg class="svgIcon" viewBox="0 0 384 512" aria-hidden="true">
+      <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
+    </svg>
+  </button>
 
   <!-- Scripts -->
   <script src="js/charts.js"></script>

@@ -145,8 +145,9 @@
         View Currencies
       </a>
     </div>
-    <button type="button" class="btn-logout-red" id="btnLogoutProfile">
-      ↪ Log Out
+    <button class="Btn" id="btnLogoutProfile" type="button" aria-label="Log Out">
+      <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
+      <div class="text">Logout</div>
     </button>
   </section>
 
@@ -286,7 +287,31 @@
         link.addEventListener('click', () => mobileNav.classList.remove('open'));
       });
     }
+
+    // Back to Top Button
+    const topBtn = document.getElementById('btnBackToTop');
+    if (topBtn) {
+      const toggleTopBtn = () => {
+        if (window.scrollY > 350) {
+          topBtn.classList.add('visible');
+        } else {
+          topBtn.classList.remove('visible');
+        }
+      };
+      window.addEventListener('scroll', toggleTopBtn, { passive: true });
+      toggleTopBtn();
+      topBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   });
 </script>
+
+  <!-- Floating Back to Top Button -->
+  <button class="back-to-top-btn" id="btnBackToTop" aria-label="Back to top" type="button">
+    <svg class="svgIcon" viewBox="0 0 384 512" aria-hidden="true">
+      <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
+    </svg>
+  </button>
 </body>
 </html>

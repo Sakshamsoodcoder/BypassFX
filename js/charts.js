@@ -16,30 +16,72 @@
   const LIVE_TICK_INTERVAL_MS = 2500; // 2.5s live micro-ticks
   const LIVE_POLL_INTERVAL_MS = 20000; // 20s background API sync
 
-  const ISO_MAP = {
-    USD: 'us', EUR: 'eu', GBP: 'gb', INR: 'in',
-    JPY: 'jp', CAD: 'ca', AUD: 'au', CHF: 'ch',
-    SGD: 'sg', AED: 'ae', CNY: 'cn', NZD: 'nz'
-  };
+  const CURRENCIES = [
+    { code: 'USD', name: 'US Dollar', iso: 'us', flag: '🇺🇸', symbol: '$', country: 'United States' },
+    { code: 'EUR', name: 'Euro', iso: 'eu', flag: '🇪🇺', symbol: '€', country: 'European Union' },
+    { code: 'GBP', name: 'British Pound', iso: 'gb', flag: '🇬🇧', symbol: '£', country: 'United Kingdom' },
+    { code: 'INR', name: 'Indian Rupee', iso: 'in', flag: '🇮🇳', symbol: '₹', country: 'India' },
+    { code: 'JPY', name: 'Japanese Yen', iso: 'jp', flag: '🇯🇵', symbol: '¥', country: 'Japan' },
+    { code: 'CAD', name: 'Canadian Dollar', iso: 'ca', flag: '🇨🇦', symbol: 'C$', country: 'Canada' },
+    { code: 'AUD', name: 'Australian Dollar', iso: 'au', flag: '🇦🇺', symbol: 'A$', country: 'Australia' },
+    { code: 'CHF', name: 'Swiss Franc', iso: 'ch', flag: '🇨🇭', symbol: 'CHF', country: 'Switzerland' },
+    { code: 'SGD', name: 'Singapore Dollar', iso: 'sg', flag: '🇸🇬', symbol: 'S$', country: 'Singapore' },
+    { code: 'AED', name: 'UAE Dirham', iso: 'ae', flag: '🇦🇪', symbol: 'AED', country: 'United Arab Emirates' },
+    { code: 'CNY', name: 'Chinese Yuan', iso: 'cn', flag: '🇨🇳', symbol: '¥', country: 'China' },
+    { code: 'NZD', name: 'New Zealand Dollar', iso: 'nz', flag: '🇳🇿', symbol: 'NZ$', country: 'New Zealand' },
+    { code: 'HKD', name: 'Hong Kong Dollar', iso: 'hk', flag: '🇭🇰', symbol: 'HK$', country: 'Hong Kong' },
+    { code: 'KRW', name: 'South Korean Won', iso: 'kr', flag: '🇰🇷', symbol: '₩', country: 'South Korea' },
+    { code: 'SAR', name: 'Saudi Riyal', iso: 'sa', flag: '🇸🇦', symbol: 'SAR', country: 'Saudi Arabia' },
+    { code: 'QAR', name: 'Qatari Riyal', iso: 'qa', flag: '🇶🇦', symbol: 'QAR', country: 'Qatar' },
+    { code: 'THB', name: 'Thai Baht', iso: 'th', flag: '🇹🇭', symbol: '฿', country: 'Thailand' },
+    { code: 'MYR', name: 'Malaysian Ringgit', iso: 'my', flag: '🇲🇾', symbol: 'RM', country: 'Malaysia' },
+    { code: 'IDR', name: 'Indonesian Rupiah', iso: 'id', flag: '🇮🇩', symbol: 'Rp', country: 'Indonesia' },
+    { code: 'PHP', name: 'Philippine Peso', iso: 'ph', flag: '🇵🇭', symbol: '₱', country: 'Philippines' },
+    { code: 'ZAR', name: 'South African Rand', iso: 'za', flag: '🇿🇦', symbol: 'R', country: 'South Africa' },
+    { code: 'RUB', name: 'Russian Ruble', iso: 'ru', flag: '🇷🇺', symbol: '₽', country: 'Russia' },
+    { code: 'BRL', name: 'Brazilian Real', iso: 'br', flag: '🇧🇷', symbol: 'R$', country: 'Brazil' },
+    { code: 'MXN', name: 'Mexican Peso', iso: 'mx', flag: '🇲🇽', symbol: 'Mex$', country: 'Mexico' },
+    { code: 'SEK', name: 'Swedish Krona', iso: 'se', flag: '🇸🇪', symbol: 'kr', country: 'Sweden' },
+    { code: 'NOK', name: 'Norwegian Krone', iso: 'no', flag: '🇳🇴', symbol: 'kr', country: 'Norway' },
+    { code: 'DKK', name: 'Danish Krone', iso: 'dk', flag: '🇩🇰', symbol: 'kr', country: 'Denmark' },
+    { code: 'PLN', name: 'Polish Zloty', iso: 'pl', flag: '🇵🇱', symbol: 'zł', country: 'Poland' },
+    { code: 'TRY', name: 'Turkish Lira', iso: 'tr', flag: '🇹🇷', symbol: '₺', country: 'Turkey' },
+    { code: 'CZK', name: 'Czech Koruna', iso: 'cz', flag: '🇨🇿', symbol: 'Kč', country: 'Czech Republic' },
+    { code: 'HUF', name: 'Hungarian Forint', iso: 'hu', flag: '🇭🇺', symbol: 'Ft', country: 'Hungary' },
+    { code: 'ILS', name: 'Israeli New Shekel', iso: 'il', flag: '🇮🇱', symbol: '₪', country: 'Israel' },
+    { code: 'BGN', name: 'Bulgarian Lev', iso: 'bg', flag: '🇧🇬', symbol: 'лв', country: 'Bulgaria' },
+    { code: 'RON', name: 'Romanian Leu', iso: 'ro', flag: '🇷🇴', symbol: 'lei', country: 'Romania' },
+    { code: 'CLP', name: 'Chilean Peso', iso: 'cl', flag: '🇨🇱', symbol: 'CLP$', country: 'Chile' },
+    { code: 'COP', name: 'Colombian Peso', iso: 'co', flag: '🇨🇴', symbol: 'COL$', country: 'Colombia' }
+  ];
 
-  const FLAG_MAP = {
-    USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', INR: '🇮🇳',
-    JPY: '🇯🇵', CAD: '🇨🇦', AUD: '🇦🇺', CHF: '🇨🇭',
-    SGD: '🇸🇬', AED: '🇦🇪', CNY: '🇨🇳', NZD: '🇳🇿'
-  };
-
-  function getFlagHtml(code) {
-    const iso = (ISO_MAP[code] || code.slice(0, 2)).toLowerCase();
-    const emoji = FLAG_MAP[code] || '🌐';
-    return `<img src="https://flagcdn.com/w40/${iso}.png" srcset="https://flagcdn.com/w80/${iso}.png 2x" width="20" height="14" alt="${code} flag" class="currency-flag-img" loading="lazy" style="width:20px; height:14px; object-fit:cover; border-radius:2.5px; display:inline-block; vertical-align:middle;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="flag-fallback" style="display:none;">${emoji}</span>`;
+  function getCurrencyMeta(code) {
+    return CURRENCIES.find(c => c.code === code) || {
+      code: code,
+      name: code,
+      iso: code.slice(0, 2).toLowerCase(),
+      flag: '🌐',
+      symbol: code,
+      country: ''
+    };
   }
 
-  const CURRENCY_NAMES = {
-    USD: 'US Dollar', EUR: 'Euro', GBP: 'British Pound', INR: 'Indian Rupee',
-    JPY: 'Japanese Yen', CAD: 'Canadian Dollar', AUD: 'Australian Dollar',
-    CHF: 'Swiss Franc', SGD: 'Singapore Dollar', AED: 'UAE Dirham',
-    CNY: 'Chinese Yuan', NZD: 'New Zealand Dollar'
-  };
+  function getFlagHtml(code) {
+    const meta = getCurrencyMeta(code);
+    const iso = (meta.iso || code.slice(0, 2)).toLowerCase();
+    const emoji = meta.flag || '🌐';
+    return `<img src="https://flagcdn.com/w40/${iso}.png" srcset="https://flagcdn.com/w80/${iso}.png 2x" width="22" height="16" alt="${code} flag" class="currency-flag-img" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="flag-fallback" style="display:none;">${emoji}</span>`;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
   const ZERO_DECIMALS = new Set(['JPY']);
 
@@ -106,7 +148,211 @@
   };
 
   // ============================================================
-  // 3. Helper Functions
+  // 3. Custom Currency Dropdown Component (Converter-Style)
+  // ============================================================
+  class CustomCurrencyDropdown {
+    constructor(containerId, triggerId, menuId, searchInputId, listId, hiddenInputId, flagId, codeId, nameId, defaultCode, onSelect) {
+      this.container = document.getElementById(containerId);
+      this.trigger = document.getElementById(triggerId);
+      this.menu = document.getElementById(menuId);
+      this.searchInput = document.getElementById(searchInputId);
+      this.list = document.getElementById(listId);
+      this.hiddenInput = document.getElementById(hiddenInputId);
+      this.flagEl = document.getElementById(flagId);
+      this.codeEl = document.getElementById(codeId);
+      this.nameEl = document.getElementById(nameId);
+      this.onSelect = onSelect;
+
+      this.selectedCode = defaultCode || 'USD';
+      this.searchTerm = '';
+      this.isOpen = false;
+
+      if (this.container && this.trigger && this.menu) {
+        this.init();
+      }
+    }
+
+    init() {
+      this.setValue(this.selectedCode, false);
+
+      this.trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggle();
+      });
+
+      if (this.searchInput) {
+        this.searchInput.addEventListener('click', (e) => e.stopPropagation());
+        this.searchInput.addEventListener('input', (e) => {
+          this.searchTerm = e.target.value.toLowerCase().trim();
+          this.renderList();
+        });
+      }
+
+      this.menu.querySelectorAll('.hub-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const code = pill.dataset.code || pill.textContent.trim();
+          if (code) {
+            this.setValue(code, true);
+            this.close();
+          }
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (this.isOpen && !this.container.contains(e.target)) {
+          this.close();
+        }
+      });
+
+      this.trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          this.open();
+        }
+      });
+    }
+
+    renderList() {
+      const term = this.searchTerm;
+      const filtered = CURRENCIES.filter(c => {
+        if (!term) return true;
+        return c.code.toLowerCase().includes(term) ||
+               c.name.toLowerCase().includes(term) ||
+               (c.country && c.country.toLowerCase().includes(term));
+      });
+
+      if (filtered.length === 0) {
+        this.list.innerHTML = `
+          <div class="dropdown-no-results">
+            <span>No matching currency found</span>
+          </div>
+        `;
+        return;
+      }
+
+      this.list.innerHTML = filtered.map(c => {
+        const isSelected = c.code === this.selectedCode;
+        return `
+          <div class="dropdown-currency-item ${isSelected ? 'selected' : ''}" data-code="${c.code}" role="option" aria-selected="${isSelected}">
+            <div class="item-left">
+              <span class="item-flag">${getFlagHtml(c.code)}</span>
+              <div class="item-text-wrap">
+                <span class="item-code">${c.code}</span>
+                <span class="item-name"> — ${escapeHtml(c.name)}</span>
+              </div>
+            </div>
+            <div class="item-right">
+              <span class="item-symbol">${c.symbol}</span>
+              <span class="item-check">✓</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      this.list.querySelectorAll('.dropdown-currency-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const code = item.dataset.code;
+          if (code) {
+            this.setValue(code, true);
+            this.close();
+          }
+        });
+      });
+    }
+
+    setValue(code, triggerCallback = true) {
+      const meta = getCurrencyMeta(code);
+      this.selectedCode = meta.code;
+
+      if (this.hiddenInput) this.hiddenInput.value = meta.code;
+      if (this.flagEl) this.flagEl.innerHTML = getFlagHtml(meta.code);
+      if (this.codeEl) this.codeEl.textContent = meta.code;
+      if (this.nameEl) this.nameEl.textContent = `— ${meta.name}`;
+
+      if (this.menu) {
+        this.menu.querySelectorAll('.hub-pill').forEach(pill => {
+          const pillCode = pill.dataset.code || pill.textContent.trim();
+          pill.classList.toggle('active', pillCode === meta.code);
+        });
+      }
+
+      if (triggerCallback && typeof this.onSelect === 'function') {
+        this.onSelect(meta.code);
+      }
+    }
+
+    open() {
+      document.querySelectorAll('.custom-currency-dropdown.active').forEach(d => {
+        if (d !== this.container) d.classList.remove('active');
+      });
+      this.isOpen = true;
+      this.container.classList.add('active');
+      this.trigger.setAttribute('aria-expanded', 'true');
+      this.searchTerm = '';
+      if (this.searchInput) {
+        this.searchInput.value = '';
+        setTimeout(() => this.searchInput.focus(), 50);
+      }
+      this.renderList();
+    }
+
+    close() {
+      this.isOpen = false;
+      this.container.classList.remove('active');
+      this.trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle() {
+      if (this.isOpen) {
+        this.close();
+      } else {
+        this.open();
+      }
+    }
+  }
+
+  let baseDropdown = null;
+  let targetDropdown = null;
+
+  function initDropdowns() {
+    baseDropdown = new CustomCurrencyDropdown(
+      'baseDropdownContainer',
+      'baseCurrencyTrigger',
+      'baseDropdownMenu',
+      'baseSearchInput',
+      'baseCurrencyList',
+      'baseCurrencySelect',
+      'baseFlag',
+      'baseCode',
+      'baseName',
+      state.base,
+      (newBase) => {
+        applyPairAndTimeframe(newBase, state.target);
+      }
+    );
+
+    targetDropdown = new CustomCurrencyDropdown(
+      'targetDropdownContainer',
+      'targetCurrencyTrigger',
+      'targetDropdownMenu',
+      'targetSearchInput',
+      'targetCurrencyList',
+      'targetCurrencySelect',
+      'targetFlag',
+      'targetCode',
+      'targetName',
+      state.target,
+      (newTarget) => {
+        applyPairAndTimeframe(state.base, newTarget);
+      }
+    );
+  }
+
+  // ============================================================
+  // 4. Helper Functions
   // ============================================================
   function $(id) {
     return document.getElementById(id);
@@ -559,11 +805,13 @@
     if ($('benchWiseVal')) $('benchWiseVal').textContent = formatRate(rate * 0.9955, cur);
     if ($('benchBankVal')) $('benchBankVal').textContent = formatRate(rate * 0.9700, cur);
 
-    // 3. Flags & Selectors
+    // 3. Flags & Custom Dropdowns
     if ($('baseFlag')) $('baseFlag').innerHTML = getFlagHtml(state.base);
     if ($('targetFlag')) $('targetFlag').innerHTML = getFlagHtml(state.target);
     if ($('baseCurrencySelect')) $('baseCurrencySelect').value = state.base;
     if ($('targetCurrencySelect')) $('targetCurrencySelect').value = state.target;
+    if (baseDropdown) baseDropdown.setValue(state.base, false);
+    if (targetDropdown) targetDropdown.setValue(state.target, false);
 
     // 4. Footer info
     if ($('statDataPoints')) $('statDataPoints').textContent = state.chartData.labels.length;
@@ -920,12 +1168,41 @@
   }
 
   // ============================================================
-  // 12. Main Bootstrap
+  // 12. Back to Top Button
+  // ============================================================
+  function initBackToTop() {
+    const btn = document.getElementById('btnBackToTop');
+    if (!btn) return;
+
+    const toggleVisibility = () => {
+      if (window.scrollY > 350) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
+    toggleVisibility();
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  // ============================================================
+  // 13. Main Bootstrap
   // ============================================================
   async function init() {
+    initDropdowns();
     setupEventListeners();
     initChart();
     renderCorridorTable('all');
+    initBackToTop();
 
     // Load initial 1H data with live API connection
     await applyPairAndTimeframe('USD', 'INR', '1H');
