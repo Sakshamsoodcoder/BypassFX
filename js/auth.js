@@ -2,9 +2,8 @@
   "use strict";
 
   // ----------------------------------------------------------------
-  // Config — point this at wherever `json-server --watch db.json` runs
+  // Auth Config
   // ----------------------------------------------------------------
-  const API_BASE = "http://localhost:3000";
   const SESSION_KEY = "bypassfx_session";
 
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -112,6 +111,19 @@
   });
 
   // ----------------------------------------------------------------
+  // LocalStorage Database Mock (For Vercel Deployment)
+  // ----------------------------------------------------------------
+  const DB_KEY = "bypassfx_users_db";
+
+  function getUsers() {
+    return JSON.parse(localStorage.getItem(DB_KEY) || "[]");
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem(DB_KEY, JSON.stringify(users));
+  }
+
+  // ----------------------------------------------------------------
   // Signup page
   // ----------------------------------------------------------------
   const signupForm = $("signupForm");
@@ -156,9 +168,8 @@
       setBusy(submitBtn, "Creating account…");
 
       try {
-        const existing = await fetch(
-          `${API_BASE}/users?email=${encodeURIComponent(email)}`,
-        ).then((r) => r.json());
+        const users = getUsers();
+        const existing = users.filter((u) => u.email === email);
 
         if (existing.length > 0) {
           showBanner(
@@ -170,28 +181,23 @@
           return;
         }
 
-        const created = await fetch(`${API_BASE}/users`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            password, // demo only — see README for why this isn't production-safe
-            createdAt: new Date().toISOString(),
-          }),
-        }).then((r) => {
-          if (!r.ok)
-            throw new Error("Signup request failed with status " + r.status);
-          return r.json();
-        });
+        const newUser = {
+          id: Date.now().toString(),
+          name,
+          email,
+          password,
+          createdAt: new Date().toISOString(),
+        };
+        users.push(newUser);
+        saveUsers(users);
 
         showBanner(banner, "Account created! Taking you in…", "success");
-        saveSession(created, true);
+        saveSession(newUser, true);
         setTimeout(() => {
           window.location.href = "index.html";
         }, 500);
       } catch (err) {
-        showBanner(banner, friendlyNetworkError(err), "error");
+        showBanner(banner, "An unexpected error occurred.", "error");
         setBusy(submitBtn, null, "Create account");
       }
     });
@@ -228,13 +234,8 @@
       setBusy(submitBtn, "Logging in…");
 
       try {
-        const matches = await fetch(
-          `${API_BASE}/users?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-        ).then((r) => {
-          if (!r.ok)
-            throw new Error("Login request failed with status " + r.status);
-          return r.json();
-        });
+        const users = getUsers();
+        const matches = users.filter((u) => u.email === email && u.password === password);
 
         if (matches.length === 0) {
           showBanner(banner, "Invalid email or password.", "error");
@@ -248,7 +249,7 @@
           window.location.href = "index.html";
         }, 400);
       } catch (err) {
-        showBanner(banner, friendlyNetworkError(err), "error");
+        showBanner(banner, "An unexpected error occurred.", "error");
         setBusy(submitBtn, null, "Log in");
       }
     });
@@ -275,20 +276,15 @@
       if (formState === "email") {
         if (!EMAIL_RE.test(email)) {
           setError("email", "Enter a valid email address.");
-          clearErrors(["email"]); // Clear previous email error if any
+          clearErrors(["email"]); // clear previous
           return;
         }
         setBusy(submitBtn, "Checking email…");
         try {
-          const userRes = await fetch(
-            `${API_BASE}/users?email=${encodeURIComponent(email)}`,
-          );
-          if (!userRes.ok) {
-            throw new Error(`Server responded with status ${userRes.status}`);
-          }
-          const users = await userRes.json();
+          const users = getUsers();
+          const matches = users.filter((u) => u.email === email);
 
-          if (users.length === 0) {
+          if (matches.length === 0) {
             showBanner(
               banner,
               "No account found with that email address.",
@@ -299,7 +295,7 @@
           }
 
           // Transition to password step
-          userToUpdate = users[0];
+          userToUpdate = matches[0];
           formState = "password";
           emailStep.style.display = "none";
           passwordStep.style.display = "flex";
@@ -310,8 +306,7 @@
             `Updating password for ${userToUpdate.email}`;
           setBusy(submitBtn, null, "Set New Password");
         } catch (error) {
-          console.error("Forgot Password (email step) error:", error); // Log the actual error
-          showBanner(banner, friendlyNetworkError(error), "error");
+          showBanner(banner, "An unexpected error occurred.", "error");
           setBusy(submitBtn, null, "Find Account");
         }
       } else if (formState === "password") {
@@ -333,15 +328,12 @@
         setBusy(submitBtn, "Updating password…");
 
         try {
-          // Update the user's password in the database
-          await fetch(`${API_BASE}/users/${userToUpdate.id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password: password }),
-          }).then((r) => {
-            if (!r.ok)
-              throw new Error("Password update failed with status " + r.status);
-          });
+          const users = getUsers();
+          const index = users.findIndex((u) => u.id === userToUpdate.id);
+          if (index > -1) {
+            users[index].password = password;
+            saveUsers(users);
+          }
 
           showBanner(
             banner,
@@ -352,8 +344,7 @@
             window.location.href = "login.html";
           }, 1500);
         } catch (error) {
-          console.error("Forgot Password (password step) error:", error); // Log the actual error
-          showBanner(banner, friendlyNetworkError(error), "error");
+          showBanner(banner, "An unexpected error occurred.", "error");
           setBusy(submitBtn, null, "Set New Password");
         }
       }
