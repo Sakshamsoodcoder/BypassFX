@@ -1,8 +1,8 @@
 <div align="center">
 
-# 💱 Bypass-FX
+# Bypass-FX
 
-### _Find the cheapest path to convert your money — across providers, across currencies._
+### _Find the cheapest path to convert your money -- across providers, across currencies._
 
 [![Made with JavaScript](https://img.shields.io/badge/Made%20with-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Frankfurter API](https://img.shields.io/badge/Rates-Frankfurter%20API-16A34A?style=for-the-badge)](https://api.frankfurter.app)
@@ -15,39 +15,39 @@
 
 *(Note: This repository currently reflects Phase 1 / UI evaluation state. The application is fully responsive and deployed as a static site on Vercel. Complex routing JavaScript has been temporarily removed to focus on UI and static deployment workflows).*
 
-[🚀 Getting Started](#-getting-started) · [✨ Features](#-features) · [🏗️ Architecture](#️-architecture) · [📂 Project Structure](#-project-structure)
+[Getting Started](#getting-started) | [Features](#features) | [Architecture](#architecture) | [Project Structure](#project-structure)
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Features](#-features)
-- [Getting Started](#-getting-started)
+- [Features](#features)
+- [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Running the Project](#running-the-project)
-- [Architecture](#️-architecture)
-- [Project Structure](#-project-structure)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
 - [Authentication Flow](#authentication-flow)
-- [API Endpoints](#-api-endpoints)
-- [Tech Stack](#-tech-stack)
+- [API Endpoints](#api-endpoints)
+- [Tech Stack](#tech-stack)
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
-| 📊 **Live Exchange Rates** | Real-time mid-market rates from the [Frankfurter API](https://api.frankfurter.app) |
-| 📈 **Live Rate Ticker** | Animated marquee showing real-time currency pair movements with ▲/▼ indicators |
-| 🔐 **Mock Auth System** | Sign up, log in, forgot password, and session management powered entirely by the browser's `localStorage` for serverless deployment |
-| 🎨 **Premium UI** | Glassmorphism, fluid typography, responsive design, and dark forest green fintech aesthetic |
-| 📱 **Fully Responsive** | Flexbox and CSS Grid layout seamlessly scales across desktop, tablet, and mobile breakpoints |
+| **Live Exchange Rates** | Real-time mid-market rates from the [Frankfurter API](https://api.frankfurter.app) |
+| **Live Rate Ticker** | Animated marquee showing real-time currency pair movements with up/down indicators |
+| **Mock Auth System** | Sign up, log in, forgot password, and session management powered entirely by the browser's `localStorage` for serverless deployment |
+| **Premium UI** | Glassmorphism, fluid typography, responsive design, and dark forest green fintech aesthetic |
+| **Fully Responsive** | Flexbox and CSS Grid layout seamlessly scales across desktop, tablet, and mobile breakpoints |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -69,18 +69,18 @@ Go to `http://localhost:3000` (or whatever port your local server provides).
 
 ### Quick Walkthrough
 
-1. **Visit the landing page** (`index.html`) — explore the live ticker and UI mockups.
-2. **Sign up** on `signup.html` — your account is saved securely to your browser's `localStorage`.
+1. **Visit the landing page** (`index.html`) -- explore the live ticker and UI mockups.
+2. **Sign up** on `signup.html` -- your account is saved securely to your browser's `localStorage`.
 3. **Log in** on `login.html` with your email and password.
-4. **Visit your profile** — navigate to `profile.html` to see your user stats.
+4. **Visit your profile** -- navigate to `profile.html` to see your user stats.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The application follows a **Static Serverless Frontend** architecture, optimized for Vercel deployment:
 
-### Layer 1 — Frontend UI
+### Layer 1 -- Frontend UI
 Six HTML pages handle all user interactions:
 
 | Page | Purpose |
@@ -88,11 +88,11 @@ Six HTML pages handle all user interactions:
 | `index.html` | Marketing landing page with live ticker & UI converter mockup |
 | `login.html` | Login page with brand storytelling + auth form |
 | `signup.html` | Registration with client-side validation |
-| `forgot-password.html` | Multi-step password reset (email verify → new password) |
+| `forgot-password.html` | Multi-step password reset (email verify -> new password) |
 | `rates.html` | Live rate charts and historical timeseries |
 | `profile.html` | Authenticated user profile and session dashboard |
 
-### Layer 2 — JavaScript Logic
+### Layer 2 -- JavaScript Logic
 Modular JS files power the static logic:
 
 | Module | Responsibility |
@@ -102,44 +102,44 @@ Modular JS files power the static logic:
 | `rateService.js` | Frankfurter API client for live market rates |
 | `home.js` | Landing page layout interactions (mobile nav, etc) |
 
-### Layer 3 — External APIs
+### Layer 3 -- External APIs
 - **Frankfurter API:** Free, public API providing live mid-market exchange rates (`https://api.frankfurter.app`).
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 Bypass-FX/
-│
-├── 📄 index.html                 # Landing page
-├── 📄 login.html                 # Login page
-├── 📄 signup.html                # Sign up page
-├── 📄 forgot-password.html       # Password reset
-├── 📄 rates.html                 # Live Market Rates studio
-├── 📄 profile.html               # Auth'd user profile
-│
-├── 📁 js/
-│   ├── 🔐 auth.js               # Authentication & session management (Local Storage)
-│   ├── 📊 ticker.js              # Live rate ticker animation
-│   ├── 🌐 rateService.js         # Frankfurter API client
-│   └── 🏠 home.js                # Layout controller (standalone)
-│
-├── 📁 css/
-│   ├── 🎨 style.css              # Auth pages + base styles
-│   ├── 🎨 home.css               # Landing page design system
-│   ├── 🎨 rates.css              # Rates page design system
-│   └── 🎨 profile.css            # Profile page design system
-│
-├── 📁 assets/
-│   └── 🖼️ logo.svg               # Brand icon
-│
-└── 📖 README.md                  # You are here!
+|
+|-- index.html                 # Landing page
+|-- login.html                 # Login page
+|-- signup.html                # Sign up page
+|-- forgot-password.html       # Password reset
+|-- rates.html                 # Live Market Rates studio
+|-- profile.html               # Auth'd user profile
+|
+|-- js/
+|   |-- auth.js                # Authentication & session management (Local Storage)
+|   |-- ticker.js              # Live rate ticker animation
+|   |-- rateService.js         # Frankfurter API client
+|   |-- home.js                # Layout controller (standalone)
+|
+|-- css/
+|   |-- style.css              # Auth pages + base styles
+|   |-- home.css               # Landing page design system
+|   |-- rates.css              # Rates page design system
+|   |-- profile.css            # Profile page design system
+|
+|-- assets/
+|   |-- logo.svg               # Brand icon
+|
+|-- README.md                  # You are here!
 ```
 
 ---
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
 To allow seamless hosting on Vercel without requiring a dedicated Node.js backend, authentication is fully mocked using the browser's native `localStorage`.
 
@@ -149,7 +149,7 @@ To allow seamless hosting on Vercel without requiring a dedicated Node.js backen
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 **External Data API:**
 
@@ -159,19 +159,19 @@ To allow seamless hosting on Vercel without requiring a dedicated Node.js backen
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | Vanilla HTML5, CSS3, ES Modules — zero frameworks |
+| **Frontend** | Vanilla HTML5, CSS3, ES Modules -- zero frameworks |
 | **Styling** | Custom design system with CSS Grid/Flexbox, glassmorphism, `clamp()` typography |
 | **Backend** | Serverless / LocalStorage (Vercel deployment compatible) |
 | **Live Rates** | [Frankfurter API](https://api.frankfurter.app) |
-| **Fonts** | [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (display) · [Inter](https://fonts.google.com/specimen/Inter) (body) |
+| **Fonts** | [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (display), [Inter](https://fonts.google.com/specimen/Inter) (body) |
 
 ---
 
-## 📄 License
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
@@ -179,8 +179,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 <div align="center">
 
-**Built with ❤️ by [Saksham Sood](https://github.com/Sakshamsoodcoder)**
+**Built by Saksham Sood, Kartik Verma, and Kartik Sharma**
 
-_If you found this useful, consider giving it a ⭐!_
+_If you found this useful, consider giving it a star!_
 
 </div>
