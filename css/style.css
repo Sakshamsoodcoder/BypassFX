@@ -40,6 +40,7 @@ html, body {
   background: var(--bg-canvas);
   color: var(--text-primary);
   font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
 body {

@@ -358,7 +358,7 @@ body.profile-page {
     justify-content: center;
   }
   .stats-row {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
   .bottom-actions {
     flex-direction: column;
