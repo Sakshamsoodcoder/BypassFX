@@ -882,40 +882,22 @@
       if (session) {
         try {
           const user = JSON.parse(session);
-          const firstName = user.name ? user.name.split(' ')[0] : 'Member';
+          const firstName = user.name ? user.name.split(' ')[0] : 'Account';
           if (navAuth) {
             navAuth.innerHTML = `
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <a href="profile.html" class="user-badge-pill" title="View Account Profile">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                  <span>👋 ${firstName}</span>
-                </a>
-                <a href="profile.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Profile</a>
-                <button type="button" id="btnRatesNavLogout" style="background: var(--surface); border: 1.5px solid var(--border-strong); padding: 7px 14px; border-radius: var(--radius-pill); font-size: 0.82rem; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all 0.2s ease;">Log out</button>
-              </div>
+              <a href="profile.html" class="user-badge-pill" title="View Account Profile">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>${firstName}</span>
+              </a>
             `;
-            $('btnRatesNavLogout')?.addEventListener('click', () => {
-              localStorage.removeItem('bypassfx_session');
-              sessionStorage.removeItem('bypassfx_session');
-              updateNavbarAuth();
-            });
           }
           if (mobAuth) {
             mobAuth.innerHTML = `
-              <div style="font-family: var(--font-display); font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
-                👋 Logged in as ${user.name}
-              </div>
-              <a href="profile.html" class="btn-primary" style="text-align: center;">View Profile</a>
-              <button type="button" id="btnRatesMobLogout" class="btn-secondary" style="text-align:center; width:100%; margin-top:8px;">Log out</button>
+              <a href="profile.html" class="btn-primary" style="text-align: center;">${firstName}</a>
             `;
-            $('btnRatesMobLogout')?.addEventListener('click', () => {
-              localStorage.removeItem('bypassfx_session');
-              sessionStorage.removeItem('bypassfx_session');
-              updateNavbarAuth();
-            });
           }
         } catch (e) {}
       } else {
