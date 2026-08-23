@@ -427,9 +427,22 @@ form { margin-top: 22px; display: flex; flex-direction: column; gap: 16px; }
   .panel-form { padding: 32px 26px 30px; }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 480px) {
+  body { padding: 12px 8px; }
+  .shell { border-radius: var(--radius-md); min-height: auto; }
+  .panel-brand { padding: 24px 18px 20px; }
+  .panel-brand h1 { font-size: 1.45rem; margin-top: 18px; margin-bottom: 10px; }
+  .panel-brand p.lede { font-size: 0.88rem; margin-bottom: 20px; }
+  .panel-form { padding: 24px 18px 24px; }
+  .form-head h2 { font-size: 1.3rem; }
+  .tabs a { font-size: 0.85rem; padding: 8px 10px; }
+}
+
+@media (max-width: 360px) {
   body { padding: 0; }
   .shell { border-radius: 0; min-height: 100vh; }
+  .panel-brand { padding: 20px 14px 16px; }
+  .panel-form { padding: 20px 14px 20px; }
 }
 
 /* ============================================================

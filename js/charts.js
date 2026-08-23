@@ -16,11 +16,23 @@
   const LIVE_TICK_INTERVAL_MS = 2500; // 2.5s simulated micro-ticks
   const LIVE_POLL_INTERVAL_MS = 20000; // 20s live API poll
 
+  const ISO_MAP = {
+    USD: 'us', EUR: 'eu', GBP: 'gb', INR: 'in',
+    JPY: 'jp', CAD: 'ca', AUD: 'au', CHF: 'ch',
+    SGD: 'sg', AED: 'ae', CNY: 'cn', NZD: 'nz'
+  };
+
   const FLAG_MAP = {
     USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', INR: '🇮🇳',
     JPY: '🇯🇵', CAD: '🇨🇦', AUD: '🇦🇺', CHF: '🇨🇭',
     SGD: '🇸🇬', AED: '🇦🇪', CNY: '🇨🇳', NZD: '🇳🇿'
   };
+
+  function getFlagHtml(code) {
+    const iso = (ISO_MAP[code] || code.slice(0, 2)).toLowerCase();
+    const emoji = FLAG_MAP[code] || '🌐';
+    return `<img src="https://flagcdn.com/w40/${iso}.png" srcset="https://flagcdn.com/w80/${iso}.png 2x" width="20" height="14" alt="${code} flag" class="currency-flag-img" loading="lazy" style="width:20px; height:14px; object-fit:cover; border-radius:2.5px; display:inline-block; vertical-align:middle;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="flag-fallback" style="display:none;">${emoji}</span>`;
+  }
 
   const CURRENCY_NAMES = {
     USD: 'US Dollar', EUR: 'Euro', GBP: 'British Pound', INR: 'Indian Rupee',
@@ -544,8 +556,8 @@
     $('benchBankVal').textContent = formatRate(rate * 0.9700, cur);
 
     // 3. Flags & Selectors
-    $('baseFlag').textContent = FLAG_MAP[state.base] || '🌐';
-    $('targetFlag').textContent = FLAG_MAP[state.target] || '🌐';
+    if ($('baseFlag')) $('baseFlag').innerHTML = getFlagHtml(state.base);
+    if ($('targetFlag')) $('targetFlag').innerHTML = getFlagHtml(state.target);
     $('baseCurrencySelect').value = state.base;
     $('targetCurrencySelect').value = state.target;
 
@@ -685,11 +697,11 @@
 
       return `
         <tr data-base="${item.base}" data-target="${item.target}">
-          <td>
+          <td class="col-pair">
             <div class="corridor-pair-cell">
               <div class="pair-flags">
-                <span>${FLAG_MAP[item.base] || '🌐'}</span>
-                <span>${FLAG_MAP[item.target] || '🌐'}</span>
+                <span>${getFlagHtml(item.base)}</span>
+                <span>${getFlagHtml(item.target)}</span>
               </div>
               <div class="pair-names">
                 <span class="pair-symbol">${item.base} / ${item.target}</span>
@@ -697,13 +709,13 @@
               </div>
             </div>
           </td>
-          <td>
+          <td class="col-rate">
             <span class="mono-rate">${formatRate(rate, item.target)}</span>
           </td>
-          <td>
+          <td class="col-change">
             <span class="change-pill ${changeClass}">${changeSign}${changeVal.toFixed(2)}%</span>
           </td>
-          <td>
+          <td class="col-range">
             <div class="range-bar-cell">
               <div class="range-labels">
                 <span>${lowRange}</span>
@@ -714,7 +726,7 @@
               </div>
             </div>
           </td>
-          <td>
+          <td class="col-route">
             <span class="badge-cheapest-path">
               <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
@@ -722,10 +734,10 @@
               ${item.bestRoute}
             </span>
           </td>
-          <td>
+          <td class="col-sparkline">
             ${generateSvgSparkline(sparkPoints, item.sparklineType)}
           </td>
-          <td style="text-align: right;">
+          <td class="col-action" style="text-align: right;">
             <button type="button" class="btn-table-action" data-base="${item.base}" data-target="${item.target}">
               <span>Analyze</span>
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
@@ -827,9 +839,27 @@
     });
 
     // 8. Mobile Menu Toggle
-    $('menuToggleBtn')?.addEventListener('click', () => {
-      $('mobileNavDrawer')?.classList.toggle('open');
-    });
+    const menuBtn = $('menuToggleBtn');
+    const mobileNav = $('mobileNavDrawer');
+    if (menuBtn && mobileNav) {
+      menuBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        mobileNav.classList.toggle('open');
+      });
+
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNav.classList.remove('open');
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (mobileNav.classList.contains('open') && !mobileNav.contains(e.target) && !menuBtn.contains(e.target)) {
+          mobileNav.classList.remove('open');
+        }
+      });
+    }
 
     // 9. Theme Toggle
     $('btnNavThemeToggle')?.addEventListener('click', () => {
@@ -844,7 +874,7 @@
     if (session) {
       try {
         const user = JSON.parse(session);
-        const navAuth = $('navAuthContainer');
+        const navAuth = $('navRightContainer') || $('navAuthContainer');
         const mobAuth = $('mobileNavAuthContainer');
         if (navAuth) {
           navAuth.innerHTML = `

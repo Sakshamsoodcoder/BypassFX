@@ -926,11 +926,14 @@ body.rates-page-body {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: var(--shadow-sm);
+  width: 100%;
 }
 
 .corridor-table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   text-align: left;
   font-size: 0.92rem;
@@ -1159,6 +1162,185 @@ body.rates-page-body {
   .matrix-header-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* Transform table into stacked cards for mobile */
+  .corridor-table-wrapper {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .corridor-table {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    border: none;
+  }
+
+  .corridor-table thead {
+    display: none;
+  }
+
+  .corridor-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .corridor-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "pair rate"
+      "route change"
+      "range action";
+    gap: 10px 12px;
+    align-items: center;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 0;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .corridor-table tbody tr:hover {
+    border-color: var(--accent);
+    background: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .corridor-table tbody tr td {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    white-space: normal;
+  }
+
+  .corridor-table tbody tr td.col-pair {
+    grid-area: pair;
+  }
+
+  .corridor-table tbody tr td.col-rate {
+    grid-area: rate;
+    text-align: right;
+  }
+
+  .corridor-table tbody tr td.col-rate .mono-rate {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .corridor-table tbody tr td.col-route {
+    grid-area: route;
+  }
+
+  .corridor-table tbody tr td.col-change {
+    grid-area: change;
+    text-align: right;
+  }
+
+  .corridor-table tbody tr td.col-range {
+    grid-area: range;
+  }
+
+  .corridor-table tbody tr td.col-sparkline {
+    display: none;
+  }
+
+  .corridor-table tbody tr td.col-action {
+    grid-area: action;
+    text-align: right;
+  }
+
+  .corridor-table tbody tr td.col-action .btn-table-action {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rates-main-shell {
+    padding: 24px 0 60px;
+  }
+
+  .rates-header-titles h1 {
+    font-size: clamp(1.65rem, 6vw, 2.1rem);
+  }
+
+  .rates-header-titles p {
+    font-size: 0.92rem;
+  }
+
+  .overlay-rate-main {
+    font-size: 1.85rem;
+  }
+
+  .benchmark-pills-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .curve-toggles-bar {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .timeframe-switch-deck {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tf-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .matrix-filter-tabs {
+    display: flex;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+
+  .corridor-table tbody tr {
+    padding: 14px 12px;
+    gap: 8px 10px;
+  }
+
+  .pair-symbol {
+    font-size: 0.92rem;
+  }
+
+  .pair-fullname {
+    font-size: 0.72rem;
+  }
+
+  .mono-rate {
+    font-size: 1.05rem !important;
+  }
+
+  .badge-cheapest-path {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+  }
+
+  .change-pill {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+  }
+
+  .range-bar-cell {
+    min-width: 90px;
   }
 }
 

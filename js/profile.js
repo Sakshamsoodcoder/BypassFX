@@ -22,26 +22,91 @@
   const API_BASE = 'https://api.frankfurter.app';
 
   const CURRENCY_METADATA = {
-    USD: { name: 'US Dollar', flag: '🇺🇸', symbol: '$' },
-    EUR: { name: 'Euro', flag: '🇪🇺', symbol: '€' },
-    GBP: { name: 'British Pound', flag: '🇬🇧', symbol: '£' },
-    INR: { name: 'Indian Rupee', flag: '🇮🇳', symbol: '₹' },
-    JPY: { name: 'Japanese Yen', flag: '🇯🇵', symbol: '¥' },
-    CAD: { name: 'Canadian Dollar', flag: '🇨🇦', symbol: 'C$' },
-    AUD: { name: 'Australian Dollar', flag: '🇦🇺', symbol: 'A$' },
-    CHF: { name: 'Swiss Franc', flag: '🇨🇭', symbol: 'CHF' },
-    SGD: { name: 'Singapore Dollar', flag: '🇸🇬', symbol: 'S$' },
-    AED: { name: 'UAE Dirham', flag: '🇦🇪', symbol: 'AED' },
-    CNY: { name: 'Chinese Yuan', flag: '🇨🇳', symbol: '¥' },
-    NZD: { name: 'New Zealand Dollar', flag: '🇳🇿', symbol: 'NZ$' }
+    USD: { name: 'US Dollar', iso: 'us', flag: '🇺🇸', symbol: '$' },
+    EUR: { name: 'Euro', iso: 'eu', flag: '🇪🇺', symbol: '€' },
+    GBP: { name: 'British Pound', iso: 'gb', flag: '🇬🇧', symbol: '£' },
+    INR: { name: 'Indian Rupee', iso: 'in', flag: '🇮🇳', symbol: '₹' },
+    JPY: { name: 'Japanese Yen', iso: 'jp', flag: '🇯🇵', symbol: '¥' },
+    AUD: { name: 'Australian Dollar', iso: 'au', flag: '🇦🇺', symbol: 'A$' },
+    CAD: { name: 'Canadian Dollar', iso: 'ca', flag: '🇨🇦', symbol: 'C$' },
+    CHF: { name: 'Swiss Franc', iso: 'ch', flag: '🇨🇭', symbol: 'CHF' },
+    CNY: { name: 'Chinese Yuan', iso: 'cn', flag: '🇨🇳', symbol: '¥' },
+    SGD: { name: 'Singapore Dollar', iso: 'sg', flag: '🇸🇬', symbol: 'S$' },
+    HKD: { name: 'Hong Kong Dollar', iso: 'hk', flag: '🇭🇰', symbol: 'HK$' },
+    NZD: { name: 'New Zealand Dollar', iso: 'nz', flag: '🇳🇿', symbol: 'NZ$' },
+    KRW: { name: 'South Korean Won', iso: 'kr', flag: '🇰🇷', symbol: '₩' },
+    AED: { name: 'UAE Dirham', iso: 'ae', flag: '🇦🇪', symbol: 'AED' },
+    SAR: { name: 'Saudi Riyal', iso: 'sa', flag: '🇸🇦', symbol: 'SAR' },
+    QAR: { name: 'Qatari Riyal', iso: 'qa', flag: '🇶🇦', symbol: 'QAR' },
+    THB: { name: 'Thai Baht', iso: 'th', flag: '🇹🇭', symbol: '฿' },
+    MYR: { name: 'Malaysian Ringgit', iso: 'my', flag: '🇲🇾', symbol: 'RM' },
+    IDR: { name: 'Indonesian Rupiah', iso: 'id', flag: '🇮🇩', symbol: 'Rp' },
+    PHP: { name: 'Philippine Peso', iso: 'ph', flag: '🇵🇭', symbol: '₱' },
+    ZAR: { name: 'South African Rand', iso: 'za', flag: '🇿🇦', symbol: 'R' },
+    RUB: { name: 'Russian Ruble', iso: 'ru', flag: '🇷🇺', symbol: '₽' },
+    BRL: { name: 'Brazilian Real', iso: 'br', flag: '🇧🇷', symbol: 'R$' },
+    MXN: { name: 'Mexican Peso', iso: 'mx', flag: '🇲🇽', symbol: 'Mex$' },
+    SEK: { name: 'Swedish Krona', iso: 'se', flag: '🇸🇪', symbol: 'kr' },
+    NOK: { name: 'Norwegian Krone', iso: 'no', flag: '🇳🇴', symbol: 'kr' },
+    DKK: { name: 'Danish Krone', iso: 'dk', flag: '🇩🇰', symbol: 'kr' },
+    PLN: { name: 'Polish Zloty', iso: 'pl', flag: '🇵🇱', symbol: 'zł' },
+    TRY: { name: 'Turkish Lira', iso: 'tr', flag: '🇹🇷', symbol: '₺' },
+    CZK: { name: 'Czech Koruna', iso: 'cz', flag: '🇨🇿', symbol: 'Kč' },
+    HUF: { name: 'Hungarian Forint', iso: 'hu', flag: '🇭🇺', symbol: 'Ft' },
+    ILS: { name: 'Israeli New Shekel', iso: 'il', flag: '🇮🇱', symbol: '₪' },
+    BGN: { name: 'Bulgarian Lev', iso: 'bg', flag: '🇧🇬', symbol: 'лв' },
+    RON: { name: 'Romanian Leu', iso: 'ro', flag: '🇷🇴', symbol: 'lei' },
+    CLP: { name: 'Chilean Peso', iso: 'cl', flag: '🇨🇱', symbol: 'CLP$' },
+    COP: { name: 'Colombian Peso', iso: 'co', flag: '🇨🇴', symbol: 'COL$' }
   };
 
-  const ZERO_DECIMAL_CURRENCIES = new Set(['JPY']);
+  function getFlagHtml(code, size = 'normal') {
+    const meta = CURRENCY_METADATA[code] || { iso: code ? code.slice(0, 2).toLowerCase() : 'un', flag: '🌐' };
+    const iso = (meta.iso || code.slice(0, 2)).toLowerCase();
+    const width = size === 'large' ? 24 : 20;
+    const height = size === 'large' ? 17 : 14;
+    return `<img src="https://flagcdn.com/w40/${iso}.png" srcset="https://flagcdn.com/w80/${iso}.png 2x" width="${width}" height="${height}" alt="${code} flag" class="currency-flag-img" loading="lazy" style="width:${width}px; height:${height}px; object-fit:cover; border-radius:2.5px; display:inline-block; vertical-align:middle;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="flag-fallback" style="display:none;">${meta.flag || '🌐'}</span>`;
+  }
+
+  const ZERO_DECIMAL_CURRENCIES = new Set(['JPY', 'KRW', 'CLP', 'IDR', 'HUF']);
 
   const USD_BASE_RATES = {
-    USD: 1.0, INR: 86.8520, EUR: 0.9245, GBP: 0.7915,
-    JPY: 153.42, CAD: 1.3850, AUD: 1.5425, CHF: 0.8850,
-    SGD: 1.3480, AED: 3.6725, CNY: 7.2450, NZD: 1.6950
+    USD: 1.0,
+    INR: 86.8520,
+    EUR: 0.9245,
+    GBP: 0.7915,
+    JPY: 153.42,
+    AUD: 1.5425,
+    CAD: 1.3850,
+    CHF: 0.8850,
+    CNY: 7.2450,
+    SGD: 1.3480,
+    NZD: 1.6950,
+    HKD: 7.7800,
+    AED: 3.6725,
+    SAR: 3.7505,
+    QAR: 3.6410,
+    THB: 34.6200,
+    MYR: 4.4350,
+    IDR: 16250.0,
+    PHP: 57.8500,
+    ZAR: 18.2500,
+    RUB: 91.5000,
+    BRL: 5.6200,
+    MXN: 20.1500,
+    SEK: 10.6500,
+    NOK: 10.8500,
+    DKK: 6.9000,
+    PLN: 3.9800,
+    TRY: 34.2500,
+    KRW: 1395.0,
+    CZK: 23.4500,
+    HUF: 368.50,
+    ILS: 3.7250,
+    BGN: 1.8080,
+    RON: 4.6020,
+    CLP: 945.0,
+    COP: 4120.0
   };
 
   // Seed sample conversion history if none exists for instant visual appeal
@@ -365,7 +430,7 @@
         <div class="fav-currency-item" data-code="${code}">
           <div class="fav-item-header">
             <div class="fav-item-flag-code">
-              <span class="fav-flag">${meta.flag}</span>
+              <span class="fav-flag">${getFlagHtml(code, 'large')}</span>
               <div>
                 <span class="fav-code">${code}</span>
                 <div class="fav-item-name">${meta.name}</div>
@@ -503,7 +568,7 @@
 
           <div class="hist-route-path">
             <span>Route:</span>
-            <strong>${escapeHtml(item.route || `${item.from} ➔ ${item.to}`)}</strong>
+            <strong>${getFlagHtml(item.from)} ${item.from} ➔ ${getFlagHtml(item.to)} ${item.to}</strong>
           </div>
 
           <div class="hist-card-footer">

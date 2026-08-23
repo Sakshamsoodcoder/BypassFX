@@ -374,3 +374,31 @@ body.profile-page {
     text-align: center;
   }
 }
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .profile-hero {
+    padding: 24px 16px;
+    border-radius: var(--radius-lg);
+  }
+  .hero-meta h1 {
+    font-size: 1.5rem;
+  }
+  .dash-card {
+    padding: 20px 16px;
+  }
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .history-right {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px dashed var(--border);
+    padding-top: 8px;
+  }
+}
