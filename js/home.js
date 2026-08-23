@@ -105,7 +105,7 @@
   }
 
   // ============================================================
-  // 3. Coming Soon & Auth-Gate Modals
+  // 3. Auth-Gate Modals -- You cant't access without LoggingIn
   // ============================================================
   function showAuthRequiredModal() {
     let modal = document.getElementById('bypassAuthModal');
@@ -142,6 +142,10 @@
     }
     modal.classList.add('active');
   }
+
+  // ============================================================
+  // 3. Coming Soon --- Converter API will be attached soon
+  // ============================================================
 
   function showConversionComingSoonModal() {
     let modal = document.getElementById('bypassComingSoonModal');
