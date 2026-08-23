@@ -19,8 +19,6 @@
     PREFERENCES: 'bypassfx_preferences'
   };
 
-  const API_BASE = 'https://api.frankfurter.app';
-
   const CURRENCY_METADATA = {
     USD: { name: 'US Dollar', iso: 'us', flag: '🇺🇸', symbol: '$' },
     EUR: { name: 'Euro', iso: 'eu', flag: '🇪🇺', symbol: '€' },
@@ -372,7 +370,6 @@
       }
     }
     renderFavourites();
-    fetchLiveRatesForFavourites();
   }
 
   function saveFavourites() {
@@ -389,17 +386,6 @@
   function removeFavourite(code) {
     state.favourites = state.favourites.filter(c => c !== code);
     saveFavourites();
-  }
-
-  async function fetchLiveRatesForFavourites() {
-    try {
-      const res = await fetch(`${API_BASE}/latest?from=USD`);
-      if (res.ok) {
-        const data = await res.json();
-        state.liveRates = data.rates || {};
-        renderFavourites(); // Re-render with fresh rates
-      }
-    } catch (e) {}
   }
 
   function renderFavourites() {
