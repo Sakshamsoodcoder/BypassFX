@@ -686,7 +686,26 @@
   }
 
   // ============================================================
-  // 10. Page Bootstrap
+  // 10. Interactive 3D Card Controller
+  // ============================================================
+  function initFlipCard() {
+    const card = document.getElementById('bypassfxFlipCard');
+    if (!card) return;
+
+    card.addEventListener('click', () => {
+      card.classList.toggle('flipped');
+    });
+
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.classList.toggle('flipped');
+      }
+    });
+  }
+
+  // ============================================================
+  // 11. Page Bootstrap
   // ============================================================
   document.addEventListener('DOMContentLoaded', () => {
     updateNavbarAuth();
@@ -695,6 +714,7 @@
     renderHistorySection();
     initTicker();
     initNavigation();
+    initFlipCard();
   });
 })();
 
