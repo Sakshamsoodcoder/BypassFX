@@ -227,10 +227,11 @@
         });
       }
 
-      this.menu.querySelectorAll('.quick-hub-btn').forEach(pill => {
+      this.menu.querySelectorAll('.hub-pill, .quick-hub-btn').forEach(pill => {
         pill.addEventListener('click', (e) => {
+          e.preventDefault();
           e.stopPropagation();
-          const code = pill.dataset.code;
+          const code = pill.dataset.code || pill.textContent.trim();
           if (code) {
             this.setValue(code, true);
             this.close();
@@ -310,6 +311,13 @@
       if (this.codeEl) this.codeEl.textContent = meta.code;
       if (this.nameEl) this.nameEl.textContent = `— ${meta.name}`;
 
+      if (this.menu) {
+        this.menu.querySelectorAll('.hub-pill, .quick-hub-btn').forEach(pill => {
+          const pillCode = pill.dataset.code || pill.textContent.trim();
+          pill.classList.toggle('active', pillCode === meta.code);
+        });
+      }
+
       if (this.list) {
         this.list.querySelectorAll('.dropdown-currency-item').forEach(el => {
           const isMatch = el.dataset.code === meta.code;
@@ -329,7 +337,7 @@
     }
 
     open() {
-      document.querySelectorAll('.custom-currency-dropdown.active').forEach(d => {
+      document.querySelectorAll('.custom-currency-dropdown.active, .custom-hops-dropdown.active').forEach(d => {
         if (d !== this.container) d.classList.remove('active');
       });
 
@@ -362,6 +370,80 @@
   let fromDropdownInstance = null;
   let toDropdownInstance = null;
 
+  function initHopsDropdown() {
+    const container = document.getElementById('hopsDropdownContainer');
+    const trigger = document.getElementById('maxHopsTrigger');
+    const menu = document.getElementById('hopsDropdownMenu');
+    const hiddenInput = document.getElementById('maxHopsSelect');
+    const labelEl = document.getElementById('hopsTriggerLabel');
+
+    if (!container || !trigger || !menu || !hiddenInput || !labelEl) return;
+
+    const HOPS_LABELS = {
+      '1': '1 (Direct Only)',
+      '2': '2 Hops',
+      '3': '3 Hops (Recommended)',
+      '4': '4 Hops (Deep Scan)'
+    };
+
+    function setHops(value) {
+      hiddenInput.value = value;
+      labelEl.textContent = HOPS_LABELS[value] || `${value} Hops`;
+
+      menu.querySelectorAll('.hops-dropdown-item').forEach(item => {
+        const isMatch = item.dataset.value === String(value);
+        item.classList.toggle('selected', isMatch);
+        item.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+
+      hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isActive = container.classList.contains('active');
+      document.querySelectorAll('.custom-currency-dropdown.active, .custom-hops-dropdown.active').forEach(d => {
+        d.classList.remove('active');
+      });
+      if (!isActive) {
+        container.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
+      } else {
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    menu.querySelectorAll('.hops-dropdown-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const val = item.dataset.value;
+        if (val) {
+          setHops(val);
+          container.classList.remove('active');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!container.contains(e.target)) {
+        container.classList.remove('active');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        container.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
+      } else if (e.key === 'Escape') {
+        container.classList.remove('active');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   function initConverter() {
     const form = document.getElementById('converterFormMain');
     if (!form) return;
@@ -391,6 +473,8 @@
       'toName',
       'EUR'
     );
+
+    initHopsDropdown();
 
     // Currency Swap Button
     const btnSwap = document.getElementById('btnSwapCurrencies');

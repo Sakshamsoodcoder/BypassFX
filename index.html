@@ -378,13 +378,59 @@
 
                 <!-- Converter Options (Hops) -->
                 <div class="converter-options">
-                  <label for="maxHopsSelect">Path Depth (Max Hops)</label>
-                  <select id="maxHopsSelect" class="hop-select" aria-label="Maximum Hops">
-                    <option value="1">1 (Direct Only)</option>
-                    <option value="2">2 Hops</option>
-                    <option value="3" selected>3 Hops (Recommended)</option>
-                    <option value="4">4 Hops</option>
-                  </select>
+                  <div class="hops-label-group">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hops-icon">
+                      <circle cx="18" cy="5" r="3"></circle>
+                      <circle cx="6" cy="12" r="3"></circle>
+                      <circle cx="18" cy="19" r="3"></circle>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    <label for="maxHopsTrigger">Path Depth (Max Hops)</label>
+                  </div>
+
+                  <!-- Custom Styled Hops Dropdown -->
+                  <div class="custom-hops-dropdown" id="hopsDropdownContainer">
+                    <button type="button" class="hops-dropdown-trigger" id="maxHopsTrigger" aria-haspopup="listbox" aria-expanded="false">
+                      <span id="hopsTriggerLabel">3 Hops (Recommended)</span>
+                      <svg class="trigger-arrow" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                      </svg>
+                    </button>
+                    <input type="hidden" id="maxHopsSelect" name="maxHops" value="3">
+
+                    <!-- Floating Dropdown Popover -->
+                    <div class="hops-dropdown-menu" id="hopsDropdownMenu" role="listbox">
+                      <div class="hops-dropdown-item" data-value="1" role="option">
+                        <div class="item-left">
+                          <span class="hops-num-badge">1</span>
+                          <span class="hops-title">1 (Direct Only)</span>
+                        </div>
+                        <span class="item-check">✓</span>
+                      </div>
+                      <div class="hops-dropdown-item" data-value="2" role="option">
+                        <div class="item-left">
+                          <span class="hops-num-badge">2</span>
+                          <span class="hops-title">2 Hops</span>
+                        </div>
+                        <span class="item-check">✓</span>
+                      </div>
+                      <div class="hops-dropdown-item selected" data-value="3" role="option" aria-selected="true">
+                        <div class="item-left">
+                          <span class="hops-num-badge">3</span>
+                          <span class="hops-title">3 Hops (Recommended)</span>
+                        </div>
+                        <span class="item-check">✓</span>
+                      </div>
+                      <div class="hops-dropdown-item" data-value="4" role="option">
+                        <div class="item-left">
+                          <span class="hops-num-badge">4</span>
+                          <span class="hops-title">4 Hops (Deep Scan)</span>
+                        </div>
+                        <span class="item-check">✓</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Primary CTA Button -->
