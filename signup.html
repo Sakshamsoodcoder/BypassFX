@@ -284,20 +284,17 @@
           following terms for the purpose of this demonstration.
         </p>
 
-        <h4>1. Account and Data</h4>
+        <h4>1. Account and Data Protection</h4>
         <p>
-          Your user information (name, email, and password) will be stored in a
-          `db.json` file. As noted in the project's README, passwords are stored
-          in plain text. This is not secure and is for demonstration purposes
-          only. Do not use a real-world password.
+          Your user account is stored locally and secured with client-side SHA-256
+          cryptographic password hashing using the Web Crypto API. Plaintext
+          passwords are never saved or transmitted.
         </p>
 
-        <h4>2. Data Usage</h4>
+        <h4>2. Data Usage & Local Storage</h4>
         <p>
-          The data you provide and the conversions you perform will be saved and
-          visible within the application's context. This data is stored locally
-          in `db.json` and is not transmitted to any external server other than
-          the local `json-server` instance.
+          The data you provide and your account sessions are securely preserved in
+          browser storage. No private credentials are transmitted to any external server.
         </p>
 
         <h4>3. No Real Financial Transactions</h4>

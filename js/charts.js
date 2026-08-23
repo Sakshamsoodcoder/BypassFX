@@ -13,8 +13,8 @@
   // 1. Constants & Baseline Configuration
   // ============================================================
   const API_BASE = 'https://api.frankfurter.app';
-  const LIVE_TICK_INTERVAL_MS = 2500; // 2.5s simulated micro-ticks
-  const LIVE_POLL_INTERVAL_MS = 20000; // 20s live API poll
+  const LIVE_TICK_INTERVAL_MS = 2500; // 2.5s live micro-ticks
+  const LIVE_POLL_INTERVAL_MS = 20000; // 20s background API sync
 
   const ISO_MAP = {
     USD: 'us', EUR: 'eu', GBP: 'gb', INR: 'in',
@@ -43,7 +43,7 @@
 
   const ZERO_DECIMALS = new Set(['JPY']);
 
-  // Baseline Mid-Market Rates per 1 USD (for offline resilience and instant bootstrap)
+  // Baseline Mid-Market Rates per 1 USD (for offline resilience & instant bootstrap)
   const USD_BASE_RATES = {
     USD: 1.0,
     INR: 86.8520,
@@ -144,7 +144,7 @@
   }
 
   // ============================================================
-  // 4. Custom Chart.js Crosshair & Vertical Hairline Plugin
+  // 4. Custom Chart.js Crosshair Plugin
   // ============================================================
   const customCrosshairPlugin = {
     id: 'customCrosshairPlugin',
@@ -526,44 +526,48 @@
     const isUp = delta >= 0;
 
     // 1. Top Deck Cards
-    $('deckLiveRate').textContent = formatRate(rate, cur);
-    $('deckTargetCode').textContent = cur;
+    if ($('deckLiveRate')) $('deckLiveRate').textContent = formatRate(rate, cur);
+    if ($('deckTargetCode')) $('deckTargetCode').textContent = cur;
 
     const deckChange = $('deckLiveChange');
-    deckChange.textContent = `${sign}${deltaPct}%`;
-    deckChange.className = `change-pill ${isUp ? 'up' : 'down'}`;
+    if (deckChange) {
+      deckChange.textContent = `${sign}${deltaPct}%`;
+      deckChange.className = `change-pill ${isUp ? 'up' : 'down'}`;
+    }
 
-    $('deckHighRate').textContent = formatRate(state.sessionHigh, cur);
-    $('deckLowRate').textContent = formatRate(state.sessionLow, cur);
+    if ($('deckHighRate')) $('deckHighRate').textContent = formatRate(state.sessionHigh, cur);
+    if ($('deckLowRate')) $('deckLowRate').textContent = formatRate(state.sessionLow, cur);
 
     const volatility = (((state.sessionHigh - state.sessionLow) / rate) * 100).toFixed(2);
-    $('deckVolatility').textContent = `${volatility}%`;
+    if ($('deckVolatility')) $('deckVolatility').textContent = `${volatility}%`;
 
     const arbitrageGain = ((0.9955 - 0.9700) / 0.9700 * 100).toFixed(2);
-    $('deckArbitrageYield').textContent = `+${arbitrageGain}%`;
+    if ($('deckArbitrageYield')) $('deckArbitrageYield').textContent = `+${arbitrageGain}%`;
 
     // 2. Chart Overlay Stats
-    $('studioPairTitle').textContent = `${state.base} / ${state.target} Mid-Market Live Stream`;
-    $('chartMainRate').textContent = formatRate(rate, cur);
-    $('chartTargetCode').textContent = cur;
+    if ($('studioPairTitle')) $('studioPairTitle').textContent = `${state.base} / ${state.target} Mid-Market Live Stream`;
+    if ($('chartMainRate')) $('chartMainRate').textContent = formatRate(rate, cur);
+    if ($('chartTargetCode')) $('chartTargetCode').textContent = cur;
 
     const chartBadge = $('chartDeltaBadge');
-    chartBadge.className = `overlay-delta-badge ${isUp ? 'up' : 'down'}`;
-    $('chartDeltaValue').textContent = `${sign}${formatRate(delta, cur, 4)} (${sign}${deltaPct}%)`;
+    if (chartBadge) {
+      chartBadge.className = `overlay-delta-badge ${isUp ? 'up' : 'down'}`;
+    }
+    if ($('chartDeltaValue')) $('chartDeltaValue').textContent = `${sign}${formatRate(delta, cur, 4)} (${sign}${deltaPct}%)`;
 
-    $('benchMidVal').textContent = formatRate(rate, cur);
-    $('benchWiseVal').textContent = formatRate(rate * 0.9955, cur);
-    $('benchBankVal').textContent = formatRate(rate * 0.9700, cur);
+    if ($('benchMidVal')) $('benchMidVal').textContent = formatRate(rate, cur);
+    if ($('benchWiseVal')) $('benchWiseVal').textContent = formatRate(rate * 0.9955, cur);
+    if ($('benchBankVal')) $('benchBankVal').textContent = formatRate(rate * 0.9700, cur);
 
     // 3. Flags & Selectors
     if ($('baseFlag')) $('baseFlag').innerHTML = getFlagHtml(state.base);
     if ($('targetFlag')) $('targetFlag').innerHTML = getFlagHtml(state.target);
-    $('baseCurrencySelect').value = state.base;
-    $('targetCurrencySelect').value = state.target;
+    if ($('baseCurrencySelect')) $('baseCurrencySelect').value = state.base;
+    if ($('targetCurrencySelect')) $('targetCurrencySelect').value = state.target;
 
     // 4. Footer info
-    $('statDataPoints').textContent = state.chartData.labels.length;
-    $('lastSyncedTime').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    if ($('statDataPoints')) $('statDataPoints').textContent = state.chartData.labels.length;
+    if ($('lastSyncedTime')) $('lastSyncedTime').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }
 
   async function applyPairAndTimeframe(newBase, newTarget, newTf = state.timeframe) {
@@ -614,7 +618,7 @@
   }
 
   // ============================================================
-  // 10. Corridor Performance Matrix (Table with SVG Sparklines & Live API Rates)
+  // 10. Corridor Performance Matrix (Table with SVG Sparklines & Live Rates)
   // ============================================================
   async function fetchAllCorridorLiveRates() {
     const bases = Array.from(new Set(CORRIDORS.map(c => c.base)));
@@ -870,34 +874,67 @@
     });
 
     // 10. Auth Session Status in Nav
-    const session = localStorage.getItem('bypassfx_session') || sessionStorage.getItem('bypassfx_session');
-    if (session) {
-      try {
-        const user = JSON.parse(session);
-        const navAuth = $('navRightContainer') || $('navAuthContainer');
-        const mobAuth = $('mobileNavAuthContainer');
+    function updateNavbarAuth() {
+      const session = localStorage.getItem('bypassfx_session') || sessionStorage.getItem('bypassfx_session');
+      const navAuth = $('navRightContainer') || $('navAuthContainer');
+      const mobAuth = $('mobileNavAuthContainer');
+
+      if (session) {
+        try {
+          const user = JSON.parse(session);
+          const firstName = user.name ? user.name.split(' ')[0] : 'Member';
+          if (navAuth) {
+            navAuth.innerHTML = `
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="profile.html" class="user-badge-pill" title="View Account Profile">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>👋 ${firstName}</span>
+                </a>
+                <a href="profile.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Profile</a>
+                <button type="button" id="btnRatesNavLogout" style="background: var(--surface); border: 1.5px solid var(--border-strong); padding: 7px 14px; border-radius: var(--radius-pill); font-size: 0.82rem; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all 0.2s ease;">Log out</button>
+              </div>
+            `;
+            $('btnRatesNavLogout')?.addEventListener('click', () => {
+              localStorage.removeItem('bypassfx_session');
+              sessionStorage.removeItem('bypassfx_session');
+              updateNavbarAuth();
+            });
+          }
+          if (mobAuth) {
+            mobAuth.innerHTML = `
+              <div style="font-family: var(--font-display); font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                👋 Logged in as ${user.name}
+              </div>
+              <a href="profile.html" class="btn-primary" style="text-align: center;">View Profile</a>
+              <button type="button" id="btnRatesMobLogout" class="btn-secondary" style="text-align:center; width:100%; margin-top:8px;">Log out</button>
+            `;
+            $('btnRatesMobLogout')?.addEventListener('click', () => {
+              localStorage.removeItem('bypassfx_session');
+              sessionStorage.removeItem('bypassfx_session');
+              updateNavbarAuth();
+            });
+          }
+        } catch (e) {}
+      } else {
         if (navAuth) {
           navAuth.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <a href="profile.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
-                <span style="font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">
-                  👋 ${user.name.split(' ')[0]}
-                </span>
-              </a>
-              <a href="profile.html" class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;">Profile</a>
-            </div>
+            <a href="login.html" class="btn-nav-login">Log in</a>
+            <a href="signup.html" class="btn-nav-signup">Sign up</a>
           `;
         }
         if (mobAuth) {
           mobAuth.innerHTML = `
-            <div style="font-family: var(--font-display); font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
-              Logged in as ${user.name}
-            </div>
-            <a href="profile.html" class="btn-primary" style="text-align: center;">View Profile</a>
+            <a href="login.html" class="btn-secondary" style="text-align: center;">Log in</a>
+            <a href="signup.html" class="btn-primary" style="text-align: center;">Sign up</a>
           `;
         }
-      } catch (e) {}
+      }
     }
+
+    updateNavbarAuth();
   }
 
   // ============================================================

@@ -3135,3 +3135,164 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   Interactive Auth-Gate & Coming Soon Modals
+   ============================================================ */
+.bypass-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 28, 20, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.bypass-modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.bypass-modal-card {
+  position: relative;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  padding: 36px 32px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 24px 60px -12px rgba(8, 28, 20, 0.4);
+  transform: scale(0.92) translateY(12px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.bypass-modal-backdrop.active .bypass-modal-card {
+  transform: scale(1) translateY(0);
+}
+
+.bypass-modal-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bypass-modal-icon.lock {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--accent);
+  border: 1.5px solid rgba(22, 163, 74, 0.25);
+}
+
+.bypass-modal-icon.rocket {
+  background: rgba(15, 81, 56, 0.12);
+  color: var(--panel-dark-2);
+  border: 1.5px solid rgba(15, 81, 56, 0.25);
+}
+
+.bypass-modal-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.bypass-modal-badge.coming-soon {
+  background: #FEF3C7;
+  color: #92400E;
+  border-color: #FDE68A;
+}
+
+.bypass-modal-card h3 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  line-height: 1.25;
+}
+
+.bypass-modal-card p {
+  font-size: 0.94rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+
+.bypass-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.bypass-modal-actions.single {
+  grid-template-columns: 1fr;
+}
+
+.modal-btn {
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+}
+
+.bypass-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bypass-modal-close:hover {
+  background: var(--border-strong);
+  color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+  .bypass-modal-card {
+    padding: 26px 20px;
+    border-radius: var(--radius-lg);
+  }
+  .bypass-modal-card h3 {
+    font-size: 1.25rem;
+  }
+  .bypass-modal-card p {
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+  }
+  .bypass-modal-actions {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
