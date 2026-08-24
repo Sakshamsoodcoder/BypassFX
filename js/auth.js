@@ -1,6 +1,5 @@
 /**
  * BYPASSFX — Secure Authentication Engine
- * Prototype authentication with client-side SHA-256 password hashing,
  * full form validations, session management, and password reset flows.
  */
 
