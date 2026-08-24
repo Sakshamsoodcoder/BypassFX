@@ -55,6 +55,8 @@
     { code: 'COP', name: 'Colombian Peso', iso: 'co', flag: '🇨🇴', symbol: 'COL$', country: 'Colombia' }
   ];
 
+  const CURRENCY_NAMES = Object.fromEntries(CURRENCIES.map(c => [c.code, c.name]));
+
   function getCurrencyMeta(code) {
     return CURRENCIES.find(c => c.code === code) || {
       code: code,
@@ -83,9 +85,9 @@
       .replace(/'/g, '&#039;');
   }
 
-  const ZERO_DECIMALS = new Set(['JPY']);
+  const ZERO_DECIMALS = new Set(['JPY', 'KRW', 'IDR', 'CLP', 'COP', 'HUF']);
 
-  // Baseline Mid-Market Rates per 1 USD (for offline resilience & instant bootstrap)
+  // Baseline Mid-Market Rates per 1 USD (for instant bootstrap & offline resilience)
   const USD_BASE_RATES = {
     USD: 1.0,
     INR: 86.8520,
@@ -98,7 +100,31 @@
     SGD: 1.3480,
     AED: 3.6725,
     CNY: 7.2450,
-    NZD: 1.6950
+    NZD: 1.6950,
+    HKD: 7.7800,
+    KRW: 1385.50,
+    SAR: 3.7510,
+    QAR: 3.6410,
+    THB: 35.8500,
+    MYR: 4.4250,
+    IDR: 15850.0,
+    PHP: 57.2500,
+    ZAR: 18.2500,
+    RUB: 91.5000,
+    BRL: 5.6500,
+    MXN: 18.9500,
+    SEK: 10.4500,
+    NOK: 10.7500,
+    DKK: 6.8900,
+    PLN: 3.9650,
+    TRY: 34.2500,
+    CZK: 23.2500,
+    HUF: 368.50,
+    ILS: 3.7250,
+    BGN: 1.8080,
+    RON: 4.6050,
+    CLP: 945.00,
+    COP: 4125.00
   };
 
   // Pre-configured Corridor Matrix Dataset
@@ -381,6 +407,7 @@
   }
 
   function calculateCrossRate(from, to) {
+    if (!from || !to || from === to) return 1.0;
     if (state.corridorLiveRates[`${from}_${to}`]) {
       return state.corridorLiveRates[`${from}_${to}`];
     }
@@ -395,37 +422,47 @@
   const customCrosshairPlugin = {
     id: 'customCrosshairPlugin',
     afterDraw: (chart) => {
-      if (chart.tooltip?._active?.length) {
-        const activePoint = chart.tooltip._active[0];
-        const { ctx } = chart;
-        const { x } = activePoint.element;
-        const topY = chart.scales.y.top;
-        const bottomY = chart.scales.y.bottom;
+      try {
+        const activeElements = (chart.tooltip && typeof chart.tooltip.getActiveElements === 'function')
+          ? chart.tooltip.getActiveElements()
+          : chart.tooltip?._active;
 
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(x, topY);
-        ctx.lineTo(x, bottomY);
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 4]);
-        ctx.strokeStyle = 'rgba(22, 163, 74, 0.45)';
-        ctx.stroke();
+        if (activeElements && activeElements.length > 0 && activeElements[0]?.element) {
+          const activePoint = activeElements[0];
+          const { ctx } = chart;
+          const x = activePoint.element.x;
+          const y = activePoint.element.y;
+          if (x == null || y == null || !chart.scales?.y) return;
 
-        // Glowing node on intersection
-        const y = activePoint.element.y;
-        ctx.beginPath();
-        ctx.arc(x, y, 6, 0, 2 * Math.PI);
-        ctx.fillStyle = '#16A34A';
-        ctx.shadowColor = '#22C55E';
-        ctx.shadowBlur = 10;
-        ctx.fill();
+          const topY = chart.scales.y.top;
+          const bottomY = chart.scales.y.bottom;
 
-        ctx.beginPath();
-        ctx.arc(x, y, 10, 0, 2 * Math.PI);
-        ctx.strokeStyle = 'rgba(34, 197, 94, 0.35)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.restore();
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x, topY);
+          ctx.lineTo(x, bottomY);
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = 'rgba(22, 163, 74, 0.45)';
+          ctx.stroke();
+
+          // Glowing node on intersection
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, 2 * Math.PI);
+          ctx.fillStyle = '#16A34A';
+          ctx.shadowColor = '#22C55E';
+          ctx.shadowBlur = 10;
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(x, y, 10, 0, 2 * Math.PI);
+          ctx.strokeStyle = 'rgba(34, 197, 94, 0.35)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.restore();
+        }
+      } catch (err) {
+        // Defensive safeguard against unexpected render errors
       }
     }
   };
@@ -434,32 +471,50 @@
   // 5. Chart.js Initialization & Gradient Management
   // ============================================================
   function createGradients(ctx) {
-    const gradientMid = ctx.createLinearGradient(0, 0, 0, 380);
-    gradientMid.addColorStop(0, 'rgba(22, 163, 74, 0.22)');
-    gradientMid.addColorStop(0.5, 'rgba(22, 163, 74, 0.06)');
-    gradientMid.addColorStop(1, 'rgba(22, 163, 74, 0.0)');
+    try {
+      const gradientMid = ctx.createLinearGradient(0, 0, 0, 380);
+      gradientMid.addColorStop(0, 'rgba(22, 163, 74, 0.22)');
+      gradientMid.addColorStop(0.5, 'rgba(22, 163, 74, 0.06)');
+      gradientMid.addColorStop(1, 'rgba(22, 163, 74, 0.0)');
 
-    const gradientWise = ctx.createLinearGradient(0, 0, 0, 380);
-    gradientWise.addColorStop(0, 'rgba(2, 132, 199, 0.15)');
-    gradientWise.addColorStop(1, 'rgba(2, 132, 199, 0.0)');
+      const gradientWise = ctx.createLinearGradient(0, 0, 0, 380);
+      gradientWise.addColorStop(0, 'rgba(2, 132, 199, 0.15)');
+      gradientWise.addColorStop(1, 'rgba(2, 132, 199, 0.0)');
 
-    return { gradientMid, gradientWise };
+      return { gradientMid, gradientWise };
+    } catch (e) {
+      return { gradientMid: 'rgba(22, 163, 74, 0.1)', gradientWise: 'transparent' };
+    }
   }
 
   function initChart() {
+    if (typeof Chart === 'undefined') {
+      console.warn('Chart.js not loaded yet, retrying in 100ms...');
+      setTimeout(initChart, 100);
+      return;
+    }
+
     const canvas = $('mainRateChart');
     if (!canvas) return;
+
+    if (state.chartInstance) {
+      try {
+        state.chartInstance.destroy();
+      } catch (e) {}
+      state.chartInstance = null;
+    }
+
     const ctx = canvas.getContext('2d');
     const { gradientMid, gradientWise } = createGradients(ctx);
 
     const config = {
       type: 'line',
       data: {
-        labels: state.chartData.labels,
+        labels: state.chartData.labels || [],
         datasets: [
           {
             label: 'Mid-Market Rate',
-            data: state.chartData.midRates,
+            data: state.chartData.midRates || [],
             borderColor: '#16A34A',
             borderWidth: 2.8,
             backgroundColor: gradientMid,
@@ -475,7 +530,7 @@
           },
           {
             label: 'Wise Optimal Route',
-            data: state.chartData.wiseRates,
+            data: state.chartData.wiseRates || [],
             borderColor: '#0284C7',
             borderWidth: 2,
             backgroundColor: gradientWise,
@@ -492,7 +547,7 @@
           },
           {
             label: 'Bank Wire Spread',
-            data: state.chartData.bankRates,
+            data: state.chartData.bankRates || [],
             borderColor: '#DC2626',
             borderWidth: 1.8,
             borderDash: [3, 3],
@@ -516,13 +571,13 @@
           intersect: false
         },
         animation: {
-          duration: 600,
+          duration: 400,
           easing: 'easeOutCubic'
         },
         plugins: {
           legend: { display: false },
           tooltip: {
-            enabled: false, // Using our custom HTML frosted glass tooltip
+            enabled: false,
             external: handleCustomTooltip
           }
         },
@@ -555,53 +610,66 @@
       plugins: [customCrosshairPlugin]
     };
 
-    state.chartInstance = new Chart(ctx, config);
+    try {
+      state.chartInstance = new Chart(ctx, config);
+    } catch (err) {
+      console.error('Failed to instantiate Chart.js:', err);
+    }
   }
 
   // ============================================================
   // 6. Custom Frosted Glass Tooltip Renderer
   // ============================================================
   function handleCustomTooltip(context) {
-    const tooltipEl = $('chartCustomTooltip');
-    const { chart, tooltip } = context;
+    try {
+      const tooltipEl = $('chartCustomTooltip');
+      if (!tooltipEl) return;
+      const { tooltip } = context;
 
-    if (tooltip.opacity === 0) {
-      tooltipEl.style.opacity = '0';
-      return;
-    }
+      if (!tooltip || tooltip.opacity === 0) {
+        tooltipEl.style.opacity = '0';
+        return;
+      }
 
-    if (tooltip.body) {
-      const dataIndex = tooltip.dataPoints[0].dataIndex;
-      const timeLabel = state.chartData.labels[dataIndex];
-      const midVal = state.chartData.midRates[dataIndex];
-      const wiseVal = state.chartData.wiseRates[dataIndex];
-      const bankVal = state.chartData.bankRates[dataIndex];
+      if (tooltip.dataPoints && tooltip.dataPoints.length > 0) {
+        const dataIndex = tooltip.dataPoints[0].dataIndex;
+        if (dataIndex == null || !state.chartData.midRates || state.chartData.midRates[dataIndex] == null) return;
 
-      const startRate = state.chartData.midRates[0] || midVal;
-      const delta = midVal - startRate;
-      const deltaPct = ((delta / startRate) * 100).toFixed(2);
-      const sign = delta >= 0 ? '+' : '';
-      const isUp = delta >= 0;
+        const timeLabel = state.chartData.labels[dataIndex] || '';
+        const midVal = state.chartData.midRates[dataIndex];
+        const wiseVal = state.chartData.wiseRates[dataIndex] || (midVal * 0.9955);
+        const bankVal = state.chartData.bankRates[dataIndex] || (midVal * 0.9700);
 
-      // Populate tooltip elements
-      $('ttTime').textContent = timeLabel;
-      $('ttPair').textContent = `${state.base}/${state.target}`;
-      $('ttRate').textContent = formatRate(midVal, state.target);
-      
-      const ttDelta = $('ttDelta');
-      ttDelta.textContent = `${sign}${deltaPct}%`;
-      ttDelta.className = `tooltip-delta ${isUp ? 'up' : 'down'}`;
+        const startRate = state.chartData.midRates[0] || midVal;
+        const delta = midVal - startRate;
+        const deltaPct = startRate > 0 ? ((delta / startRate) * 100).toFixed(2) : '0.00';
+        const sign = delta >= 0 ? '+' : '';
+        const isUp = delta >= 0;
 
-      $('ttWise').textContent = formatRate(wiseVal, state.target);
-      $('ttBank').textContent = formatRate(bankVal, state.target);
+        // Populate tooltip elements
+        if ($('ttTime')) $('ttTime').textContent = timeLabel;
+        if ($('ttPair')) $('ttPair').textContent = `${state.base}/${state.target}`;
+        if ($('ttRate')) $('ttRate').textContent = formatRate(midVal, state.target);
+        
+        const ttDelta = $('ttDelta');
+        if (ttDelta) {
+          ttDelta.textContent = `${sign}${deltaPct}%`;
+          ttDelta.className = `tooltip-delta ${isUp ? 'up' : 'down'}`;
+        }
 
-      // Positioning tooltip
-      const left = tooltip.caretX;
-      const top = tooltip.caretY;
+        if ($('ttWise')) $('ttWise').textContent = formatRate(wiseVal, state.target);
+        if ($('ttBank')) $('ttBank').textContent = formatRate(bankVal, state.target);
 
-      tooltipEl.style.left = `${left}px`;
-      tooltipEl.style.top = `${top}px`;
-      tooltipEl.style.opacity = '1';
+        // Positioning tooltip
+        const left = tooltip.caretX;
+        const top = tooltip.caretY;
+
+        tooltipEl.style.left = `${left}px`;
+        tooltipEl.style.top = `${top}px`;
+        tooltipEl.style.opacity = '1';
+      }
+    } catch (err) {
+      // Ignore tooltip render glitches
     }
   }
 
@@ -609,20 +677,21 @@
   // 7. Live API & Historical Timeseries Data Fetching
   // ============================================================
   async function fetchLiveExchangeRate(base, target) {
+    if (base === target) return 1.0;
     try {
       const res = await fetch(`${API_BASE}/latest?from=${base}&to=${target}`);
       if (res.ok) {
         const data = await res.json();
         const rate = data.rates?.[target];
-        if (rate != null) {
-          USD_BASE_RATES[target] = (USD_BASE_RATES[base] || 1.0) * rate;
-          return rate;
+        if (rate != null && !isNaN(rate) && Number(rate) > 0) {
+          state.corridorLiveRates[`${base}_${target}`] = Number(rate);
+          return Number(rate);
         }
       }
     } catch (e) {
-      console.warn(`Live rate fetch failed for ${base}/${target}, using fallback baseline.`);
+      console.warn(`Live rate fetch failed for ${base}/${target}, using baseline.`);
     }
-    return calculateCrossRate(base, target);
+    return calculateCrossRate(base, target) || 1.0;
   }
 
   function generateIntradaySeries(baseRate, count, tf) {
@@ -632,7 +701,8 @@
     const bankRates = [];
 
     const now = new Date();
-    let current = baseRate;
+    const rate = Number(baseRate) > 0 ? Number(baseRate) : 1.0;
+    let current = rate;
     const volatility = 0.0006;
 
     for (let i = count - 1; i >= 0; i--) {
@@ -641,15 +711,17 @@
         pointTime.setMinutes(now.getMinutes() - i);
       } else if (tf === '24H') {
         pointTime.setHours(now.getHours() - i);
+      } else if (tf === '7D' || tf === '1M' || tf === '1Y') {
+        pointTime.setDate(now.getDate() - i);
       }
 
       const shock = (Math.random() - 0.495) * (current * volatility);
-      current = Math.max(current * 0.9, current + shock);
+      current = Math.max(current * 0.85, current + shock);
 
       labels.push(formatTimestamp(pointTime, tf));
-      midRates.push(current);
-      wiseRates.push(current * 0.9955);
-      bankRates.push(current * 0.9700);
+      midRates.push(Number(current.toFixed(6)));
+      wiseRates.push(Number((current * 0.9955).toFixed(6)));
+      bankRates.push(Number((current * 0.9700).toFixed(6)));
     }
 
     return { labels, midRates, wiseRates, bankRates };
@@ -687,15 +759,16 @@
 
       dates.forEach(d => {
         const val = data.rates[d][target];
-        if (val != null) {
+        if (val != null && !isNaN(val)) {
           const dateObj = new Date(d + 'T00:00:00');
           labels.push(formatTimestamp(dateObj, tf));
-          midRates.push(val);
-          wiseRates.push(val * 0.9955);
-          bankRates.push(val * 0.9700);
+          midRates.push(Number(val));
+          wiseRates.push(Number((val * 0.9955).toFixed(6)));
+          bankRates.push(Number((val * 0.9700).toFixed(6)));
         }
       });
 
+      if (midRates.length === 0) throw new Error('Empty historical rates array');
       return { labels, midRates, wiseRates, bankRates };
     } catch (err) {
       console.warn(`Falling back to simulated historical series for ${base}/${target} (${tf}):`, err);
@@ -1200,12 +1273,26 @@
   async function init() {
     initDropdowns();
     setupEventListeners();
+
+    // Seed baseline intraday series synchronously so Chart initializes with valid data immediately
+    const fallbackRate = calculateCrossRate(state.base, state.target);
+    state.currentRate = fallbackRate;
+    state.chartData = generateIntradaySeries(fallbackRate, 60, '1H');
+    state.dayOpenRate = state.chartData.midRates[0] || fallbackRate;
+    state.sessionHigh = Math.max(...state.chartData.midRates);
+    state.sessionLow = Math.min(...state.chartData.midRates);
+
     initChart();
     renderCorridorTable('all');
     initBackToTop();
+    updateUIElements();
 
-    // Load initial 1H data with live API connection
-    await applyPairAndTimeframe('USD', 'INR', '1H');
+    // Load initial live API connection asynchronously and update chart
+    try {
+      await applyPairAndTimeframe(state.base, state.target, '1H');
+    } catch (e) {
+      console.warn('Initial live API pair fetch failed, continuing with live stream.');
+    }
 
     // Fetch live rates for all corridors in background
     fetchAllCorridorLiveRates();
