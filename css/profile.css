@@ -462,3 +462,397 @@ body.profile-page {
     padding-top: 8px;
   }
 }
+
+/* --- Profile Conversion History Section --- */
+.history-section-profile {
+  margin-top: 32px;
+}
+
+.history-section-profile .info-card {
+  padding: 28px;
+}
+
+.section-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.history-actions-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-clear-history-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-clear-history-pill:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: #F87171;
+}
+
+.btn-new-convert {
+  display: inline-flex;
+  align-items: center;
+  background: var(--accent);
+  color: #072218;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.btn-new-convert:hover {
+  background: #6EE7B7;
+  transform: translateY(-1px);
+}
+
+.profile-history-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.history-card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 81, 56, 0.15);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+  transition: all 0.2s ease;
+}
+
+.history-card-item:hover {
+  border-color: var(--accent);
+  background: rgba(15, 81, 56, 0.25);
+  transform: translateX(4px);
+}
+
+.history-card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.history-card-flags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.history-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.history-card-path {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-card-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-card-meta .sep {
+  opacity: 0.4;
+}
+
+.history-card-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.history-card-numbers {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-card-to {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.12rem;
+  color: var(--accent-electric);
+}
+
+.history-card-from {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.history-savings-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(52, 211, 153, 0.15);
+  color: #34D399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.history-savings-pill.neutral {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-rerun-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #072218;
+  background: #34D399;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-rerun-profile:hover {
+  background: #6EE7B7;
+  transform: translateY(-1px);
+}
+
+.profile-history-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-history-empty svg {
+  opacity: 0.5;
+  stroke: var(--accent);
+}
+
+.profile-history-empty p {
+  font-size: 0.95rem;
+  max-width: 400px;
+  margin: 0;
+}
+
+/* --- Edit Profile Modal --- */
+.edit-profile-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 18, 12, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.edit-profile-modal-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.edit-profile-modal-card {
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(155deg, #0d422f 0%, #082b1e 65%, #051d14 100%);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(52, 211, 153, 0.15);
+  padding: 32px;
+  color: var(--text-inverse);
+  position: relative;
+  transform: scale(0.92) translateY(12px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.edit-profile-modal-backdrop.open .edit-profile-modal-card {
+  transform: scale(1) translateY(0);
+}
+
+.edit-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.edit-modal-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-inverse);
+  margin: 0;
+}
+
+.edit-modal-head p {
+  font-size: 0.85rem;
+  color: var(--text-inverse-muted);
+  margin-top: 4px;
+}
+
+.edit-modal-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-inverse-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.edit-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--text-inverse);
+}
+
+.edit-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.edit-form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-light);
+}
+
+.edit-form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(4, 20, 14, 0.6);
+  border: 1px solid var(--border-strong);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.edit-form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+}
+
+.edit-modal-banner {
+  display: none;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.edit-modal-banner.show {
+  display: block;
+}
+
+.edit-modal-banner.error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #FCA5A5;
+}
+
+.edit-modal-banner.success {
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #6EE7B7;
+}
+
+.edit-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-modal-cancel {
+  background: transparent;
+  color: var(--text-inverse-muted);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-inverse);
+}
+
+.btn-modal-save {
+  background: var(--accent);
+  color: #072218;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-modal-save:hover:not(:disabled) {
+  background: #6EE7B7;
+  transform: translateY(-1px);
+}
+
+.btn-modal-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

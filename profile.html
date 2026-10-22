@@ -91,7 +91,7 @@
       </div>
     </div>
     <div class="hero-actions">
-      <button class="btn-outline-light">
+      <button class="btn-outline-light" id="btnEditProfile" type="button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
         Edit Profile
       </button>
@@ -149,14 +149,61 @@
       </div>
     </div>
 
-    <!-- Right: Recent Activity -->
+    <!-- Right: Account Highlights -->
     <div class="info-card">
       <div class="card-header">
-        <h2>Recent Activity</h2>
-        <a href="rates.html" class="link-green">View Live Rates →</a>
+        <h2>Account Highlights</h2>
+        <a href="rates.html" class="link-green">Live Rates →</a>
       </div>
-      <div class="recent-activity-box">
-        <a href="rates.html" class="btn-outline-full">Explore Currency Markets</a>
+      <div class="info-list">
+        <div class="info-row">
+          <span class="info-key">Total Routes Calculated</span>
+          <span class="info-val font-bold" id="cardTotalConversions">0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Max Single Savings</span>
+          <span class="info-val text-green font-bold" id="cardMaxSavings">₹0.00</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Routing Algorithm</span>
+          <span class="info-val font-bold">Multi-Hop Dijkstra v2.4</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Database Sync</span>
+          <span class="info-val text-green font-bold">⚡ MongoDB Atlas</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conversion History Section -->
+  <section class="history-section-profile">
+    <div class="info-card">
+      <div class="card-header">
+        <div>
+          <h2>Your Conversion History</h2>
+          <p class="section-subtitle">Real-time log of your past currency conversions and savings</p>
+        </div>
+        <div class="history-actions-head">
+          <button type="button" class="btn-clear-history-pill" id="btnClearProfileHistory" style="display: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Clear Log
+          </button>
+          <a href="index.html#converterSection" class="btn-new-convert">
+            + New Conversion
+          </a>
+        </div>
+      </div>
+
+      <!-- History List Container -->
+      <div id="profileHistoryContainer" class="profile-history-container">
+        <div class="profile-history-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <p>No conversions found yet. Run your first multi-hop arbitrage calculation to see your log here.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -238,6 +285,8 @@
       return;
     }
 
+    let currentUserData = { name: '', email: '' };
+
     try {
       // 1. Fetch user profile from MongoDB backend
       const res = await window.BypassAPI.user.getProfile();
@@ -245,6 +294,9 @@
 
       const name = user.name || 'Member';
       const email = user.email || '—';
+
+      currentUserData.name = user.name || '';
+      currentUserData.email = user.email || '';
 
       // Get Initials (e.g. Saksham Sood -> SS)
       const nameParts = name.trim().split(' ');
@@ -265,18 +317,31 @@
       document.getElementById('userJoined').textContent = joined;
 
       // 2. Fetch conversion history from MongoDB backend
-      const historyRes = await window.BypassAPI.history.getAll({ limit: 50 });
-      const myHistory = (historyRes && historyRes.data) || [];
+      let myHistory = [];
+      try {
+        const historyRes = await window.BypassAPI.history.getAll({ limit: 50 });
+        myHistory = (historyRes && historyRes.data) || [];
+      } catch (err) {
+        console.error('Failed to load history:', err);
+      }
 
       document.getElementById('totalConversions').textContent = user.totalConversions ?? myHistory.length;
       document.getElementById('routesExplored').textContent = user.totalConversions ?? myHistory.length;
+      const cardTotal = document.getElementById('cardTotalConversions');
+      if (cardTotal) cardTotal.textContent = user.totalConversions ?? myHistory.length;
 
       if (myHistory.length > 0) {
         const maxSavings = Math.max(...myHistory.map(item => item.savings || 0));
-        document.getElementById('bestSavings').textContent = maxSavings > 0 ? `+${maxSavings.toFixed(2)}` : 'Optimal';
+        const savingsText = maxSavings > 0 ? `+${maxSavings.toFixed(2)}` : 'Optimal';
+        document.getElementById('bestSavings').textContent = savingsText;
+        const cardSavings = document.getElementById('cardMaxSavings');
+        if (cardSavings) cardSavings.textContent = savingsText;
       } else {
         document.getElementById('bestSavings').textContent = '—';
       }
+
+      // 3. Render Conversion History Cards
+      renderProfileHistory(myHistory);
 
     } catch (e) {
       console.error('Session/profile fetch error:', e);
@@ -284,6 +349,123 @@
       const session = window.BypassAPI.getSession();
       if (!session) {
         window.location.href = 'login.html';
+      }
+    }
+
+    // Helper functions for history rendering
+    function getFlagImg(code) {
+      const isoMap = {
+        USD: 'us', EUR: 'eu', GBP: 'gb', INR: 'in', JPY: 'jp',
+        AUD: 'au', CAD: 'ca', CHF: 'ch', CNY: 'cn', SGD: 'sg',
+        NZD: 'nz', HKD: 'hk', AED: 'ae', SAR: 'sa', QAR: 'qa',
+        THB: 'th', MYR: 'my', IDR: 'id', PHP: 'ph', ZAR: 'za',
+        RUB: 'ru', BRL: 'br', MXN: 'mx', SEK: 'se', NOK: 'no',
+        DKK: 'dk', PLN: 'pl', TRY: 'tr', KRW: 'kr', CZK: 'cz',
+        HUF: 'hu', ILS: 'il', BGN: 'bg', RON: 'ro', CLP: 'cl', COP: 'co'
+      };
+      const iso = (isoMap[code] || code.slice(0, 2)).toLowerCase();
+      return `<img src="https://flagcdn.com/w40/${iso}.png" srcset="https://flagcdn.com/w80/${iso}.png 2x" width="22" height="15" alt="${code}" class="currency-flag-img" style="border-radius:2.5px; vertical-align:middle; margin-right:4px;">`;
+    }
+
+    function formatAmt(num, cur) {
+      if (num == null || isNaN(num)) return '0.00';
+      const isZeroDec = ['JPY', 'KRW', 'CLP', 'IDR', 'HUF'].includes(cur);
+      return Number(num).toLocaleString('en-US', {
+        minimumFractionDigits: isZeroDec ? 0 : 2,
+        maximumFractionDigits: isZeroDec ? 0 : 2
+      });
+    }
+
+    function renderProfileHistory(list) {
+      const container = document.getElementById('profileHistoryContainer');
+      const clearBtn = document.getElementById('btnClearProfileHistory');
+      if (!container) return;
+
+      if (!list || list.length === 0) {
+        container.innerHTML = `
+          <div class="profile-history-empty">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <p>No conversions found yet. Run your first multi-hop arbitrage calculation to see your log here.</p>
+          </div>
+        `;
+        if (clearBtn) clearBtn.style.display = 'none';
+        return;
+      }
+
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+
+      container.innerHTML = list.map(item => {
+        const d = new Date(item.createdAt || item.date);
+        const dateStr = isNaN(d) ? 'Recent' : d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const routeText = item.route || `${item.from} ➔ ${item.to}`;
+        const hasSavings = (item.savings > 0);
+
+        return `
+          <div class="history-card-item">
+            <div class="history-card-left">
+              <div class="history-card-details">
+                <div class="history-card-path">
+                  <span>${getFlagImg(item.from)} ${item.from}</span>
+                  <span style="color: var(--accent);">➔</span>
+                  <span>${getFlagImg(item.to)} ${item.to}</span>
+                </div>
+                <div class="history-card-meta">
+                  <span>${dateStr}</span>
+                  <span class="sep">•</span>
+                  <span>Route: <strong>${routeText}</strong></span>
+                  ${item.provider ? `<span class="sep">•</span><span>${item.provider}</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="history-card-right">
+              <div class="history-card-numbers">
+                <div class="history-card-to">${formatAmt(item.toAmount, item.to)} ${item.to}</div>
+                <div class="history-card-from">Sent: ${formatAmt(item.fromAmount, item.from)} ${item.from}</div>
+              </div>
+              <span class="history-savings-pill ${hasSavings ? '' : 'neutral'}">
+                ${hasSavings ? `+${formatAmt(item.savings, item.to)} Saved` : 'Optimal Direct'}
+              </span>
+              <button type="button" class="btn-rerun-profile" data-from="${item.from}" data-to="${item.to}" data-amount="${item.fromAmount}">
+                Re-run
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Attach re-run handlers
+      container.querySelectorAll('.btn-rerun-profile').forEach(btn => {
+        btn.addEventListener('click', () => {
+          localStorage.setItem('bypassfx_preset_from', btn.dataset.from);
+          localStorage.setItem('bypassfx_preset_to', btn.dataset.to);
+          localStorage.setItem('bypassfx_preset_amount', btn.dataset.amount);
+          window.location.href = 'index.html#converterSection';
+        });
+      });
+
+      // Clear History Handler
+      if (clearBtn) {
+        clearBtn.onclick = async () => {
+          if (confirm('Are you sure you want to clear your conversion history?')) {
+            try {
+              await window.BypassAPI.history.clearAll();
+              renderProfileHistory([]);
+              document.getElementById('totalConversions').textContent = '0';
+              document.getElementById('routesExplored').textContent = '0';
+              document.getElementById('bestSavings').textContent = '—';
+              const cardTotal = document.getElementById('cardTotalConversions');
+              if (cardTotal) cardTotal.textContent = '0';
+              const cardSavings = document.getElementById('cardMaxSavings');
+              if (cardSavings) cardSavings.textContent = '₹0.00';
+            } catch (err) {
+              alert('Failed to clear history: ' + (err.message || err));
+            }
+          }
+        };
       }
     }
 
@@ -311,6 +493,121 @@
       });
     }
 
+    // ─── Edit Profile Modal Logic ───
+    const editModal = document.getElementById('editProfileModal');
+    const btnOpenEdit = document.getElementById('btnEditProfile');
+    const btnCloseEdit = document.getElementById('btnCloseEditModal');
+    const btnCancelEdit = document.getElementById('btnCancelEditModal');
+    const editForm = document.getElementById('editProfileForm');
+    const editNameInput = document.getElementById('editNameInput');
+    const editEmailInput = document.getElementById('editEmailInput');
+    const editBanner = document.getElementById('editModalBanner');
+    const btnSave = document.getElementById('btnSaveProfile');
+
+    function openEditModal() {
+      if (!editModal) return;
+      if (editNameInput) editNameInput.value = currentUserData.name || '';
+      if (editEmailInput) editEmailInput.value = currentUserData.email || '';
+      if (editBanner) {
+        editBanner.className = 'edit-modal-banner';
+        editBanner.textContent = '';
+      }
+      editModal.classList.add('open');
+      if (editNameInput) editNameInput.focus();
+    }
+
+    function closeEditModal() {
+      if (!editModal) return;
+      editModal.classList.remove('open');
+    }
+
+    if (btnOpenEdit) btnOpenEdit.addEventListener('click', openEditModal);
+    if (btnCloseEdit) btnCloseEdit.addEventListener('click', closeEditModal);
+    if (btnCancelEdit) btnCancelEdit.addEventListener('click', closeEditModal);
+
+    // Close when clicking on backdrop outside card
+    if (editModal) {
+      editModal.addEventListener('click', (e) => {
+        if (e.target === editModal) closeEditModal();
+      });
+    }
+
+    // Escape key closes modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && editModal && editModal.classList.contains('open')) {
+        closeEditModal();
+      }
+    });
+
+    // Handle form submit
+    if (editForm) {
+      editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newName = editNameInput.value.trim();
+        const newEmail = editEmailInput.value.trim().toLowerCase();
+
+        if (!newName) {
+          showEditBanner('Name cannot be empty.', 'error');
+          return;
+        }
+        if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+          showEditBanner('Please enter a valid email address.', 'error');
+          return;
+        }
+
+        btnSave.disabled = true;
+        btnSave.textContent = 'Saving…';
+        showEditBanner('', '');
+
+        try {
+          const res = await window.BypassAPI.user.updateProfile({
+            name: newName,
+            email: newEmail
+          });
+
+          const updatedUser = (res && res.user) || { name: newName, email: newEmail };
+          currentUserData.name = updatedUser.name;
+          currentUserData.email = updatedUser.email;
+
+          // Update UI on page immediately
+          document.getElementById('userName').textContent = updatedUser.name;
+          document.getElementById('infoName').textContent = updatedUser.name;
+          document.getElementById('infoEmail').textContent = updatedUser.email;
+
+          // Update avatar initial
+          const nameParts = updatedUser.name.trim().split(' ');
+          const initial = nameParts.length > 1
+            ? nameParts[0].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].charAt(0).toUpperCase()
+            : nameParts[0].charAt(0).toUpperCase();
+          document.getElementById('userAvatar').textContent = initial;
+
+          showEditBanner('Profile updated successfully!', 'success');
+
+          setTimeout(() => {
+            closeEditModal();
+            btnSave.disabled = false;
+            btnSave.textContent = 'Save Changes';
+          }, 600);
+        } catch (err) {
+          console.error('Update profile error:', err);
+          showEditBanner(err.message || 'Failed to update profile. Please try again.', 'error');
+          btnSave.disabled = false;
+          btnSave.textContent = 'Save Changes';
+        }
+      });
+    }
+
+    function showEditBanner(msg, type) {
+      if (!editBanner) return;
+      if (!msg) {
+        editBanner.className = 'edit-modal-banner';
+        editBanner.textContent = '';
+        return;
+      }
+      editBanner.textContent = msg;
+      editBanner.className = `edit-modal-banner show ${type}`;
+    }
+
     // Back to Top Button
     const topBtn = document.getElementById('btnBackToTop');
     if (topBtn) {
@@ -329,6 +626,40 @@
     }
   });
 </script>
+
+  <!-- Edit Profile Modal Dialog -->
+  <div class="edit-profile-modal-backdrop" id="editProfileModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="edit-profile-modal-card">
+      <div class="edit-modal-head">
+        <div>
+          <h2 id="editModalTitle">Edit Profile</h2>
+          <p>Update your personal account details</p>
+        </div>
+        <button type="button" class="edit-modal-close-btn" id="btnCloseEditModal" aria-label="Close dialog">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div id="editModalBanner" class="edit-modal-banner"></div>
+
+      <form id="editProfileForm">
+        <div class="edit-form-group">
+          <label for="editNameInput">Full Name</label>
+          <input type="text" id="editNameInput" class="edit-form-input" placeholder="e.g. Saksham Sood" required maxlength="80">
+        </div>
+
+        <div class="edit-form-group">
+          <label for="editEmailInput">Email Address</label>
+          <input type="email" id="editEmailInput" class="edit-form-input" placeholder="name@example.com" required>
+        </div>
+
+        <div class="edit-modal-actions">
+          <button type="button" class="btn-modal-cancel" id="btnCancelEditModal">Cancel</button>
+          <button type="submit" class="btn-modal-save" id="btnSaveProfile">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Floating Back to Top Button -->
   <button class="back-to-top-btn" id="btnBackToTop" aria-label="Back to top" type="button">

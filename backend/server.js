@@ -26,8 +26,46 @@ connectDB();
 // ─── Express App Setup ────────────────────────────────────────────────────────
 const app = express();
 
-// Security headers
-app.use(helmet());
+// Security headers with permissive CSP for flags, fonts, and chart libraries
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "blob:",
+        "https://flagcdn.com",
+        "https://*.flagcdn.com",
+        "https://images.unsplash.com"
+      ],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "https://cdn.jsdelivr.net",
+        "https://cdnjs.cloudflare.com"
+      ],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://fonts.googleapis.com"
+      ],
+      fontSrc: [
+        "'self'",
+        "https://fonts.gstatic.com",
+        "data:"
+      ],
+      connectSrc: [
+        "'self'",
+        "https://api.frankfurter.app",
+        "https://api.ipify.org"
+      ]
+    }
+  },
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // CORS — allow requests from the frontend origin
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
