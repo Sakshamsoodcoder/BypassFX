@@ -6,6 +6,7 @@
 const jwt  = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User.model');
+const { isDBConnected } = require('../config/db');
 
 // ─── Helper: sign JWT ─────────────────────────────────────────────────────────
 const signToken = (userId) => {
@@ -26,6 +27,13 @@ const sendTokenResponse = (user, statusCode, res) => {
 
 // ─── POST /api/auth/signup ────────────────────────────────────────────────────
 const signup = async (req, res) => {
+  if (!isDBConnected()) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database is not connected. Please whitelist your IP (Network Access -> Add 0.0.0.0/0) in MongoDB Atlas.'
+    });
+  }
+
   try {
     const { name, email, password } = req.body;
 
@@ -51,12 +59,25 @@ const signup = async (req, res) => {
     if (err.code === 11000) {
       return res.status(409).json({ success: false, message: 'Email already in use.' });
     }
-    res.status(500).json({ success: false, message: 'Server error during signup. Please try again.' });
+    if (err.name === 'MongooseServerSelectionError' || err.name === 'MongooseError') {
+      return res.status(503).json({
+        success: false,
+        message: 'Cannot reach MongoDB cluster. Please whitelist IP 0.0.0.0/0 in MongoDB Atlas Network Access.'
+      });
+    }
+    res.status(500).json({ success: false, message: err.message || 'Server error during signup. Please try again.' });
   }
 };
 
 // ─── POST /api/auth/login ─────────────────────────────────────────────────────
 const login = async (req, res) => {
+  if (!isDBConnected()) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database is not connected. Please whitelist your IP (Network Access -> Add 0.0.0.0/0) in MongoDB Atlas.'
+    });
+  }
+
   try {
     const { email, password } = req.body;
 
@@ -81,7 +102,13 @@ const login = async (req, res) => {
     sendTokenResponse(user, 200, res);
   } catch (err) {
     console.error('Login error:', err);
-    res.status(500).json({ success: false, message: 'Server error during login. Please try again.' });
+    if (err.name === 'MongooseServerSelectionError' || err.name === 'MongooseError') {
+      return res.status(503).json({
+        success: false,
+        message: 'Cannot reach MongoDB cluster. Please whitelist IP 0.0.0.0/0 in MongoDB Atlas Network Access.'
+      });
+    }
+    res.status(500).json({ success: false, message: err.message || 'Server error during login. Please try again.' });
   }
 };
 

@@ -14,6 +14,7 @@ try {
 const mongoose = require('mongoose');
 
 let isConnected = false;
+let retryTimer = null;
 
 const connectDB = async () => {
   if (isConnected) return;
@@ -29,15 +30,28 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000 // 5-second timeout for quick feedback
     });
     isConnected = true;
-    console.log(`✅ MongoDB connected: ${conn.connection.host}`);
-  } catch (err) {
-    console.error('⚠️  MongoDB connection notice:', err.message);
-    if (err.message.includes('whitelist') || err.message.includes('Could not connect to any servers')) {
-      console.log('👉 Tip: Whitelist your current IP address (or 0.0.0.0/0 for everywhere) in MongoDB Atlas:');
-      console.log('   Security -> Network Access -> Add IP Address -> Allow Access From Anywhere (0.0.0.0/0)');
+    if (retryTimer) {
+      clearInterval(retryTimer);
+      retryTimer = null;
     }
-    if (process.env.NODE_ENV === 'production') {
-      process.exit(1);
+    console.log(`\n✅ MongoDB connected successfully: ${conn.connection.host}\n`);
+  } catch (err) {
+    isConnected = false;
+    console.error('⚠️  MongoDB connection notice:', err.message);
+    console.log('👉 Action needed: Whitelist your IP in MongoDB Atlas Network Access:');
+    console.log('   Go to: https://cloud.mongodb.com/ -> Network Access -> Add IP Address -> Allow Access From Anywhere (0.0.0.0/0)');
+
+    // Auto-retry connection every 8 seconds so it connects as soon as IP is whitelisted
+    if (!retryTimer && process.env.NODE_ENV !== 'production') {
+      retryTimer = setInterval(() => {
+        if (!isConnected) {
+          console.log('🔄 Checking MongoDB connection again...');
+          connectDB();
+        } else if (retryTimer) {
+          clearInterval(retryTimer);
+          retryTimer = null;
+        }
+      }, 8000);
     }
   }
 };
@@ -49,6 +63,10 @@ mongoose.connection.on('disconnected', () => {
 
 mongoose.connection.on('connected', () => {
   isConnected = true;
+  if (retryTimer) {
+    clearInterval(retryTimer);
+    retryTimer = null;
+  }
 });
 
 module.exports = {
