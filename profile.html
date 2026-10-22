@@ -230,30 +230,31 @@
   </div>
 </footer>
 
+<script src="js/api.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const rawSession = localStorage.getItem('bypassfx_session') || sessionStorage.getItem('bypassfx_session');
-    
-    if (!rawSession) {
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (!window.BypassAPI || !window.BypassAPI.isLoggedIn()) {
       window.location.href = 'login.html';
       return;
     }
 
     try {
-      const session = JSON.parse(rawSession);
-      
-      const name = session.name || 'Member';
-      const email = session.email || '—';
-      
+      // 1. Fetch user profile from MongoDB backend
+      const res = await window.BypassAPI.user.getProfile();
+      const user = (res && res.user) || window.BypassAPI.getSession() || {};
+
+      const name = user.name || 'Member';
+      const email = user.email || '—';
+
       // Get Initials (e.g. Saksham Sood -> SS)
-      const nameParts = name.split(' ');
-      const initial = nameParts.length > 1 
+      const nameParts = name.trim().split(' ');
+      const initial = nameParts.length > 1
         ? nameParts[0].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].charAt(0).toUpperCase()
         : nameParts[0].charAt(0).toUpperCase();
-      
+
       let joined = '—';
-      if (session.createdAt) {
-        const d = new Date(session.createdAt);
+      if (user.createdAt) {
+        const d = new Date(user.createdAt);
         joined = d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
       }
 
@@ -263,47 +264,42 @@
       document.getElementById('userAvatar').textContent = initial;
       document.getElementById('userJoined').textContent = joined;
 
-      // Navbar — show user badge instead of login/signup
-      const escapeHtml = (str) => String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-      const firstName = name.split(' ')[0];
+      // 2. Fetch conversion history from MongoDB backend
+      const historyRes = await window.BypassAPI.history.getAll({ limit: 50 });
+      const myHistory = (historyRes && historyRes.data) || [];
 
-      const navRight = document.getElementById('navRightContainer');
-      if (navRight) {
-        navRight.innerHTML = '';
-      }
+      document.getElementById('totalConversions').textContent = user.totalConversions ?? myHistory.length;
+      document.getElementById('routesExplored').textContent = user.totalConversions ?? myHistory.length;
 
-      const mobileAuth = document.getElementById('mobileNavAuthContainer');
-      if (mobileAuth) {
-        mobileAuth.innerHTML = '';
-      }
-
-      // Stats
-      const rawHistory = localStorage.getItem('bypassfx_history');
-      if (rawHistory) {
-        const historyList = JSON.parse(rawHistory);
-        const myHistory = historyList.filter(item => !item.userId || item.userId === session.id);
-        
-        document.getElementById('totalConversions').textContent = myHistory.length;
-        document.getElementById('routesExplored').textContent = myHistory.length;
-        
-        if (myHistory.length > 0) {
-          const maxSavings = Math.max(...myHistory.map(item => item.savings || 0));
-          document.getElementById('bestSavings').textContent = `₹${maxSavings.toFixed(2)}`;
-        }
+      if (myHistory.length > 0) {
+        const maxSavings = Math.max(...myHistory.map(item => item.savings || 0));
+        document.getElementById('bestSavings').textContent = maxSavings > 0 ? `+${maxSavings.toFixed(2)}` : 'Optimal';
+      } else {
+        document.getElementById('bestSavings').textContent = '—';
       }
 
     } catch (e) {
-      console.error('Session error', e);
+      console.error('Session/profile fetch error:', e);
+      // Fallback to local session data if offline
+      const session = window.BypassAPI.getSession();
+      if (!session) {
+        window.location.href = 'login.html';
+      }
     }
 
     // Logout handler
     function doLogout() {
-      localStorage.removeItem('bypassfx_session');
-      sessionStorage.removeItem('bypassfx_session');
-      window.location.href = 'index.html';
+      if (window.BypassAPI) {
+        window.BypassAPI.auth.logout();
+      } else {
+        window.location.href = 'login.html';
+      }
     }
 
-    document.getElementById('btnLogoutProfile').addEventListener('click', doLogout);
+    const btnLogout = document.getElementById('btnLogoutProfile');
+    if (btnLogout) {
+      btnLogout.addEventListener('click', doLogout);
+    }
 
     // Mobile Menu Toggle
     const menuBtn = document.getElementById('menuToggleBtn');

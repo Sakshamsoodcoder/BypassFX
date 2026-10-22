@@ -6,16 +6,20 @@
 
 ### _Find the cheapest path to convert your money -- across providers, across currencies._
 
-[![Made with JavaScript](https://img.shields.io/badge/Made%20with-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-Backend-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Render](https://img.shields.io/badge/Deploy-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://render.com/)
 [![Frankfurter API](https://img.shields.io/badge/Rates-Frankfurter%20API-16A34A?style=for-the-badge)](https://api.frankfurter.app)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 ---
 
-**Bypass-FX** is a fintech web application designed to find the **cheapest conversion route** across multiple transfer providers (Wise, PayPal, Bank Wire) using live exchange rates and a graph-based pathfinding algorithm. Think of it as Google Maps, but for your money.
+**Bypass-FX** is a fintech application designed to find the **cheapest conversion route** across multiple transfer providers (Wise, PayPal, Bank Wire) using live exchange rates and a multi-hop graph pathfinding algorithm.
 
-[Getting Started](#getting-started) | [Features](#features) | [Screenshots](#screenshots) | [Architecture](#architecture) | [Project Structure](#project-structure)
+Now in **Phase 2**, Bypass-FX features a full **Express.js + MongoDB** backend with **JWT authentication**, **bcrypt password hashing**, and automated hot-reloading with **Nodemon**, ready for one-click deployment on **Render**.
+
+[Features](#features) | [Screenshots](#screenshots) | [Architecture](#architecture) | [Getting Started](#getting-started) | [API Endpoints](#api-endpoints) | [Deployment](#deployment-on-render)
 
 </div>
 
@@ -25,11 +29,11 @@
 
 - [Features](#features)
 - [Screenshots](#screenshots)
-- [Getting Started](#getting-started)
-- [Architecture](#architecture)
+- [Phase 2 Architecture](#architecture)
 - [Project Structure](#project-structure)
-- [Authentication Flow](#authentication-flow)
+- [Getting Started](#getting-started)
 - [API Endpoints](#api-endpoints)
+- [Deployment on Render](#deployment-on-render)
 - [Tech Stack](#tech-stack)
 - [License](#license)
 
@@ -39,13 +43,16 @@
 
 | Feature | Description |
 |---------|-------------|
+| **Express.js REST API** | Production-ready backend built with Express 4, helmet security, and CORS protection |
+| **MongoDB Database** | Persistent user profiles and conversion history powered by Mongoose ORM |
+| **JWT Authentication** | Secure token-based session management with expiration and authorization middleware |
+| **Bcrypt Security** | Industry-standard salted password hashing performed exclusively on the server |
+| **Hot Reloading (Nodemon)** | Instant server restarts during development upon file modifications |
 | **Live Exchange Rates** | Real-time mid-market rates from the [Frankfurter API](https://api.frankfurter.app) |
-| **Live Rate Ticker** | Animated marquee showing real-time currency pair movements with up/down indicators |
-| **Smart FX Calculator** | Dijkstra-optimized multi-hop pathfinding across currency pairs and providers |
-| **Live Chart Studio** | Interactive streaming charts with 1H, 24H, 7D, 1M, 1Y timeframes and live tick simulation |
-| **Mock Auth System** | Sign up, log in, forgot password, and session management via browser localStorage |
-| **Premium UI** | Glassmorphism, fluid typography, responsive design, and dark forest green fintech aesthetic |
-| **Fully Responsive** | Flexbox and CSS Grid layout seamlessly scales across desktop, tablet, and mobile breakpoints |
+| **Smart FX Calculator** | Multi-hop corridor arbitrage across currency pairs and providers (1, 2, and 3 hops) |
+| **Live Rate Ticker** | Animated marquee showing real-time currency pair movements |
+| **Interactive Chart Studio** | Streaming charts with 1H, 24H, 7D, 1M, 1Y timeframes and multi-provider overlays |
+| **Render-Ready** | Pre-configured `render.yaml` blueprint for zero-downtime deployment on Render |
 
 ---
 
@@ -59,14 +66,14 @@ The hero section introduces BypassFX with an animated route simulation card show
 ---
 
 ### Smart FX Calculator
-The converter section features a two-panel layout: a marketing panel explaining the graph engine on the left, and a fully interactive currency converter form on the right with amount presets, currency selectors, and configurable hop depth.
+The converter section features a two-panel layout: an informational panel explaining the graph pathfinding engine, and a fully interactive currency converter form with amount presets, currency selectors, and configurable hop depth.
 
 ![Smart FX Calculator](assets/screenshot-converter.png)
 
 ---
 
 ### Live Market Rate Studio
-The rates page delivers a full-featured chart studio with live streaming USD/INR mid-market data, 24H peak/floor metrics, corridor volatility stats, bypass arbitrage gain indicators, and multi-provider overlay comparison (Mid-Market vs Wise vs Bank Wire).
+The rates page delivers a full-featured chart studio with live streaming USD/INR mid-market data, 24H peak/floor metrics, corridor volatility stats, bypass arbitrage gain indicators, and multi-provider overlay comparison.
 
 ![Live Market Rates](assets/screenshot-rates.png)
 
@@ -79,105 +86,42 @@ A feature showcase section highlighting BypassFX's smart routing capabilities wi
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-You only need a **modern web browser** and a basic local HTTP server (like VS Code Live Server, or `npx serve`) to run this project locally.
-
-### Running the Project
-
-Because the project uses modern ES Modules (`type="module"`), you cannot simply double-click `index.html` (the browser will block the scripts due to CORS).
-
-**1. Serve the frontend**
-
-```bash
-npx serve .
-```
-*(Or use the "Go Live" button if you use the Live Server extension in VS Code).*
-
-**2. Open your browser**
-Go to `http://localhost:3000` (or whatever port your local server provides).
-
-### Quick Walkthrough
-
-1. **Visit the landing page** (`index.html`) -- explore the live ticker and converter UI.
-2. **Sign up** on `signup.html` -- your account is saved to your browser's localStorage.
-3. **Log in** on `login.html` with your email and password.
-4. **Explore Live Rates** on `rates.html` -- view streaming charts and market data.
-5. **Visit your profile** -- navigate to `profile.html` to see your user stats.
-
----
-
 ## Architecture
-
-The application follows a **3-layer architecture** optimized for static serverless deployment on Vercel:
 
 ```
 +---------------------------------------------------------------------+
-|                        LAYER 1 -- FRONTEND UI                       |
+|                     LAYER 1 -- FRONTEND CLIENT                      |
 |                                                                     |
 |  index.html    login.html    signup.html    forgot-password.html    |
 |  rates.html    profile.html                                         |
 |                                                                     |
-|  CSS Design System: home.css | style.css | rates.css | profile.css  |
+|  Client Modules: api.js (HTTP Client) | auth.js | home.js | charts.js|
 +---------------------------------------------------------------------+
-          |                    |                    |
-          v                    v                    v
+                               |
+               HTTP REST Requests with Bearer JWT
+                               v
 +---------------------------------------------------------------------+
-|                     LAYER 2 -- JAVASCRIPT ENGINE                    |
+|              LAYER 2 -- EXPRESS.JS BACKEND (Node.js)                |
 |                                                                     |
-|  auth.js          Authentication & localStorage mock database       |
-|  home.js          Landing page interactions & mobile nav             |
-|  ticker.js        Live animated rate ticker (ES Module)             |
-|  rateService.js   Frankfurter API client with localStorage cache    |
-|  charts.js        Chart.js streaming engine for rates page          |
-|  profile.js       Profile page session rendering & stats            |
+|  server.js          Express entry point, Helmet security, CORS      |
+|  middleware/auth.js JWT Verification & Request Protection           |
+|  middleware/rate.js Brute-force protection with express-rate-limit  |
+|                                                                     |
+|  Routes & Controllers:                                              |
+|  - /api/auth        Signup, Login, Password Reset                   |
+|  - /api/user        User Profile (/me), Account Settings, Deletion  |
+|  - /api/history     Conversion History Save, Pagination, Clear      |
 +---------------------------------------------------------------------+
-          |                                        |
-          v                                        v
+               |                                        |
+               v                                        v
 +-------------------------------+  +-------------------------------+
-|    LAYER 3a -- LOCAL DATA     |  |   LAYER 3b -- EXTERNAL API    |
+|  LAYER 3a -- MONGODB DATABASE |  |   LAYER 3b -- EXTERNAL API    |
 |                               |  |                               |
-|  localStorage                 |  |  Frankfurter API              |
-|  +- bypassfx_users_db        |  |  api.frankfurter.app          |
-|  +- bypassfx_session         |  |                               |
-|  +- bypassfx_history         |  |  Free, no API key required    |
-|  +- bypassfx:rates:<BASE>    |  |  Live mid-market exchange     |
-|                               |  |  rates (ECB benchmark)       |
+|  MongoDB Atlas / Mongoose     |  |  Frankfurter API              |
+|  - Users Collection           |  |  api.frankfurter.app          |
+|  - Conversions Collection     |  |  Live mid-market FX rates     |
 +-------------------------------+  +-------------------------------+
 ```
-
-### Layer 1 -- Frontend UI
-Six responsive HTML pages handle all user interactions:
-
-| Page | Purpose |
-|------|---------|
-| `index.html` | Marketing landing page with live ticker, converter UI, and feature showcases |
-| `login.html` | Two-panel login with brand storytelling + auth form |
-| `signup.html` | Registration with client-side validation |
-| `forgot-password.html` | Multi-step password reset (email verify -> new password) |
-| `rates.html` | Live rate chart studio with streaming data and corridor analytics |
-| `profile.html` | Authenticated user profile and session dashboard |
-
-### Layer 2 -- JavaScript Engine
-Modular JS files power all client-side logic:
-
-| Module | Responsibility |
-|--------|----------------|
-| `auth.js` | Login, signup, forgot password, sessions, and localStorage mock database |
-| `home.js` | Landing page layout interactions, mobile nav drawer, navbar auth state |
-| `ticker.js` | Live animated rate ticker polling Frankfurter API every 3 minutes |
-| `rateService.js` | Cache-aware Frankfurter API client with 15-minute TTL in localStorage |
-| `charts.js` | Chart.js-powered streaming rate charts with live tick simulation |
-| `profile.js` | Profile page session rendering, user stats, and live rate widget |
-
-### Layer 3 -- Data Layer
-
-| Service | Role |
-|---------|------|
-| **localStorage** | Browser-native storage for user accounts, sessions, rate cache, and conversion history |
-| **Frankfurter API** | Free, public API providing live mid-market exchange rates from ECB benchmark data |
 
 ---
 
@@ -185,80 +129,145 @@ Modular JS files power all client-side logic:
 
 ```
 Bypass-FX/
-|
-|-- index.html                 # Landing page with hero, converter, features
-|-- login.html                 # Login page
-|-- signup.html                # Sign up page
-|-- forgot-password.html       # Password reset
-|-- rates.html                 # Live Market Rates chart studio
-|-- profile.html               # Authenticated user profile
+|-- backend/                   # Phase 2 Express.js Backend
+|   |-- config/
+|   |   |-- db.js              # Mongoose connection & reconnection handler
+|   |-- controllers/
+|   |   |-- auth.controller.js # Signup, login, password reset logic
+|   |   |-- user.controller.js # Profile retrieval & updates
+|   |   |-- history.controller.js # Conversion history logging
+|   |-- middleware/
+|   |   |-- auth.js            # JWT Bearer token verification
+|   |   |-- rateLimiter.js     # Rate limiting against brute-force attacks
+|   |-- models/
+|   |   |-- User.model.js      # User schema with bcrypt pre-save hook
+|   |   |-- Conversion.model.js# Multi-hop conversion schema
+|   |-- routes/
+|   |   |-- auth.routes.js     # /api/auth routes
+|   |   |-- user.routes.js     # /api/user routes
+|   |   |-- history.routes.js  # /api/history routes
+|   |-- .env.example           # Environment template
+|   |-- package.json           # Backend dependencies & nodemon script
+|   |-- server.js              # Express app entry point
 |
 |-- js/
-|   |-- auth.js                # Authentication & session management (localStorage)
-|   |-- home.js                # Landing page controller & navbar auth
-|   |-- ticker.js              # Live rate ticker animation (ES Module)
-|   |-- rateService.js         # Frankfurter API client + localStorage cache
-|   |-- charts.js              # Chart.js streaming engine for rates page
-|   |-- profile.js             # Profile page session & stats rendering
+|   |-- api.js                 # Centralised frontend API client (BypassAPI)
+|   |-- auth.js                # Auth forms handler wired to BypassAPI
+|   |-- home.js                # Converter, pathfinding, and live history
+|   |-- charts.js              # Chart.js rates streaming
+|   |-- ticker.js              # Ticker animation
 |
-|-- css/
-|   |-- home.css               # Landing page design system (2500+ lines)
-|   |-- style.css              # Auth pages + base styles
-|   |-- rates.css              # Rates page chart studio styles
-|   |-- profile.css            # Profile page styles
-|
-|-- assets/
-|   |-- logo.svg               # Brand icon
-|   |-- screenshot-hero.png    # Landing page screenshot
-|   |-- screenshot-converter.png # Converter section screenshot
-|   |-- screenshot-rates.png   # Rates page screenshot
-|   |-- screenshot-features.png # Features section screenshot
-|
-|-- README.md                  # You are here!
+|-- css/                       # Design system stylesheets
+|-- assets/                    # Media assets and logos
+|-- render.yaml                # Render Blueprint deployment specification
+|-- index.html                 # Main landing page
+|-- login.html                 # Sign in
+|-- signup.html                # Registration
+|-- profile.html               # User profile dashboard
+|-- rates.html                 # Live FX charts
+|-- package.json               # Root scripts (starts backend via nodemon)
+|-- README.md
 ```
 
 ---
 
-## Authentication Flow
+## Getting Started
 
-Authentication is fully mocked using the browser's native localStorage to enable seamless hosting on Vercel without a dedicated backend server.
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [MongoDB](https://www.mongodb.com/) (Local installation or free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster)
 
-```
-  SIGNUP                          LOGIN                         SESSION
-  ------                          -----                         -------
-
-  User fills form          User enters credentials        On every page load
-       |                          |                             |
-       v                          v                             v
-  Validate inputs          Validate inputs              Read bypassfx_session
-       |                          |                      from localStorage
-       v                          v                             |
-  Check bypassfx_users_db   Check bypassfx_users_db     +------+------+
-  for duplicate email        for email + password match  |             |
-       |                          |                    Found        Missing
-       v                          v                      |             |
-  Push new user object       Save user to session     Show user     Redirect to
-  to users array             (localStorage or         badge in      login.html
-       |                    sessionStorage)            navbar
-       v                          |
-  Auto-login user                 v
-  Redirect to index.html    Redirect to index.html
+### 1. Clone the repository
+```bash
+git clone https://github.com/Sakshamsoodcoder/BypassFX.git
+cd Bypass-FX
 ```
 
-- **Storage Key:** `bypassfx_users_db` (Array of user objects)
-- **Session Key:** `bypassfx_session` (Currently logged-in user)
-- **Security Note:** Passwords are saved in plain text in localStorage. This is strictly for demonstration purposes. A production app would require a real backend with hashed passwords.
+### 2. Configure Environment Variables
+Copy the `.env.example` file in `backend/` to `.env`:
+```bash
+cp backend/.env.example backend/.env
+```
+Edit `backend/.env` with your values:
+```env
+PORT=5000
+NODE_ENV=development
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/bypassfx?retryWrites=true&w=majority
+JWT_SECRET=your_super_secret_key_change_in_production
+JWT_EXPIRES_IN=7d
+CORS_ORIGIN=http://localhost:3000,http://127.0.0.1:5500
+```
+
+### 3. Install Dependencies
+```bash
+npm run install:backend
+```
+
+### 4. Run the Backend with Nodemon
+From the project root:
+```bash
+npm run dev
+```
+Nodemon will monitor `backend/` and automatically restart whenever code changes:
+```
+[nodemon] starting `node server.js`
+🚀 BypassFX API running on port 5000 [development]
+   Health check -> http://localhost:5000/api/health
+✅ MongoDB connected: cluster0.mongodb.net
+```
+
+### 5. Launch the Frontend
+Open `index.html` in your browser (e.g., using VS Code Live Server on port 5500 or any static file server).
 
 ---
 
 ## API Endpoints
 
-**External Data API:**
+### Health Check
+- `GET /api/health` -- Returns API status, environment, and database connection state.
 
-| Method | Endpoint | Purpose |
-|--------|----------|---------|
-| `GET` | `https://api.frankfurter.app/latest?from=BASE` | Fetch live exchange rates for a base currency |
-| `GET` | `https://api.frankfurter.app/START..END?from=BASE&to=TARGET` | Fetch historical rate timeseries |
+### Auth Endpoints (`/api/auth`)
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| `POST` | `/api/auth/signup` | Register new user, hashes password, returns JWT | No |
+| `POST` | `/api/auth/login` | Authenticate credentials, returns JWT | No |
+| `POST` | `/api/auth/forgot-password` | Issue short-lived password reset token | No |
+| `POST` | `/api/auth/reset-password` | Reset password using reset token | No |
+
+### User Endpoints (`/api/user`)
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| `GET` | `/api/user/me` | Fetch logged-in user profile and aggregate stats | Yes (Bearer JWT) |
+| `PATCH` | `/api/user/me` | Update user display name or email | Yes (Bearer JWT) |
+| `DELETE` | `/api/user/me` | Delete account and all associated conversion history | Yes (Bearer JWT) |
+
+### Conversion History Endpoints (`/api/history`)
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| `GET` | `/api/history` | Paginated conversion history for authenticated user | Yes (Bearer JWT) |
+| `POST` | `/api/history` | Save newly calculated route and metrics | Yes (Bearer JWT) |
+| `DELETE` | `/api/history/:id` | Delete a single history record (ownership verified) | Yes (Bearer JWT) |
+| `DELETE` | `/api/history` | Clear all conversion logs for current user | Yes (Bearer JWT) |
+
+---
+
+## Deployment on Render
+
+This project includes a turnkey `render.yaml` configuration file for deploying the backend to **Render**:
+
+1. Push your repository to **GitHub**.
+2. Log into [Render Dashboard](https://dashboard.render.com/).
+3. Click **New +** -> **Blueprint**.
+4. Select your **BypassFX** repository.
+5. Render will automatically detect `render.yaml` and configure the Web Service:
+   - **Root Directory:** `backend`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+6. Add your environment variables in the Render dashboard:
+   - `MONGO_URI`: Your MongoDB Atlas connection string
+   - `JWT_SECRET`: A secure random secret string
+   - `CORS_ORIGIN`: Your frontend URL (e.g. `https://your-site.vercel.app`)
+7. Once deployed, update `BASE_URL` in `js/api.js` to point to your live Render backend URL (`https://your-service.onrender.com`).
 
 ---
 
@@ -266,12 +275,14 @@ Authentication is fully mocked using the browser's native localStorage to enable
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | Vanilla HTML5, CSS3, ES Modules -- zero frameworks |
-| **Styling** | Custom design system with CSS Grid/Flexbox, glassmorphism, `clamp()` typography |
-| **Charts** | [Chart.js](https://www.chartjs.org/) for live streaming rate visualization |
-| **Backend** | Serverless / localStorage (Vercel deployment compatible) |
-| **Live Rates** | [Frankfurter API](https://api.frankfurter.app) -- free ECB benchmark data |
-| **Fonts** | [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (display), [Inter](https://fonts.google.com/specimen/Inter) (body) |
+| **Backend Framework** | [Express.js](https://expressjs.com/) (v4) on [Node.js](https://nodejs.org/) |
+| **Database** | [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/) ORM |
+| **Authentication** | [JSON Web Tokens (JWT)](https://jwt.io/) + [Bcrypt.js](https://github.com/dcodeIO/bcrypt.js) |
+| **Security & Middleware** | [Helmet](https://helmetjs.github.io/), [CORS](https://github.com/expressjs/cors), [Express Rate Limit](https://github.com/express-rate-limit/express-rate-limit) |
+| **Dev Tooling** | [Nodemon](https://nodemon.io/) for automated server restarts |
+| **Frontend** | Vanilla HTML5, CSS3, JavaScript (ES6+) |
+| **Live FX Data** | [Frankfurter API](https://api.frankfurter.app) (European Central Bank benchmarks) |
+| **Deployment** | [Render](https://render.com/) (Backend Web Service) + [Vercel](https://vercel.com/) (Static Frontend) |
 
 ---
 

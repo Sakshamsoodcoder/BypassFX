@@ -1,12 +1,12 @@
 {
   "name": "bypass-fx",
-  "version": "1.0.0",
-  "description": "Bypass-FX — login & signup UI backed by json-server",
+  "version": "2.0.0",
+  "description": "BypassFX — Multi-Hop Currency Arbitrage Platform (Phase 2 Express + MongoDB + JWT)",
   "scripts": {
-    "server": "json-server --watch db.json --port 3000",
-    "start": "json-server --watch db.json --port 3000"
+    "dev": "npm --prefix backend run dev",
+    "start": "npm --prefix backend start",
+    "backend": "npm --prefix backend run dev",
+    "install:backend": "npm --prefix backend install"
   },
-  "dependencies": {
-    "json-server": "^0.17.4"
-  }
+  "dependencies": {}
 }

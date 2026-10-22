@@ -797,43 +797,43 @@
   }
 
   // ============================================================
-  // 9. Conversion History Manager
+  // 9. Conversion History Manager (Phase 2 MongoDB + BypassAPI)
   // ============================================================
-  function saveConversionToHistory(fromCur, toCur, fromAmount, result) {
+  async function saveConversionToHistory(fromCur, toCur, fromAmount, result) {
     try {
-      const raw     = localStorage.getItem(STORAGE_KEYS.HISTORY);
-      const history = raw ? JSON.parse(raw) : [];
-
-      const newEntry = {
-        id:        'tx-' + Date.now(),
-        from:      fromCur,
-        to:        toCur,
-        fromAmount: fromAmount,
-        toAmount:  result.best.finalAmount,
-        savings:   result.savings,
-        route:     result.best.hops.join(' → '),
-        provider:  result.best.providerSummary,
-        isOptimal: result.savings > 0,
-        date:      new Date().toISOString()
-      };
-
-      history.unshift(newEntry);
-      const trimmed = history.slice(0, 20); // Keep last 20 lookups
-      localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(trimmed));
-      renderHistorySection();
+      if (window.BypassAPI && window.BypassAPI.isLoggedIn()) {
+        await window.BypassAPI.history.save({
+          from: fromCur,
+          to: toCur,
+          fromAmount: fromAmount,
+          toAmount: result.best.finalAmount,
+          savings: result.savings,
+          savingsPct: result.savingsPct,
+          route: result.best.hops.join(' → '),
+          provider: result.best.providerSummary,
+          isOptimal: result.savings > 0,
+          hops: result.best.hops,
+          legs: result.best.legs,
+          maxHops: 3
+        });
+        renderHistorySection();
+      }
     } catch (err) {
-      console.error('History save error:', err);
+      console.error('History save to API error:', err);
     }
   }
 
-  function renderHistorySection() {
+  async function renderHistorySection() {
     const container = document.getElementById('historyContainer');
     const clearBtn  = document.getElementById('btnClearHistory');
     if (!container) return;
 
     try {
-      const raw     = localStorage.getItem(STORAGE_KEYS.HISTORY);
-      const history = raw ? JSON.parse(raw) : [];
+      let history = [];
+      if (window.BypassAPI && window.BypassAPI.isLoggedIn()) {
+        const res = await window.BypassAPI.history.getAll({ limit: 10 });
+        history = (res && res.data) || [];
+      }
 
       if (!history || history.length === 0) {
         container.innerHTML = `
@@ -854,7 +854,7 @@
       container.innerHTML = history.slice(0, 6).map(item => {
         const fromMeta = getCurrencyMeta(item.from);
         const toMeta   = getCurrencyMeta(item.to);
-        const dateObj  = new Date(item.date);
+        const dateObj  = new Date(item.createdAt || item.date);
         const dateStr  = isNaN(dateObj) ? 'Recent' : dateObj.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
         return `
@@ -1086,8 +1086,11 @@
     renderHistorySection();
     const clearBtn = document.getElementById('btnClearHistory');
     if (clearBtn) {
-      clearBtn.addEventListener('click', () => {
+      clearBtn.addEventListener('click', async () => {
         if (confirm('Are you sure you want to clear your saved conversion history?')) {
+          if (window.BypassAPI && window.BypassAPI.isLoggedIn()) {
+            await window.BypassAPI.history.clearAll();
+          }
           localStorage.removeItem(STORAGE_KEYS.HISTORY);
           renderHistorySection();
         }
