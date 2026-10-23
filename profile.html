@@ -16,25 +16,9 @@
 <svg width="0" height="0" class="liquid-glass-svg-defs" aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;">
   <defs>
     <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%">
-      <feTurbulence 
-        type="fractalNoise" 
-        baseFrequency="0.012 0.012"
-        numOctaves="2" 
-        seed="92" 
-        result="noise" 
-      />
-      <feGaussianBlur 
-        in="noise" 
-        stdDeviation="2" 
-        result="blurred" 
-      />
-      <feDisplacementMap 
-        in="SourceGraphic" 
-        in2="blurred" 
-        scale="45"
-        xChannelSelector="R" 
-        yChannelSelector="G" 
-      />
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.012" numOctaves="2" seed="92" result="noise"/>
+      <feGaussianBlur in="noise" stdDeviation="2" result="blurred"/>
+      <feDisplacementMap in="SourceGraphic" in2="blurred" scale="45" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
   </defs>
 </svg>
@@ -54,7 +38,6 @@
       <a href="profile.html" class="nav-link profile-active">Profile</a>
     </nav>
 
-    <!-- User badge — populated by JS -->
     <div class="nav-right" id="navRightContainer"></div>
 
     <button class="menu-toggle" id="menuToggleBtn" aria-label="Toggle Navigation Menu">
@@ -78,50 +61,115 @@
 
 <main class="profile-container">
 
-  <!-- Hero Section -->
+  <!-- ══════════════════════════════════════════════
+       HERO SECTION
+  ══════════════════════════════════════════════ -->
   <section class="profile-hero">
-    <div class="hero-left">
-      <div class="avatar-ring">
-        <div class="avatar" id="userAvatar">?</div>
-      </div>
-      <div class="hero-info">
-        <h1 id="userName">Loading…</h1>
-        <p class="role">Currency Explorer • Verified Account</p>
-        <p class="joined">Member since <span id="userJoined">—</span></p>
+    <!-- Live ticker strip -->
+    <div class="ticker-strip" id="tickerStrip" aria-label="Live rates ticker">
+      <div class="ticker-inner" id="tickerInner">
+        <span class="ticker-item">USD/INR <strong id="t-usdinr">—</strong></span>
+        <span class="ticker-item">EUR/USD <strong id="t-eurusd">—</strong></span>
+        <span class="ticker-item">GBP/USD <strong id="t-gbpusd">—</strong></span>
+        <span class="ticker-item">USD/JPY <strong id="t-usdjpy">—</strong></span>
+        <span class="ticker-item">AUD/USD <strong id="t-audusd">—</strong></span>
+        <span class="ticker-item">USD/CHF <strong id="t-usdchf">—</strong></span>
+        <span class="ticker-item">USD/CAD <strong id="t-usdcad">—</strong></span>
+        <span class="ticker-item">USD/SGD <strong id="t-usdsgd">—</strong></span>
       </div>
     </div>
-    <div class="hero-actions">
-      <button class="btn-outline-light" id="btnEditProfile" type="button">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-        Edit Profile
-      </button>
-      <a href="rates.html" class="btn-glow-green">Explore Live Rates</a>
+
+    <div class="hero-body">
+      <div class="hero-left">
+        <div class="avatar-ring">
+          <div class="avatar" id="userAvatar">?</div>
+          <div class="avatar-status-dot" title="Online"></div>
+        </div>
+        <div class="hero-info">
+          <div class="hero-name-row">
+            <h1 id="userName">Loading…</h1>
+            <span class="verified-badge" title="Verified Account">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="#34D399" stroke-width="2.5" stroke-linecap="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Verified
+            </span>
+          </div>
+          <p class="role" id="userRole">Currency Explorer • Pro Member</p>
+          <div class="hero-meta-chips">
+            <span class="meta-chip">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Member since <span id="userJoined">—</span>
+            </span>
+            <span class="meta-chip" id="authProviderChip">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Local Auth
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-outline-light" id="btnEditProfile" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Profile
+        </button>
+        <a href="rates.html" class="btn-glow-green">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          Live Rates
+        </a>
+      </div>
     </div>
   </section>
 
-  <!-- Stats Row -->
+  <!-- ══════════════════════════════════════════════
+       STATS ROW — 5 cards
+  ══════════════════════════════════════════════ -->
   <section class="stats-row">
     <div class="stat-card">
+      <div class="stat-icon-wrap" style="--ic:#4ADE80;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
       <div class="stat-label">TOTAL CONVERSIONS</div>
       <div class="stat-value" id="totalConversions">0</div>
+      <div class="stat-sub" id="statSubConv">All time</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">BEST SINGLE SAVINGS</div>
-      <div class="stat-value text-green" id="bestSavings">₹0.00</div>
+      <div class="stat-icon-wrap" style="--ic:#34D399;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="stat-label">TOTAL SAVED</div>
+      <div class="stat-value text-green" id="bestSavings">₹0</div>
+      <div class="stat-sub">vs bank rate</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">FAVORITE CURRENCY</div>
-      <div class="stat-value"><span style="font-size:16px;">🇺🇸</span> USD</div>
+      <div class="stat-icon-wrap" style="--ic:#60A5FA;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="stat-label">TOP CORRIDOR</div>
+      <div class="stat-value" id="statTopCorridor" style="font-size:16px; margin-top:4px;">—</div>
+      <div class="stat-sub">Most used pair</div>
     </div>
     <div class="stat-card">
+      <div class="stat-icon-wrap" style="--ic:#F59E0B;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
       <div class="stat-label">ROUTES EXPLORED</div>
       <div class="stat-value" id="routesExplored">0</div>
+      <div class="stat-sub">Unique routes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon-wrap" style="--ic:#A78BFA;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="stat-label">ACTIVE STREAK</div>
+      <div class="stat-value" id="streakDays">0<span style="font-size:14px; font-weight:500; color: var(--text-secondary);"> days</span></div>
+      <div class="stat-sub" id="streakSub">Keep converting!</div>
     </div>
   </section>
 
-  <!-- Info Grid -->
+  <!-- ══════════════════════════════════════════════
+       INFO GRID — Account + Security
+  ══════════════════════════════════════════════ -->
   <section class="content-grid">
-    
+
     <!-- Left: Account Info -->
     <div class="info-card">
       <h2>Account Information</h2>
@@ -136,62 +184,154 @@
         </div>
         <div class="info-row">
           <span class="info-key">Account Tier</span>
-          <span class="info-val font-bold">Pro Arbitrage Member</span>
+          <span class="info-val">
+            <span class="tier-badge">⭐ Pro Arbitrage Member</span>
+          </span>
         </div>
         <div class="info-row">
-          <span class="info-key">Default Base Currency</span>
+          <span class="info-key">Default Base</span>
           <span class="info-val font-bold">INR (Indian Rupee)</span>
         </div>
         <div class="info-row">
           <span class="info-key">Data Privacy</span>
-          <span class="info-val text-green font-bold">Encrypted LocalStorage</span>
+          <span class="info-val text-green font-bold">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Encrypted & Secure
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Member Since</span>
+          <span class="info-val font-bold" id="infoJoined">—</span>
         </div>
       </div>
     </div>
 
-    <!-- Right: Account Highlights -->
+    <!-- Right: Security Panel -->
     <div class="info-card">
       <div class="card-header">
-        <h2>Account Highlights</h2>
-        <a href="rates.html" class="link-green">Live Rates →</a>
+        <h2>Security & Access</h2>
+        <span class="security-score-pill" id="securityScore">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Good
+        </span>
       </div>
       <div class="info-list">
         <div class="info-row">
-          <span class="info-key">Total Routes Calculated</span>
-          <span class="info-val font-bold" id="cardTotalConversions">0</span>
+          <span class="info-key">Auth Provider</span>
+          <span class="info-val font-bold" id="secAuthProvider">Local Password</span>
         </div>
         <div class="info-row">
-          <span class="info-key">Max Single Savings</span>
-          <span class="info-val text-green font-bold" id="cardMaxSavings">₹0.00</span>
+          <span class="info-key">Password Status</span>
+          <span class="info-val text-green font-bold" id="secPassStatus">● Active</span>
         </div>
         <div class="info-row">
-          <span class="info-key">Routing Algorithm</span>
-          <span class="info-val font-bold">Multi-Hop Dijkstra v2.4</span>
+          <span class="info-key">Session Token</span>
+          <span class="info-val font-bold">JWT · RS256</span>
         </div>
         <div class="info-row">
-          <span class="info-key">Database Sync</span>
+          <span class="info-key">Data Sync</span>
           <span class="info-val text-green font-bold">⚡ MongoDB Atlas</span>
         </div>
+        <div class="info-row">
+          <span class="info-key">Routing Engine</span>
+          <span class="info-val font-bold">Dijkstra v2.4</span>
+        </div>
+      </div>
+      <div class="security-actions">
+        <a href="forgot-password.html" class="btn-sec-action">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Change Password
+        </a>
+        <button type="button" class="btn-sec-action" id="btnCopyId">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy User ID
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       ACHIEVEMENTS SECTION
+  ══════════════════════════════════════════════ -->
+  <section class="achievements-section">
+    <div class="info-card">
+      <div class="card-header">
+        <div>
+          <h2>Achievements & Badges</h2>
+          <p class="section-subtitle">Unlock badges by using BypassFX actively</p>
+        </div>
+        <span class="badge-count-pill" id="badgeCountPill">0 / 7 Unlocked</span>
+      </div>
+      <div class="badges-grid" id="badgesGrid">
+        <!-- Populated by JS -->
       </div>
     </div>
   </section>
 
-  <!-- Conversion History Section -->
+  <!-- ══════════════════════════════════════════════
+       ANALYTICS ROW — Activity Heatmap + Top Currencies
+  ══════════════════════════════════════════════ -->
+  <section class="analytics-row">
+
+    <!-- Activity Heatmap -->
+    <div class="info-card analytics-card">
+      <div class="card-header">
+        <div>
+          <h2>Activity Heatmap</h2>
+          <p class="section-subtitle">Your conversion activity over the past 10 weeks</p>
+        </div>
+        <span class="heatmap-legend">
+          <span class="hm-dot" style="background:var(--border);"></span> Low
+          <span class="hm-dot" style="background:#16a34a88;"></span>
+          <span class="hm-dot" style="background:var(--accent);"></span> High
+        </span>
+      </div>
+      <div class="heatmap-container" id="heatmapContainer">
+        <!-- Populated by JS -->
+      </div>
+      <div class="heatmap-days">
+        <span>Mon</span><span>Wed</span><span>Fri</span><span>Sun</span>
+      </div>
+    </div>
+
+    <!-- Top Currencies Bar Chart -->
+    <div class="info-card analytics-card">
+      <div class="card-header">
+        <div>
+          <h2>Top Currencies Used</h2>
+          <p class="section-subtitle">Based on your conversion history</p>
+        </div>
+        <a href="index.html#converterSection" class="link-green">Convert →</a>
+      </div>
+      <div class="currency-bars" id="currencyBarsContainer">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       CONVERSION HISTORY
+  ══════════════════════════════════════════════ -->
   <section class="history-section-profile">
     <div class="info-card">
       <div class="card-header">
         <div>
-          <h2>Your Conversion History</h2>
+          <h2>Conversion History</h2>
           <p class="section-subtitle">Real-time log of your past currency conversions and savings</p>
         </div>
         <div class="history-actions-head">
+          <div class="history-filter-group">
+            <button class="hist-filter-btn active" data-filter="all">All</button>
+            <button class="hist-filter-btn" data-filter="optimal">Optimal</button>
+            <button class="hist-filter-btn" data-filter="direct">Direct</button>
+          </div>
           <button type="button" class="btn-clear-history-pill" id="btnClearProfileHistory" style="display: none;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            Clear Log
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Clear
           </button>
-          <a href="index.html#converterSection" class="btn-new-convert">
-            + New Conversion
-          </a>
+          <a href="index.html#converterSection" class="btn-new-convert">+ New</a>
         </div>
       </div>
 
@@ -202,32 +342,39 @@
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          <p>No conversions found yet. Run your first multi-hop arbitrage calculation to see your log here.</p>
+          <p>No conversions yet. Run your first multi-hop arbitrage calculation to see your log here.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Bottom Actions -->
-  <section class="bottom-actions">
-    <div class="bottom-left">
-      <a href="rates.html" class="btn-solid-green">
-        Explore Live Rates
-      </a>
-      <a href="index.html#currenciesSection" class="btn-outline-gray">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        View Currencies
-      </a>
+  <!-- ══════════════════════════════════════════════
+       EXPORT & SETTINGS STRIP
+  ══════════════════════════════════════════════ -->
+  <section class="export-strip">
+    <div class="export-strip-left">
+      <span class="export-label">Export your data:</span>
+      <button type="button" class="btn-export" id="btnExportCsv">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        CSV Statement
+      </button>
+      <button type="button" class="btn-export" id="btnExportJson">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JSON Export
+      </button>
     </div>
-    <button class="Btn" id="btnLogoutProfile" type="button" aria-label="Log Out">
-      <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
-      <div class="text">Logout</div>
-    </button>
+    <div class="export-strip-right">
+      <a href="rates.html" class="btn-solid-green">Explore Live Rates</a>
+      <button class="Btn" id="btnLogoutProfile" type="button" aria-label="Log Out">
+        <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg></div>
+        <div class="text">Logout</div>
+      </button>
+    </div>
   </section>
 
 </main>
 
-<!-- Footer (matches index.html footer) -->
+<!-- Footer -->
 <footer class="footer">
   <div class="container">
     <div class="footer-grid">
@@ -240,7 +387,6 @@
           BypassFX is an intelligent currency arbitrage and multi-hop route calculator engineered to minimize conversion fees and eliminate hidden bank markups.
         </p>
       </div>
-
       <div class="footer-col">
         <h4>Product</h4>
         <ul>
@@ -249,7 +395,6 @@
           <li><a href="index.html#currenciesSection">Supported Currencies</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4>Account</h4>
         <ul>
@@ -258,7 +403,6 @@
           <li><a href="signup.html">Create Account</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4>Trust & Safety</h4>
         <ul>
@@ -269,403 +413,599 @@
         </ul>
       </div>
     </div>
-
     <div class="footer-bottom">
       <div>&copy; 2026 BypassFX Technologies. All rights reserved.</div>
-      <div>Optimal multi-hop currency routing & liquidity intelligence powered by BypassFX Engine.</div>
+      <div>Optimal multi-hop currency routing &amp; liquidity intelligence powered by BypassFX Engine.</div>
     </div>
   </div>
 </footer>
 
+<!-- Edit Profile Modal -->
+<div class="edit-profile-modal-backdrop" id="editProfileModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+  <div class="edit-profile-modal-card">
+    <div class="edit-modal-head">
+      <div>
+        <h2 id="editModalTitle">Edit Profile</h2>
+        <p>Update your personal account details</p>
+      </div>
+      <button type="button" class="edit-modal-close-btn" id="btnCloseEditModal" aria-label="Close dialog">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div id="editModalBanner" class="edit-modal-banner"></div>
+
+    <form id="editProfileForm">
+      <div class="edit-form-group">
+        <label for="editNameInput">Full Name</label>
+        <input type="text" id="editNameInput" class="edit-form-input" placeholder="e.g. Kartik Verma" required maxlength="80">
+      </div>
+      <div class="edit-form-group">
+        <label for="editEmailInput">Email Address</label>
+        <input type="email" id="editEmailInput" class="edit-form-input" placeholder="name@example.com" required>
+      </div>
+      <div class="edit-modal-actions">
+        <button type="button" class="btn-modal-cancel" id="btnCancelEditModal">Cancel</button>
+        <button type="submit" class="btn-modal-save" id="btnSaveProfile">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Floating Back to Top -->
+<button class="back-to-top-btn" id="btnBackToTop" aria-label="Back to top" type="button">
+  <svg class="svgIcon" viewBox="0 0 384 512" aria-hidden="true">
+    <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/>
+  </svg>
+</button>
+
 <script src="js/api.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    if (!window.BypassAPI || !window.BypassAPI.isLoggedIn()) {
-      window.location.href = 'login.html';
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!window.BypassAPI || !window.BypassAPI.isLoggedIn()) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  /* ──────────────────────── Baseline rates (fallback) ──────────────────────── */
+  const BASE_RATES = {
+    USD:1,INR:86.85,EUR:0.9245,GBP:0.7915,JPY:153.42,AUD:1.5425,
+    CAD:1.385,CHF:0.885,CNY:7.245,SGD:1.348,NZD:1.695,HKD:7.78,
+    AED:3.6725,SAR:3.7505,THB:34.62,MYR:4.435,KRW:1395,BRL:5.62,
+    TRY:34.25,ZAR:18.25,SEK:10.65,NOK:10.85,PLN:3.98,DKK:6.9,
+    CHF:0.885,IDR:16250,PHP:57.85
+  };
+
+  const CURRENCY_META = {
+    USD:{name:'US Dollar',flag:'🇺🇸',symbol:'$'},
+    EUR:{name:'Euro',flag:'🇪🇺',symbol:'€'},
+    GBP:{name:'British Pound',flag:'🇬🇧',symbol:'£'},
+    INR:{name:'Indian Rupee',flag:'🇮🇳',symbol:'₹'},
+    JPY:{name:'Japanese Yen',flag:'🇯🇵',symbol:'¥'},
+    AUD:{name:'Australian Dollar',flag:'🇦🇺',symbol:'A$'},
+    CAD:{name:'Canadian Dollar',flag:'🇨🇦',symbol:'C$'},
+    CHF:{name:'Swiss Franc',flag:'🇨🇭',symbol:'CHF'},
+    CNY:{name:'Chinese Yuan',flag:'🇨🇳',symbol:'¥'},
+    SGD:{name:'Singapore Dollar',flag:'🇸🇬',symbol:'S$'},
+    AED:{name:'UAE Dirham',flag:'🇦🇪',symbol:'د.إ'},
+    SAR:{name:'Saudi Riyal',flag:'🇸🇦',symbol:'﷼'},
+  };
+
+  let currentUserData = { name: '', email: '', id: '', authProvider: 'local' };
+  let myHistory = [];
+
+  /* ──────────────────────── Load user ──────────────────────── */
+  try {
+    const res = await window.BypassAPI.user.getProfile();
+    const user = (res && res.user) || window.BypassAPI.getSession() || {};
+
+    const name    = user.name  || 'Member';
+    const email   = user.email || '—';
+    const authProv = user.authProvider || 'local';
+
+    currentUserData = { name, email, id: user.id || user._id || '', authProvider: authProv };
+
+    const nameParts = name.trim().split(' ');
+    const initial = nameParts.length > 1
+      ? nameParts[0][0].toUpperCase() + nameParts[nameParts.length-1][0].toUpperCase()
+      : nameParts[0][0].toUpperCase();
+
+    let joined = '—';
+    if (user.createdAt) {
+      joined = new Date(user.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    }
+
+    document.getElementById('userName').textContent   = name;
+    document.getElementById('infoName').textContent   = name;
+    document.getElementById('infoEmail').textContent  = email;
+    document.getElementById('infoJoined').textContent = joined;
+    document.getElementById('userJoined').textContent = joined;
+
+    // Avatar: Google photo or initials
+    const avatarEl = document.getElementById('userAvatar');
+    if (user.avatar) {
+      avatarEl.innerHTML = `<img src="${user.avatar}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      avatarEl.textContent = initial;
+    }
+
+    // Auth provider chip
+    const providerLabel = authProv === 'google' ? '🔵 Google Auth' : '🔒 Local Auth';
+    document.getElementById('authProviderChip').innerHTML = `
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      ${providerLabel}`;
+    document.getElementById('secAuthProvider').textContent = authProv === 'google' ? 'Google OAuth 2.0' : 'Local Password';
+
+    if (authProv === 'google') {
+      document.getElementById('secPassStatus').textContent = '● OAuth (no password)';
+      document.getElementById('secPassStatus').style.color = '#60A5FA';
+    }
+
+  } catch (e) {
+    console.error('Profile fetch error:', e);
+    const session = window.BypassAPI.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+    const name = session.name || 'Member';
+    document.getElementById('userName').textContent  = name;
+    document.getElementById('infoName').textContent  = name;
+    document.getElementById('infoEmail').textContent = session.email || '—';
+    currentUserData = { name, email: session.email || '', id: session.id || '' };
+    const p = name.trim().split(' ');
+    document.getElementById('userAvatar').textContent = p.length > 1 ? p[0][0]+p[p.length-1][0] : p[0][0];
+  }
+
+  /* ──────────────────────── Load History ──────────────────────── */
+  try {
+    const histRes = await window.BypassAPI.history.getAll({ limit: 100 });
+    myHistory = (histRes && histRes.data) || [];
+  } catch (err) {
+    console.error('History fetch failed:', err);
+    myHistory = [];
+  }
+
+  /* ──────────────────────── Stats ──────────────────────── */
+  const totalConv = myHistory.length;
+  document.getElementById('totalConversions').textContent = totalConv;
+  document.getElementById('routesExplored').textContent = new Set(myHistory.map(i => `${i.from}-${i.to}`)).size || 0;
+
+  let totalSaved = 0;
+  myHistory.forEach(i => { totalSaved += (i.savings || 0); });
+  document.getElementById('bestSavings').textContent = totalSaved > 0
+    ? `+₹${totalSaved.toFixed(0)}` : '₹0';
+
+  // Top corridor
+  const pairCounts = {};
+  myHistory.forEach(i => { const k=`${i.from} → ${i.to}`; pairCounts[k]=(pairCounts[k]||0)+1; });
+  const topPair = Object.keys(pairCounts).sort((a,b) => pairCounts[b]-pairCounts[a])[0];
+  document.getElementById('statTopCorridor').textContent = topPair || '—';
+
+  // Streak
+  const streakDays = computeStreak(myHistory);
+  document.getElementById('streakDays').innerHTML = `${streakDays}<span style="font-size:14px; font-weight:500; color:var(--text-secondary);"> days</span>`;
+  if (streakDays >= 7) document.getElementById('streakSub').textContent = '🔥 On fire!';
+  else if (streakDays >= 3) document.getElementById('streakSub').textContent = '💪 Keep it up!';
+
+  function computeStreak(history) {
+    if (!history.length) return 0;
+    const days = new Set(history.map(i => new Date(i.createdAt||i.date).toDateString()));
+    let streak = 0, d = new Date();
+    while (days.has(d.toDateString())) { streak++; d.setDate(d.getDate()-1); }
+    return streak;
+  }
+
+  /* ──────────────────────── Render History ──────────────────────── */
+  const isoMap = {
+    USD:'us',EUR:'eu',GBP:'gb',INR:'in',JPY:'jp',AUD:'au',CAD:'ca',CHF:'ch',
+    CNY:'cn',SGD:'sg',NZD:'nz',HKD:'hk',AED:'ae',SAR:'sa',QAR:'qa',THB:'th',
+    MYR:'my',IDR:'id',PHP:'ph',ZAR:'za',RUB:'ru',BRL:'br',MXN:'mx',SEK:'se',
+    NOK:'no',DKK:'dk',PLN:'pl',TRY:'tr',KRW:'kr',CZK:'cz',HUF:'hu',ILS:'il',
+    BGN:'bg',RON:'ro',CLP:'cl',COP:'co'
+  };
+
+  function flagImg(code) {
+    const iso = (isoMap[code]||code.slice(0,2)).toLowerCase();
+    return `<img src="https://flagcdn.com/w40/${iso}.png" width="20" height="14" alt="${code}" style="border-radius:2px;vertical-align:middle;margin-right:3px;">`;
+  }
+
+  function fmtAmt(num, cur) {
+    if (num == null || isNaN(num)) return '0.00';
+    const z = ['JPY','KRW','CLP','IDR','HUF'].includes(cur);
+    return Number(num).toLocaleString('en-US',{minimumFractionDigits:z?0:2,maximumFractionDigits:z?0:2});
+  }
+
+  let currentFilter = 'all';
+
+  function renderHistory(list) {
+    const container = document.getElementById('profileHistoryContainer');
+    const clearBtn  = document.getElementById('btnClearProfileHistory');
+    if (!container) return;
+
+    let filtered = list;
+    if (currentFilter === 'optimal') filtered = list.filter(i => (i.savings||0) > 0);
+    if (currentFilter === 'direct')  filtered = list.filter(i => !(i.savings > 0));
+
+    if (!filtered.length) {
+      container.innerHTML = `
+        <div class="profile-history-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <p>${currentFilter !== 'all' ? 'No '+currentFilter+' conversions found.' : 'No conversions yet. Run your first calculation!'}</p>
+        </div>`;
+      if (clearBtn) clearBtn.style.display = 'none';
       return;
     }
 
-    let currentUserData = { name: '', email: '' };
+    if (clearBtn) clearBtn.style.display = 'inline-flex';
 
-    try {
-      // 1. Fetch user profile from MongoDB backend
-      const res = await window.BypassAPI.user.getProfile();
-      const user = (res && res.user) || window.BypassAPI.getSession() || {};
+    container.innerHTML = filtered.map(item => {
+      const d = new Date(item.createdAt || item.date);
+      const dateStr = isNaN(d) ? 'Recent' : d.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      const hasSavings = (item.savings > 0);
+      const routeText  = item.route || `${item.from} ➔ ${item.to}`;
 
-      const name = user.name || 'Member';
-      const email = user.email || '—';
-
-      currentUserData.name = user.name || '';
-      currentUserData.email = user.email || '';
-
-      // Get Initials (e.g. Saksham Sood -> SS)
-      const nameParts = name.trim().split(' ');
-      const initial = nameParts.length > 1
-        ? nameParts[0].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].charAt(0).toUpperCase()
-        : nameParts[0].charAt(0).toUpperCase();
-
-      let joined = '—';
-      if (user.createdAt) {
-        const d = new Date(user.createdAt);
-        joined = d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-      }
-
-      document.getElementById('userName').textContent = name;
-      document.getElementById('infoName').textContent = name;
-      document.getElementById('infoEmail').textContent = email;
-      document.getElementById('userAvatar').textContent = initial;
-      document.getElementById('userJoined').textContent = joined;
-
-      // 2. Fetch conversion history from MongoDB backend
-      let myHistory = [];
-      try {
-        const historyRes = await window.BypassAPI.history.getAll({ limit: 50 });
-        myHistory = (historyRes && historyRes.data) || [];
-      } catch (err) {
-        console.error('Failed to load history:', err);
-      }
-
-      document.getElementById('totalConversions').textContent = user.totalConversions ?? myHistory.length;
-      document.getElementById('routesExplored').textContent = user.totalConversions ?? myHistory.length;
-      const cardTotal = document.getElementById('cardTotalConversions');
-      if (cardTotal) cardTotal.textContent = user.totalConversions ?? myHistory.length;
-
-      if (myHistory.length > 0) {
-        const maxSavings = Math.max(...myHistory.map(item => item.savings || 0));
-        const savingsText = maxSavings > 0 ? `+${maxSavings.toFixed(2)}` : 'Optimal';
-        document.getElementById('bestSavings').textContent = savingsText;
-        const cardSavings = document.getElementById('cardMaxSavings');
-        if (cardSavings) cardSavings.textContent = savingsText;
-      } else {
-        document.getElementById('bestSavings').textContent = '—';
-      }
-
-      // 3. Render Conversion History Cards
-      renderProfileHistory(myHistory);
-
-    } catch (e) {
-      console.error('Session/profile fetch error:', e);
-      // Fallback to local session data if offline
-      const session = window.BypassAPI.getSession();
-      if (!session) {
-        window.location.href = 'login.html';
-      }
-    }
-
-    // Helper functions for history rendering
-    function getFlagImg(code) {
-      const isoMap = {
-        USD: 'us', EUR: 'eu', GBP: 'gb', INR: 'in', JPY: 'jp',
-        AUD: 'au', CAD: 'ca', CHF: 'ch', CNY: 'cn', SGD: 'sg',
-        NZD: 'nz', HKD: 'hk', AED: 'ae', SAR: 'sa', QAR: 'qa',
-        THB: 'th', MYR: 'my', IDR: 'id', PHP: 'ph', ZAR: 'za',
-        RUB: 'ru', BRL: 'br', MXN: 'mx', SEK: 'se', NOK: 'no',
-        DKK: 'dk', PLN: 'pl', TRY: 'tr', KRW: 'kr', CZK: 'cz',
-        HUF: 'hu', ILS: 'il', BGN: 'bg', RON: 'ro', CLP: 'cl', COP: 'co'
-      };
-      const iso = (isoMap[code] || code.slice(0, 2)).toLowerCase();
-      return `<img src="https://flagcdn.com/w40/${iso}.png" srcset="https://flagcdn.com/w80/${iso}.png 2x" width="22" height="15" alt="${code}" class="currency-flag-img" style="border-radius:2.5px; vertical-align:middle; margin-right:4px;">`;
-    }
-
-    function formatAmt(num, cur) {
-      if (num == null || isNaN(num)) return '0.00';
-      const isZeroDec = ['JPY', 'KRW', 'CLP', 'IDR', 'HUF'].includes(cur);
-      return Number(num).toLocaleString('en-US', {
-        minimumFractionDigits: isZeroDec ? 0 : 2,
-        maximumFractionDigits: isZeroDec ? 0 : 2
-      });
-    }
-
-    function renderProfileHistory(list) {
-      const container = document.getElementById('profileHistoryContainer');
-      const clearBtn = document.getElementById('btnClearProfileHistory');
-      if (!container) return;
-
-      if (!list || list.length === 0) {
-        container.innerHTML = `
-          <div class="profile-history-empty">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <p>No conversions found yet. Run your first multi-hop arbitrage calculation to see your log here.</p>
-          </div>
-        `;
-        if (clearBtn) clearBtn.style.display = 'none';
-        return;
-      }
-
-      if (clearBtn) clearBtn.style.display = 'inline-flex';
-
-      container.innerHTML = list.map(item => {
-        const d = new Date(item.createdAt || item.date);
-        const dateStr = isNaN(d) ? 'Recent' : d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        const routeText = item.route || `${item.from} ➔ ${item.to}`;
-        const hasSavings = (item.savings > 0);
-
-        return `
-          <div class="history-card-item">
-            <div class="history-card-left">
-              <div class="history-card-details">
-                <div class="history-card-path">
-                  <span>${getFlagImg(item.from)} ${item.from}</span>
-                  <span style="color: var(--accent);">➔</span>
-                  <span>${getFlagImg(item.to)} ${item.to}</span>
-                </div>
-                <div class="history-card-meta">
-                  <span>${dateStr}</span>
-                  <span class="sep">•</span>
-                  <span>Route: <strong>${routeText}</strong></span>
-                  ${item.provider ? `<span class="sep">•</span><span>${item.provider}</span>` : ''}
-                </div>
+      return `
+        <div class="history-card-item">
+          <div class="history-card-left">
+            <div class="history-card-details">
+              <div class="history-card-path">
+                <span>${flagImg(item.from)} ${item.from}</span>
+                <span style="color:var(--accent);">➔</span>
+                <span>${flagImg(item.to)} ${item.to}</span>
+                ${hasSavings ? '<span class="savings-badge-inline">Optimal</span>' : ''}
+              </div>
+              <div class="history-card-meta">
+                <span>${dateStr}</span>
+                <span class="sep">•</span>
+                <span>Route: <strong>${routeText}</strong></span>
+                ${item.provider ? `<span class="sep">•</span><span>${item.provider}</span>` : ''}
               </div>
             </div>
-
-            <div class="history-card-right">
-              <div class="history-card-numbers">
-                <div class="history-card-to">${formatAmt(item.toAmount, item.to)} ${item.to}</div>
-                <div class="history-card-from">Sent: ${formatAmt(item.fromAmount, item.from)} ${item.from}</div>
-              </div>
-              <span class="history-savings-pill ${hasSavings ? '' : 'neutral'}">
-                ${hasSavings ? `+${formatAmt(item.savings, item.to)} Saved` : 'Optimal Direct'}
-              </span>
-              <button type="button" class="btn-rerun-profile" data-from="${item.from}" data-to="${item.to}" data-amount="${item.fromAmount}">
-                Re-run
-              </button>
-            </div>
           </div>
-        `;
-      }).join('');
+          <div class="history-card-right">
+            <div class="history-card-numbers">
+              <div class="history-card-to">${fmtAmt(item.toAmount,item.to)} ${item.to}</div>
+              <div class="history-card-from">Sent: ${fmtAmt(item.fromAmount,item.from)} ${item.from}</div>
+            </div>
+            <span class="history-savings-pill ${hasSavings ? '' : 'neutral'}">
+              ${hasSavings ? `+${fmtAmt(item.savings,item.to)} Saved` : 'Direct'}
+            </span>
+            <button type="button" class="btn-rerun-profile"
+              data-from="${item.from}" data-to="${item.to}" data-amount="${item.fromAmount}">
+              ↺ Re-run
+            </button>
+          </div>
+        </div>`;
+    }).join('');
 
-      // Attach re-run handlers
-      container.querySelectorAll('.btn-rerun-profile').forEach(btn => {
-        btn.addEventListener('click', () => {
-          localStorage.setItem('bypassfx_preset_from', btn.dataset.from);
-          localStorage.setItem('bypassfx_preset_to', btn.dataset.to);
-          localStorage.setItem('bypassfx_preset_amount', btn.dataset.amount);
-          window.location.href = 'index.html#converterSection';
-        });
+    container.querySelectorAll('.btn-rerun-profile').forEach(btn => {
+      btn.addEventListener('click', () => {
+        localStorage.setItem('bypassfx_preset_from', btn.dataset.from);
+        localStorage.setItem('bypassfx_preset_to', btn.dataset.to);
+        localStorage.setItem('bypassfx_preset_amount', btn.dataset.amount);
+        window.location.href = 'index.html#converterSection';
       });
-
-      // Clear History Handler
-      if (clearBtn) {
-        clearBtn.onclick = async () => {
-          if (confirm('Are you sure you want to clear your conversion history?')) {
-            try {
-              await window.BypassAPI.history.clearAll();
-              renderProfileHistory([]);
-              document.getElementById('totalConversions').textContent = '0';
-              document.getElementById('routesExplored').textContent = '0';
-              document.getElementById('bestSavings').textContent = '—';
-              const cardTotal = document.getElementById('cardTotalConversions');
-              if (cardTotal) cardTotal.textContent = '0';
-              const cardSavings = document.getElementById('cardMaxSavings');
-              if (cardSavings) cardSavings.textContent = '₹0.00';
-            } catch (err) {
-              alert('Failed to clear history: ' + (err.message || err));
-            }
-          }
-        };
-      }
-    }
-
-    // Logout handler
-    function doLogout() {
-      if (window.BypassAPI) {
-        window.BypassAPI.auth.logout();
-      } else {
-        window.location.href = 'login.html';
-      }
-    }
-
-    const btnLogout = document.getElementById('btnLogoutProfile');
-    if (btnLogout) {
-      btnLogout.addEventListener('click', doLogout);
-    }
-
-    // Mobile Menu Toggle
-    const menuBtn = document.getElementById('menuToggleBtn');
-    const mobileNav = document.getElementById('mobileNavDrawer');
-    if (menuBtn && mobileNav) {
-      menuBtn.addEventListener('click', () => mobileNav.classList.toggle('open'));
-      mobileNav.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => mobileNav.classList.remove('open'));
-      });
-    }
-
-    // ─── Edit Profile Modal Logic ───
-    const editModal = document.getElementById('editProfileModal');
-    const btnOpenEdit = document.getElementById('btnEditProfile');
-    const btnCloseEdit = document.getElementById('btnCloseEditModal');
-    const btnCancelEdit = document.getElementById('btnCancelEditModal');
-    const editForm = document.getElementById('editProfileForm');
-    const editNameInput = document.getElementById('editNameInput');
-    const editEmailInput = document.getElementById('editEmailInput');
-    const editBanner = document.getElementById('editModalBanner');
-    const btnSave = document.getElementById('btnSaveProfile');
-
-    function openEditModal() {
-      if (!editModal) return;
-      if (editNameInput) editNameInput.value = currentUserData.name || '';
-      if (editEmailInput) editEmailInput.value = currentUserData.email || '';
-      if (editBanner) {
-        editBanner.className = 'edit-modal-banner';
-        editBanner.textContent = '';
-      }
-      editModal.classList.add('open');
-      if (editNameInput) editNameInput.focus();
-    }
-
-    function closeEditModal() {
-      if (!editModal) return;
-      editModal.classList.remove('open');
-    }
-
-    if (btnOpenEdit) btnOpenEdit.addEventListener('click', openEditModal);
-    if (btnCloseEdit) btnCloseEdit.addEventListener('click', closeEditModal);
-    if (btnCancelEdit) btnCancelEdit.addEventListener('click', closeEditModal);
-
-    // Close when clicking on backdrop outside card
-    if (editModal) {
-      editModal.addEventListener('click', (e) => {
-        if (e.target === editModal) closeEditModal();
-      });
-    }
-
-    // Escape key closes modal
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && editModal && editModal.classList.contains('open')) {
-        closeEditModal();
-      }
     });
 
-    // Handle form submit
-    if (editForm) {
-      editForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const newName = editNameInput.value.trim();
-        const newEmail = editEmailInput.value.trim().toLowerCase();
-
-        if (!newName) {
-          showEditBanner('Name cannot be empty.', 'error');
-          return;
-        }
-        if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-          showEditBanner('Please enter a valid email address.', 'error');
-          return;
-        }
-
-        btnSave.disabled = true;
-        btnSave.textContent = 'Saving…';
-        showEditBanner('', '');
-
-        try {
-          const res = await window.BypassAPI.user.updateProfile({
-            name: newName,
-            email: newEmail
-          });
-
-          const updatedUser = (res && res.user) || { name: newName, email: newEmail };
-          currentUserData.name = updatedUser.name;
-          currentUserData.email = updatedUser.email;
-
-          // Update UI on page immediately
-          document.getElementById('userName').textContent = updatedUser.name;
-          document.getElementById('infoName').textContent = updatedUser.name;
-          document.getElementById('infoEmail').textContent = updatedUser.email;
-
-          // Update avatar initial
-          const nameParts = updatedUser.name.trim().split(' ');
-          const initial = nameParts.length > 1
-            ? nameParts[0].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].charAt(0).toUpperCase()
-            : nameParts[0].charAt(0).toUpperCase();
-          document.getElementById('userAvatar').textContent = initial;
-
-          showEditBanner('Profile updated successfully!', 'success');
-
-          setTimeout(() => {
-            closeEditModal();
-            btnSave.disabled = false;
-            btnSave.textContent = 'Save Changes';
-          }, 600);
-        } catch (err) {
-          console.error('Update profile error:', err);
-          showEditBanner(err.message || 'Failed to update profile. Please try again.', 'error');
-          btnSave.disabled = false;
-          btnSave.textContent = 'Save Changes';
-        }
-      });
-    }
-
-    function showEditBanner(msg, type) {
-      if (!editBanner) return;
-      if (!msg) {
-        editBanner.className = 'edit-modal-banner';
-        editBanner.textContent = '';
-        return;
-      }
-      editBanner.textContent = msg;
-      editBanner.className = `edit-modal-banner show ${type}`;
-    }
-
-    // Back to Top Button
-    const topBtn = document.getElementById('btnBackToTop');
-    if (topBtn) {
-      const toggleTopBtn = () => {
-        if (window.scrollY > 350) {
-          topBtn.classList.add('visible');
-        } else {
-          topBtn.classList.remove('visible');
+    if (clearBtn) {
+      clearBtn.onclick = async () => {
+        if (confirm('Clear your entire conversion history?')) {
+          try {
+            await window.BypassAPI.history.clearAll();
+            myHistory = [];
+            renderHistory([]);
+            document.getElementById('totalConversions').textContent = '0';
+            document.getElementById('routesExplored').textContent   = '0';
+            document.getElementById('bestSavings').textContent      = '₹0';
+            renderHeatmap([]);
+            renderCurrencyBars([]);
+            renderAchievements([]);
+          } catch (err) { alert('Failed: ' + (err.message || err)); }
         }
       };
-      window.addEventListener('scroll', toggleTopBtn, { passive: true });
-      toggleTopBtn();
-      topBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  renderHistory(myHistory);
+
+  // Filter chips
+  document.querySelectorAll('.hist-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.hist-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderHistory(myHistory);
+    });
+  });
+
+  /* ──────────────────────── Heatmap ──────────────────────── */
+  function renderHeatmap(history) {
+    const container = document.getElementById('heatmapContainer');
+    if (!container) return;
+
+    const counts = {};
+    history.forEach(i => {
+      const key = new Date(i.createdAt || i.date).toDateString();
+      counts[key] = (counts[key] || 0) + 1;
+    });
+
+    const WEEKS = 10, DAYS = 7;
+    const cells = [];
+    const now = new Date();
+    // Start from Monday of 10 weeks ago
+    const startDate = new Date(now);
+    startDate.setDate(startDate.getDate() - (WEEKS * DAYS));
+
+    let html = '';
+    for (let week = 0; week < WEEKS; week++) {
+      html += '<div class="hm-week">';
+      for (let day = 0; day < DAYS; day++) {
+        const d = new Date(startDate);
+        d.setDate(startDate.getDate() + week * DAYS + day);
+        const key   = d.toDateString();
+        const count = counts[key] || 0;
+        const level = count === 0 ? 0 : count <= 1 ? 1 : count <= 3 ? 2 : 3;
+        html += `<div class="hm-cell level-${level}" title="${key}: ${count} conversion${count!==1?'s':''}"></div>`;
+      }
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  }
+
+  renderHeatmap(myHistory);
+
+  /* ──────────────────────── Currency Bars ──────────────────────── */
+  function renderCurrencyBars(history) {
+    const container = document.getElementById('currencyBarsContainer');
+    if (!container) return;
+
+    if (!history.length) {
+      container.innerHTML = '<div class="bars-empty">No history yet. Start converting!</div>';
+      return;
+    }
+
+    const counts = {};
+    history.forEach(i => {
+      counts[i.from] = (counts[i.from] || 0) + 1;
+      counts[i.to]   = (counts[i.to]   || 0) + 1;
+    });
+
+    const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 6);
+    const max = sorted[0][1];
+
+    container.innerHTML = sorted.map(([code, count]) => {
+      const pct  = Math.round((count / max) * 100);
+      const meta = CURRENCY_META[code] || { name: code, flag: '🌐' };
+      return `
+        <div class="cur-bar-row">
+          <div class="cur-bar-label">
+            <span class="cur-bar-flag">${meta.flag}</span>
+            <span class="cur-bar-code">${code}</span>
+            <span class="cur-bar-name">${meta.name}</span>
+          </div>
+          <div class="cur-bar-track">
+            <div class="cur-bar-fill" style="width:${pct}%"></div>
+          </div>
+          <span class="cur-bar-count">${count}</span>
+        </div>`;
+    }).join('');
+  }
+
+  renderCurrencyBars(myHistory);
+
+  /* ──────────────────────── Achievements ──────────────────────── */
+  const ACHIEVEMENTS = [
+    { id:'first',  icon:'🚀', title:'First Flight',    desc:'Complete your first conversion',                    check: h => h.length >= 1 },
+    { id:'five',   icon:'✋', title:'High Five',        desc:'Complete 5 conversions',                            check: h => h.length >= 5 },
+    { id:'tenx',   icon:'🔟', title:'Power Trader',    desc:'Complete 10 conversions',                           check: h => h.length >= 10 },
+    { id:'saver',  icon:'💰', title:'Smart Saver',     desc:'Save money on any conversion',                      check: h => h.some(i => (i.savings||0) > 0) },
+    { id:'multi',  icon:'🔀', title:'Route Master',    desc:'Use a multi-hop route (3+ currencies)',             check: h => h.some(i => (i.route||'').split('➔').length >= 3) },
+    { id:'global', icon:'🌍', title:'Globe Trotter',   desc:'Convert between 5+ different currencies',          check: h => new Set([...h.map(i=>i.from),...h.map(i=>i.to)]).size >= 5 },
+    { id:'streak', icon:'🔥', title:'Week Streak',     desc:'Convert on 7 consecutive days',                     check: h => computeStreak(h) >= 7 },
+  ];
+
+  function renderAchievements(history) {
+    const grid = document.getElementById('badgesGrid');
+    if (!grid) return;
+
+    let unlocked = 0;
+    grid.innerHTML = ACHIEVEMENTS.map(ach => {
+      const earned = ach.check(history);
+      if (earned) unlocked++;
+      return `
+        <div class="badge-item ${earned ? 'earned' : 'locked'}">
+          <div class="badge-icon">${ach.icon}</div>
+          <div class="badge-info">
+            <div class="badge-title">${ach.title}</div>
+            <div class="badge-desc">${ach.desc}</div>
+          </div>
+          ${earned ? '<div class="badge-check">✓</div>' : '<div class="badge-lock">🔒</div>'}
+        </div>`;
+    }).join('');
+
+    const pill = document.getElementById('badgeCountPill');
+    if (pill) pill.textContent = `${unlocked} / ${ACHIEVEMENTS.length} Unlocked`;
+  }
+
+  renderAchievements(myHistory);
+
+  /* ──────────────────────── Live Ticker ──────────────────────── */
+  function updateTicker(rates) {
+    const pairs = [
+      ['t-usdinr', 1/rates.INR  ? (rates.INR||BASE_RATES.INR).toFixed(2)   : BASE_RATES.INR.toFixed(2)],
+      ['t-eurusd', rates.EUR    ? (1/rates.EUR).toFixed(4)                  : (1/BASE_RATES.EUR).toFixed(4)],
+      ['t-gbpusd', rates.GBP    ? (1/rates.GBP).toFixed(4)                  : (1/BASE_RATES.GBP).toFixed(4)],
+      ['t-usdjpy', (rates.JPY||BASE_RATES.JPY).toFixed(2)],
+      ['t-audusd', rates.AUD    ? (1/rates.AUD).toFixed(4)                  : (1/BASE_RATES.AUD).toFixed(4)],
+      ['t-usdchf', (rates.CHF||BASE_RATES.CHF).toFixed(4)],
+      ['t-usdcad', (rates.CAD||BASE_RATES.CAD).toFixed(4)],
+      ['t-usdsgd', (rates.SGD||BASE_RATES.SGD).toFixed(4)],
+    ];
+    pairs.forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    });
+  }
+
+  // Seed ticker with base rates immediately, then try live
+  updateTicker(BASE_RATES);
+  try {
+    const ratesRes = await fetch('https://api.frankfurter.app/latest?base=USD');
+    if (ratesRes.ok) {
+      const data = await ratesRes.json();
+      if (data && data.rates) updateTicker(data.rates);
+    }
+  } catch(e) { /* keep base rates */ }
+
+  /* ──────────────────────── Export ──────────────────────── */
+  function exportData(format) {
+    const session = window.BypassAPI.getSession() || {};
+    const payload = {
+      account: { name: currentUserData.name, email: currentUserData.email, id: currentUserData.id },
+      exportedAt: new Date().toISOString(),
+      totalConversions: myHistory.length,
+      conversions: myHistory
+    };
+
+    let dataStr, filename = `BypassFX_Statement_${new Date().toISOString().slice(0,10)}`;
+
+    if (format === 'json') {
+      dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
+      filename += '.json';
+    } else {
+      let csv = 'Date,From,Amount,To,Received,Savings,Route,Provider\n';
+      myHistory.forEach(r => {
+        csv += `"${r.createdAt||r.date}","${r.from}",${r.fromAmount},"${r.to}",${r.toAmount},${r.savings||0},"${r.route||''}","${r.provider||''}"\n`;
       });
+      dataStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      filename += '.csv';
+    }
+
+    const a = document.createElement('a');
+    a.setAttribute('href', dataStr);
+    a.setAttribute('download', filename);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  document.getElementById('btnExportCsv')?.addEventListener('click', () => exportData('csv'));
+  document.getElementById('btnExportJson')?.addEventListener('click', () => exportData('json'));
+
+  /* ──────────────────────── Copy User ID ──────────────────────── */
+  document.getElementById('btnCopyId')?.addEventListener('click', () => {
+    const id = currentUserData.id ? String(currentUserData.id).slice(-8).toUpperCase() : 'N/A';
+    navigator.clipboard.writeText('FX-' + id).then(() => {
+      const btn = document.getElementById('btnCopyId');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => {
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy User ID`;
+      }, 2000);
+    }).catch(() => { alert('User ID: FX-' + id); });
+  });
+
+  /* ──────────────────────── Edit Profile Modal ──────────────────────── */
+  const editModal    = document.getElementById('editProfileModal');
+  const btnOpenEdit  = document.getElementById('btnEditProfile');
+  const btnCloseEdit = document.getElementById('btnCloseEditModal');
+  const btnCancelEdit= document.getElementById('btnCancelEditModal');
+  const editForm     = document.getElementById('editProfileForm');
+  const editNameIn   = document.getElementById('editNameInput');
+  const editEmailIn  = document.getElementById('editEmailInput');
+  const editBanner   = document.getElementById('editModalBanner');
+  const btnSave      = document.getElementById('btnSaveProfile');
+
+  function openEdit() {
+    if (!editModal) return;
+    if (editNameIn)  editNameIn.value  = currentUserData.name  || '';
+    if (editEmailIn) editEmailIn.value = currentUserData.email || '';
+    if (editBanner)  { editBanner.className = 'edit-modal-banner'; editBanner.textContent = ''; }
+    editModal.classList.add('open');
+    if (editNameIn) editNameIn.focus();
+  }
+  function closeEdit() { editModal?.classList.remove('open'); }
+
+  btnOpenEdit?.addEventListener('click', openEdit);
+  btnCloseEdit?.addEventListener('click', closeEdit);
+  btnCancelEdit?.addEventListener('click', closeEdit);
+  editModal?.addEventListener('click', e => { if (e.target === editModal) closeEdit(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && editModal?.classList.contains('open')) closeEdit(); });
+
+  editForm?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const newName  = editNameIn.value.trim();
+    const newEmail = editEmailIn.value.trim().toLowerCase();
+
+    if (!newName) { showBanner('Name cannot be empty.','error'); return; }
+    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { showBanner('Enter a valid email.','error'); return; }
+
+    btnSave.disabled = true;
+    btnSave.textContent = 'Saving…';
+
+    try {
+      const res = await window.BypassAPI.user.updateProfile({ name: newName, email: newEmail });
+      const updated = (res && res.user) || { name: newName, email: newEmail };
+      currentUserData.name  = updated.name;
+      currentUserData.email = updated.email;
+
+      document.getElementById('userName').textContent  = updated.name;
+      document.getElementById('infoName').textContent  = updated.name;
+      document.getElementById('infoEmail').textContent = updated.email;
+
+      const p = updated.name.trim().split(' ');
+      const avatarEl = document.getElementById('userAvatar');
+      if (!avatarEl.querySelector('img')) {
+        avatarEl.textContent = p.length > 1 ? p[0][0].toUpperCase()+p[p.length-1][0].toUpperCase() : p[0][0].toUpperCase();
+      }
+
+      showBanner('Profile updated!', 'success');
+      setTimeout(() => { closeEdit(); btnSave.disabled = false; btnSave.textContent = 'Save Changes'; }, 700);
+    } catch (err) {
+      showBanner(err.message || 'Failed to update.', 'error');
+      btnSave.disabled = false;
+      btnSave.textContent = 'Save Changes';
     }
   });
+
+  function showBanner(msg, type) {
+    if (!editBanner) return;
+    if (!msg) { editBanner.className = 'edit-modal-banner'; editBanner.textContent = ''; return; }
+    editBanner.textContent = msg;
+    editBanner.className = `edit-modal-banner show ${type}`;
+  }
+
+  /* ──────────────────────── Logout ──────────────────────── */
+  document.getElementById('btnLogoutProfile')?.addEventListener('click', () => {
+    window.BypassAPI ? window.BypassAPI.auth.logout() : (window.location.href = 'login.html');
+  });
+
+  /* ──────────────────────── Mobile Menu ──────────────────────── */
+  const menuBtn   = document.getElementById('menuToggleBtn');
+  const mobileNav = document.getElementById('mobileNavDrawer');
+  menuBtn?.addEventListener('click', () => mobileNav?.classList.toggle('open'));
+  mobileNav?.querySelectorAll('a').forEach(l => l.addEventListener('click', () => mobileNav.classList.remove('open')));
+
+  /* ──────────────────────── Back to Top ──────────────────────── */
+  const topBtn = document.getElementById('btnBackToTop');
+  if (topBtn) {
+    window.addEventListener('scroll', () => {
+      topBtn.classList.toggle('visible', window.scrollY > 350);
+    }, { passive: true });
+    topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+
+  /* ──────────────────────── Nav User Badge ──────────────────────── */
+  const navRight = document.getElementById('navRightContainer');
+  if (navRight && currentUserData.name) {
+    const firstName = currentUserData.name.split(' ')[0];
+    navRight.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-weight:600;font-size:0.88rem;color:var(--text-primary);">👋 ${firstName}</span>
+        <a href="index.html" class="btn-primary" style="padding:8px 16px;font-size:0.84rem;">Converter</a>
+      </div>`;
+  }
+});
 </script>
 
-  <!-- Edit Profile Modal Dialog -->
-  <div class="edit-profile-modal-backdrop" id="editProfileModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-    <div class="edit-profile-modal-card">
-      <div class="edit-modal-head">
-        <div>
-          <h2 id="editModalTitle">Edit Profile</h2>
-          <p>Update your personal account details</p>
-        </div>
-        <button type="button" class="edit-modal-close-btn" id="btnCloseEditModal" aria-label="Close dialog">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-      </div>
-
-      <div id="editModalBanner" class="edit-modal-banner"></div>
-
-      <form id="editProfileForm">
-        <div class="edit-form-group">
-          <label for="editNameInput">Full Name</label>
-          <input type="text" id="editNameInput" class="edit-form-input" placeholder="e.g. Saksham Sood" required maxlength="80">
-        </div>
-
-        <div class="edit-form-group">
-          <label for="editEmailInput">Email Address</label>
-          <input type="email" id="editEmailInput" class="edit-form-input" placeholder="name@example.com" required>
-        </div>
-
-        <div class="edit-modal-actions">
-          <button type="button" class="btn-modal-cancel" id="btnCancelEditModal">Cancel</button>
-          <button type="submit" class="btn-modal-save" id="btnSaveProfile">Save Changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Floating Back to Top Button -->
-  <button class="back-to-top-btn" id="btnBackToTop" aria-label="Back to top" type="button">
-    <svg class="svgIcon" viewBox="0 0 384 512" aria-hidden="true">
-      <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
-    </svg>
-  </button>
 </body>
 </html>
