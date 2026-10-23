@@ -68,14 +68,16 @@ app.use(helmet({
 }));
 
 // CORS — allow requests from the frontend origin
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000,http://127.0.0.1:5500,https://bypass-fx.vercel.app')
   .split(',')
-  .map(o => o.trim());
+  .map(o => o.trim().replace(/\/+$/, ''));
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow Postman / curl in development (no origin header)
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow Postman / curl / non-browser clients (no origin header)
+    if (!origin) return callback(null, true);
+    const normalized = origin.trim().replace(/\/+$/, '');
+    if (allowedOrigins.includes(normalized) || allowedOrigins.includes('*')) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} is not allowed`));
   },
   credentials: true
