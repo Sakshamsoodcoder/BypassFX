@@ -23,8 +23,22 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
-      required: [true, 'Password hash is required'],
-      select: false  // Never returned in queries by default
+      required: false,  // Optional for Google OAuth users
+      select: false     // Never returned in queries by default
+    },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true
+    },
+    avatar: {
+      type: String,
+      default: ''
+    },
+    authProvider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local'
     },
     // For password-reset flow (OTP / token stored temporarily)
     resetToken: {
@@ -43,8 +57,8 @@ const userSchema = new mongoose.Schema(
 
 // ─── Pre-save hook: hash password before saving ───────────────────────────────
 userSchema.pre('save', async function (next) {
-  // Only run if passwordHash field is newly set (raw password string)
-  if (!this.isModified('passwordHash')) return next();
+  // Only run if passwordHash field exists and is newly set
+  if (!this.passwordHash || !this.isModified('passwordHash')) return next();
 
   // If it looks like it's already a bcrypt hash, skip
   if (this.passwordHash.startsWith('$2')) return next();
@@ -60,16 +74,19 @@ userSchema.pre('save', async function (next) {
 
 // ─── Instance method: verify password ────────────────────────────────────────
 userSchema.methods.matchPassword = async function (plainText) {
+  if (!this.passwordHash) return false;
   return bcrypt.compare(plainText, this.passwordHash);
 };
 
 // ─── Instance method: sanitize for API responses ─────────────────────────────
 userSchema.methods.toPublicJSON = function () {
   return {
-    id:        this._id,
-    name:      this.name,
-    email:     this.email,
-    createdAt: this.createdAt
+    id:           this._id,
+    name:         this.name,
+    email:        this.email,
+    avatar:       this.avatar || '',
+    authProvider: this.authProvider || 'local',
+    createdAt:    this.createdAt
   };
 };
 

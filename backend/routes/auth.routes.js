@@ -2,6 +2,8 @@
  * BypassFX — Auth Routes
  * POST /api/auth/signup
  * POST /api/auth/login
+ * GET  /api/auth/google/config
+ * POST /api/auth/google
  * POST /api/auth/forgot-password
  * POST /api/auth/reset-password
  */
@@ -11,7 +13,14 @@ const router  = express.Router();
 const { body } = require('express-validator');
 
 const { authLimiter } = require('../middleware/rateLimiter');
-const { signup, login, forgotPassword, resetPassword } = require('../controllers/auth.controller');
+const {
+  signup,
+  login,
+  googleAuth,
+  getGoogleConfig,
+  forgotPassword,
+  resetPassword
+} = require('../controllers/auth.controller');
 
 // ─── Validation Rules ─────────────────────────────────────────────────────────
 const signupRules = [
@@ -48,6 +57,8 @@ const validate = (req, res, next) => {
 // ─── Routes ──────────────────────────────────────────────────────────────────
 router.post('/signup',          authLimiter, signupRules,  validate, signup);
 router.post('/login',           authLimiter, loginRules,   validate, login);
+router.get('/google/config',    getGoogleConfig);
+router.post('/google',          authLimiter, googleAuth);
 router.post('/forgot-password', authLimiter, forgotRules,  validate, forgotPassword);
 router.post('/reset-password',  authLimiter, resetRules,   validate, resetPassword);
 

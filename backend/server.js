@@ -26,7 +26,7 @@ connectDB();
 // ─── Express App Setup ────────────────────────────────────────────────────────
 const app = express();
 
-// Security headers with permissive CSP for flags, fonts, and chart libraries
+// Security headers with permissive CSP for flags, fonts, Google Identity Services, and chart libraries
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -37,30 +37,42 @@ app.use(helmet({
         "blob:",
         "https://flagcdn.com",
         "https://*.flagcdn.com",
-        "https://images.unsplash.com"
+        "https://images.unsplash.com",
+        "https://lh3.googleusercontent.com",
+        "https://*.googleusercontent.com"
       ],
       scriptSrc: [
         "'self'",
         "'unsafe-inline'",
         "'unsafe-eval'",
         "https://cdn.jsdelivr.net",
-        "https://cdnjs.cloudflare.com"
+        "https://cdnjs.cloudflare.com",
+        "https://accounts.google.com",
+        "https://accounts.google.com/gsi/client"
       ],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: [
         "'self'",
         "'unsafe-inline'",
-        "https://fonts.googleapis.com"
+        "https://fonts.googleapis.com",
+        "https://accounts.google.com/gsi/style"
       ],
       fontSrc: [
         "'self'",
         "https://fonts.gstatic.com",
         "data:"
       ],
+      frameSrc: [
+        "'self'",
+        "https://accounts.google.com"
+      ],
       connectSrc: [
         "'self'",
         "https://api.frankfurter.app",
-        "https://api.ipify.org"
+        "https://api.ipify.org",
+        "https://accounts.google.com",
+        "https://oauth2.googleapis.com",
+        "https://www.googleapis.com"
       ]
     }
   },

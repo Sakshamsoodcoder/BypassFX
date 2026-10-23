@@ -1,7 +1,7 @@
 /**
  * BYPASSFX — Authentication Engine (Phase 2)
  * Connects frontend auth flows to Express.js + MongoDB API via BypassAPI
- * with real JWT authentication and server-side bcrypt password security.
+ * with real JWT authentication, bcrypt password security, and real Google Sign-In.
  */
 
 (function () {
@@ -30,12 +30,13 @@
   function showBanner(el, message, type) {
     if (!el) return;
     el.textContent = message;
-    el.className = "banner show " + type;
+    el.className = "banner show " + (type || "error");
   }
 
   function hideBanner(el) {
     if (!el) return;
     el.className = "banner";
+    el.textContent = "";
   }
 
   function setBusy(btn, busyLabel, idleLabel) {
@@ -201,6 +202,124 @@
         setBusy(submitBtn, null, "Log in");
       }
     });
+  }
+
+  // ----------------------------------------------------------------
+  // Continue with Google (Real System Google Account Chooser)
+  // ----------------------------------------------------------------
+  async function setupGoogleAuth() {
+    const googleBtn = $("googleAuthBtn");
+    const banner = $("formBanner");
+    if (!googleBtn) return;
+
+    const api = getApi();
+
+    async function getGoogleClientId() {
+      // 1. Check local storage override if user previously provided it
+      let clientId = localStorage.getItem("google_client_id") || "";
+      if (clientId) return clientId.trim();
+
+      // 2. Fetch from backend environment (/api/auth/google/config)
+      if (api) {
+        try {
+          const config = await api.auth.getGoogleConfig();
+          if (config && config.clientId) {
+            clientId = config.clientId.trim();
+          }
+        } catch (e) {
+          // ignore network error
+        }
+      }
+      return clientId;
+    }
+
+    googleBtn.addEventListener("click", async () => {
+      hideBanner(banner);
+
+      if (!window.google || !window.google.accounts) {
+        showBanner(banner, "Google Sign-In is loading. Please check your internet connection.", "error");
+        return;
+      }
+
+      let clientId = await getGoogleClientId();
+
+      // If no Google Client ID is configured yet, ask the user so their real system accounts can be connected
+      if (!clientId) {
+        const userInput = window.prompt(
+          "To connect your system's Google accounts, please enter your Google OAuth 2.0 Client ID (from Google Cloud Console), or configure GOOGLE_CLIENT_ID in backend/.env:"
+        );
+        if (!userInput || !userInput.trim()) {
+          showBanner(banner, "Google Client ID is required to launch the system account chooser.", "error");
+          return;
+        }
+        clientId = userInput.trim();
+        localStorage.setItem("google_client_id", clientId);
+      }
+
+      try {
+        // Use Google Identity Services OAuth 2.0 Token Client with prompt: 'select_account'
+        // This opens Google's authentic account chooser displaying all accounts on the system/browser
+        const tokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: "email profile openid",
+          prompt: "select_account",
+          callback: async (tokenResponse) => {
+            if (tokenResponse.error) {
+              if (tokenResponse.error !== "access_denied") {
+                showBanner(banner, "Google authorization error: " + (tokenResponse.error_description || tokenResponse.error), "error");
+              }
+              return;
+            }
+
+            showBanner(banner, "Authenticating with Google…", "success");
+
+            try {
+              // Retrieve real Google user profile from Google's UserInfo API
+              const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: { Authorization: "Bearer " + tokenResponse.access_token }
+              });
+
+              if (!res.ok) {
+                throw new Error("Failed to fetch Google profile information.");
+              }
+
+              const profile = await res.json();
+              if (!profile.email) {
+                throw new Error("No email returned from Google account.");
+              }
+
+              // Send verified system Google account to backend
+              await api.auth.googleLogin({
+                email: profile.email,
+                name: profile.name || profile.given_name || profile.email.split("@")[0],
+                googleId: profile.sub,
+                avatar: profile.picture || ""
+              }, true);
+
+              showBanner(banner, "Signed in as " + profile.email + "! Redirecting…", "success");
+              setTimeout(() => {
+                window.location.href = "index.html";
+              }, 400);
+            } catch (err) {
+              console.error("Google login processing error:", err);
+              showBanner(banner, err.message || "Could not complete sign in with Google.", "error");
+            }
+          }
+        });
+
+        // Request access token - opens real Google account picker popup
+        tokenClient.requestAccessToken();
+      } catch (err) {
+        console.error("Failed to initialize Google token client:", err);
+        showBanner(banner, "Could not open Google sign in. Ensure your Client ID is valid.", "error");
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupGoogleAuth);
+  } else {
+    setupGoogleAuth();
   }
 
   // ----------------------------------------------------------------

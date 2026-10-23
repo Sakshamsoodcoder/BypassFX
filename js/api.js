@@ -47,10 +47,12 @@ window.BypassAPI = (function () {
 
   function saveSession(user, remember = true) {
     const payload = JSON.stringify({
-      id:        user.id || user._id,
-      name:      user.name,
-      email:     user.email,
-      createdAt: user.createdAt
+      id:           user.id || user._id,
+      name:         user.name,
+      email:        user.email,
+      avatar:       user.avatar || '',
+      authProvider: user.authProvider || 'local',
+      createdAt:    user.createdAt
     });
     (remember ? localStorage : sessionStorage).setItem(SESSION_KEY, payload);
     if (remember) sessionStorage.removeItem(SESSION_KEY);
@@ -110,6 +112,21 @@ window.BypassAPI = (function () {
       saveToken(data.token, remember);
       saveSession(data.user, remember);
       return data;
+    },
+
+    async googleLogin(payload, remember = true) {
+      const data = await request('POST', '/api/auth/google', payload);
+      saveToken(data.token, remember);
+      saveSession(data.user, remember);
+      return data;
+    },
+
+    async getGoogleConfig() {
+      try {
+        return await request('GET', '/api/auth/google/config');
+      } catch (e) {
+        return { success: false, clientId: '' };
+      }
     },
 
     async forgotPassword(email) {
