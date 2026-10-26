@@ -142,45 +142,102 @@
           </div>
         </div>
 
-        <!-- Right Hero Visual Container -->
-        <div class="hero-image-wrapper" id="heroVisualContainer">
-          <img src="assets/hero-banner.jpg" alt="BypassFX Arbitrage Visualizer" onerror="this.onerror=null; this.src='assets/images/hero.png';">
-          
-          <!-- Fallback Mockup Graphic if image is not yet supplied -->
-          <div class="hero-mockup-fallback" style="display: none;">
-            <div class="mockup-top">
-              <div class="mockup-chip">
-                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #34D399;"></span>
-                <span>GRAPH ENGINE ACTIVE</span>
+        <!-- Right Hero Visual Container: Interactive Currency Exchange Preview -->
+        <div class="hero-image-wrapper has-native-ui" id="heroVisualContainer">
+          <div class="hero-exchange-preview" id="heroExchangePreview" role="region" aria-label="Interactive Currency Exchange Preview">
+            <!-- Header bar with live status and corridor selection tabs -->
+            <div class="hep-header">
+              <div class="hep-badge-status">
+                <span class="hep-pulse-dot" aria-hidden="true"></span>
+                <span>LIVE FX ROUTE ENGINE</span>
               </div>
-              <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-inverse-muted);">Dijkstra v2.4</span>
-            </div>
-
-            <div class="mockup-route-card">
-              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-electric); font-weight: 700;">
-                OPTIMAL ROUTE SIMULATION
-              </div>
-              <div class="mockup-nodes">
-                <div class="mockup-node">
-                  <div class="curr">₹10,000</div>
-                  <div class="sub">INR · Source</div>
-                </div>
-                <div class="mockup-arrow">➔</div>
-                <div class="mockup-node">
-                  <div class="curr">$115.14</div>
-                  <div class="sub">USD · Hub</div>
-                </div>
-                <div class="mockup-arrow">➔</div>
-                <div class="mockup-node" style="border: 1.5px solid #34D399; background: rgba(52, 211, 153, 0.2);">
-                  <div class="curr" style="color: #A7F3D3;">€108.42</div>
-                  <div class="sub" style="color: #A7F3D3;">EUR · Target</div>
-                </div>
+              <div class="hep-tabs" role="tablist" aria-label="Sample Corridors">
+                <button type="button" class="hep-tab-btn active" data-corridor="inr-eur" role="tab" aria-selected="true">INR ➔ EUR</button>
+                <button type="button" class="hep-tab-btn" data-corridor="usd-gbp" role="tab" aria-selected="false">USD ➔ GBP</button>
+                <button type="button" class="hep-tab-btn" data-corridor="eur-jpy" role="tab" aria-selected="false">EUR ➔ JPY</button>
               </div>
             </div>
 
-            <div class="mockup-bottom">
-              <span>Direct Bank Yield: €106.29</span>
-              <strong>+€2.13 Added Savings</strong>
+            <!-- Route simulation card -->
+            <div class="hep-route-card">
+              <div class="hep-card-title-row">
+                <span>OPTIMAL MULTI-HOP ROUTE</span>
+                <span class="hep-cheapest-tag" id="hepRouteTag">CHEAPEST ROUTE FOUND ✓</span>
+              </div>
+
+              <!-- Nodes flow row -->
+              <div class="hep-nodes-row" id="hepNodesRow">
+                <!-- Node 1: Source -->
+                <div class="hep-node-box">
+                  <div class="hep-node-top">
+                    <span id="hepFromFlag">🇮🇳</span>
+                    <span id="hepFromCode">INR</span>
+                  </div>
+                  <div class="hep-node-amount" id="hepFromAmount">₹1,00,000</div>
+                  <div class="hep-node-sub" id="hepFromSub">Source Amount</div>
+                </div>
+
+                <!-- Arrow 1 -->
+                <div class="hep-arrow-step">
+                  <svg class="hep-arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                  <span class="hep-step-fee" id="hepFee1">Wise 0.45%</span>
+                </div>
+
+                <!-- Node 2: Intermediary Hub -->
+                <div class="hep-node-box">
+                  <div class="hep-node-top">
+                    <span id="hepHubFlag">🇺🇸</span>
+                    <span id="hepHubCode">USD Hub</span>
+                  </div>
+                  <div class="hep-node-amount" id="hepHubAmount">$1,146.22</div>
+                  <div class="hep-node-sub" id="hepHubSub">Liquidity Hop</div>
+                </div>
+
+                <!-- Arrow 2 -->
+                <div class="hep-arrow-step">
+                  <svg class="hep-arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                  <span class="hep-step-fee" id="hepFee2">Wise 0.45%</span>
+                </div>
+
+                <!-- Node 3: Target -->
+                <div class="hep-node-box highlight">
+                  <div class="hep-node-top">
+                    <span id="hepToFlag">🇪🇺</span>
+                    <span id="hepToCode" style="color: var(--accent-electric);">EUR Target</span>
+                  </div>
+                  <div class="hep-node-amount" id="hepToAmount">€1,059.67</div>
+                  <div class="hep-node-sub" id="hepToSub">Net Received</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Savings banner -->
+            <div class="hep-savings-strip">
+              <div class="hep-saving-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-electric)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span id="hepCompareText">Direct Bank Yield: €1,024.70 (3.3% spread)</span>
+              </div>
+              <div class="hep-saving-value" id="hepSavingsText">+€34.97 Added Value</div>
+            </div>
+
+            <!-- Footer status bar -->
+            <div class="hep-footer-bar">
+              <span class="hep-indicator-live">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span id="hepStatusRate">ECB Mid-Market Baseline • Latency ~45ms</span>
+              </span>
+              <span style="opacity: 0.85;">Dijkstra-Optimized Corridors</span>
             </div>
           </div>
         </div>
@@ -815,79 +872,120 @@
             
           </div>
 
-          <!-- Visual Container -->
-          <div class="story-visual-container">
-            <img src="assets/pathfinding-demo.jpg" alt="BypassFX Multi-Hop Pathfinding" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="story-visual-fallback" style="display: none;">
+          <!-- Visual Container: Native Responsive Currency Route Graph -->
+          <div class="story-visual-container has-native-ui" id="routeGraphVisualContainer">
+            <div class="native-route-graph-card" role="region" aria-label="Currency Route Topology Graph">
               <!-- Top Header -->
-              <div class="fallback-header-wrap">
+              <div class="nrg-header-wrap">
                 <div class="fallback-badge-row">
-                  <span class="fallback-pill">GLOBAL CORRIDORS</span>
+                  <span class="fallback-pill">TOPOLOGY DISCOVERY</span>
                   <span class="fallback-live-indicator"><span class="pulse-dot"></span> LIVE SCAN</span>
                 </div>
-                <div class="fallback-route-code">USD ➔ EUR ➔ INR</div>
+                <div class="fallback-route-code">INR ➔ GBP ➔ EUR</div>
               </div>
 
-              <!-- Main Comparison & Yield Card -->
-              <div class="fallback-graphic-card">
-                <div class="fallback-card-title">
-                  <span>Corridor Cost & Arbitrage Analysis</span>
-                  <span class="badge-saving-tag">BEST ROUTE</span>
+              <!-- Main SVG Graph Viewport -->
+              <div class="nrg-svg-container">
+                <svg viewBox="0 0 540 310" class="nrg-svg" role="img" aria-label="BypassFX Currency Route Graph">
+                  <defs>
+                    <!-- Marker for Optimal Route (Emerald) -->
+                    <marker id="arrow-opt" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                      <path d="M 0 1 L 9 5 L 0 9 z" fill="#22C55E"/>
+                    </marker>
+                    <!-- Marker for Muted Alternatives -->
+                    <marker id="arrow-mut" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                      <path d="M 0 1 L 9 5 L 0 9 z" fill="#79A891"/>
+                    </marker>
+                    <!-- Glow Filter for Optimal Path -->
+                    <filter id="opt-glow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="0" dy="0" stdDeviation="3.5" flood-color="#22C55E" flood-opacity="0.6"/>
+                    </filter>
+                  </defs>
+
+                  <!-- ── Muted Alternative Paths (Bank Wire, PayPal) ── -->
+                  <!-- INR -> USD (Bank Wire 2.5%) -->
+                  <path d="M 85 200 C 95 135, 130 90, 155 82" stroke="rgba(121, 168, 145, 0.45)" stroke-width="1.8" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow-mut)"/>
+                  <rect x="92" y="130" width="76" height="17" rx="8" fill="#072218" stroke="rgba(121, 168, 145, 0.4)" stroke-width="1"/>
+                  <text x="130" y="142" fill="#A9D6BF" font-size="8.5" text-anchor="middle" font-family="monospace">Bank (2.5%)</text>
+
+                  <!-- USD -> EUR (PayPal 3.0%) -->
+                  <path d="M 215 70 C 290 35, 390 40, 432 80" stroke="rgba(121, 168, 145, 0.45)" stroke-width="1.8" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow-mut)"/>
+                  <rect x="300" y="42" width="78" height="17" rx="8" fill="#072218" stroke="rgba(121, 168, 145, 0.4)" stroke-width="1"/>
+                  <text x="339" y="54" fill="#A9D6BF" font-size="8.5" text-anchor="middle" font-family="monospace">PayPal (3.0%)</text>
+
+                  <!-- USD -> GBP (Bank Wire 2.0%) -->
+                  <path d="M 205 95 L 305 155" stroke="rgba(121, 168, 145, 0.45)" stroke-width="1.8" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow-mut)"/>
+                  <rect x="238" y="115" width="76" height="17" rx="8" fill="#072218" stroke="rgba(121, 168, 145, 0.4)" stroke-width="1"/>
+                  <text x="276" y="127" fill="#A9D6BF" font-size="8.5" text-anchor="middle" font-family="monospace">Bank (2.0%)</text>
+
+                  <!-- GBP -> EUR (Direct Bank Wire 1.8%) -->
+                  <path d="M 360 190 C 410 215, 455 175, 455 125" stroke="rgba(121, 168, 145, 0.45)" stroke-width="1.8" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow-mut)"/>
+                  <rect x="400" y="185" width="76" height="17" rx="8" fill="#072218" stroke="rgba(121, 168, 145, 0.4)" stroke-width="1"/>
+                  <text x="438" y="197" fill="#A9D6BF" font-size="8.5" text-anchor="middle" font-family="monospace">Bank (1.8%)</text>
+
+                  <!-- ── Highlighted Optimal Path (Wise Route) ── -->
+                  <!-- Leg 1: INR -> GBP via Wise (0.40%) -->
+                  <path d="M 105 230 C 180 250, 255 225, 310 190" stroke="#22C55E" stroke-width="3.5" fill="none" marker-end="url(#arrow-opt)" filter="url(#opt-glow)" class="nrg-path-optimal"/>
+                  <rect x="180" y="234" width="86" height="20" rx="10" fill="#072218" stroke="#22C55E" stroke-width="1.3"/>
+                  <text x="223" y="248" fill="#7EE8B8" font-size="9.5" font-weight="700" text-anchor="middle" font-family="monospace">Wise (0.40%)</text>
+
+                  <!-- Leg 2: GBP -> EUR via Wise (0.35%) -->
+                  <path d="M 365 155 C 395 130, 415 112, 432 102" stroke="#22C55E" stroke-width="3.5" fill="none" marker-end="url(#arrow-opt)" filter="url(#opt-glow)" class="nrg-path-optimal"/>
+                  <rect x="375" y="118" width="86" height="20" rx="10" fill="#072218" stroke="#22C55E" stroke-width="1.3"/>
+                  <text x="418" y="132" fill="#7EE8B8" font-size="9.5" font-weight="700" text-anchor="middle" font-family="monospace">Wise (0.35%)</text>
+
+                  <!-- ── Currency Nodes ── -->
+                  <!-- Node 1: INR (Source) -->
+                  <g class="nrg-node-group" tabindex="0" role="button" aria-label="INR Currency Node">
+                    <circle cx="75" cy="230" r="32" class="nrg-node-circle" fill="#072218" stroke="#22C55E" stroke-width="2.5"/>
+                    <text x="75" y="222" font-size="18" text-anchor="middle">🇮🇳</text>
+                    <text x="75" y="240" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">INR</text>
+                    <text x="75" y="254" fill="#7EE8B8" font-size="9" text-anchor="middle" font-family="monospace">₹1,00,000</text>
+                  </g>
+
+                  <!-- Node 2: USD (Hub) -->
+                  <g class="nrg-node-group" tabindex="0" role="button" aria-label="USD Currency Node">
+                    <circle cx="185" cy="75" r="30" class="nrg-node-circle" fill="#0B3B2A" stroke="#BFDDCD" stroke-width="1.8"/>
+                    <text x="185" y="68" font-size="17" text-anchor="middle">🇺🇸</text>
+                    <text x="185" y="86" fill="#F3FBF6" font-size="12" font-weight="700" text-anchor="middle">USD</text>
+                    <text x="185" y="98" fill="#A9D6BF" font-size="8.5" text-anchor="middle" font-family="monospace">Global Hub</text>
+                  </g>
+
+                  <!-- Node 3: GBP (Optimal Intermediary Relay) -->
+                  <g class="nrg-node-group" tabindex="0" role="button" aria-label="GBP Currency Node">
+                    <circle cx="340" cy="175" r="34" class="nrg-node-circle" fill="#0F5138" stroke="#22C55E" stroke-width="2.8"/>
+                    <text x="340" y="167" font-size="18" text-anchor="middle">🇬🇧</text>
+                    <text x="340" y="186" fill="#FFFFFF" font-size="13" font-weight="700" text-anchor="middle">GBP</text>
+                    <text x="340" y="200" fill="#9FE870" font-size="9" font-weight="600" text-anchor="middle" font-family="monospace">Optimal Hub</text>
+                  </g>
+
+                  <!-- Node 4: EUR (Target Destination) -->
+                  <g class="nrg-node-group" tabindex="0" role="button" aria-label="EUR Currency Node">
+                    <circle cx="465" cy="95" r="33" class="nrg-node-circle" fill="#072218" stroke="#22C55E" stroke-width="2.5"/>
+                    <text x="465" y="87" font-size="18" text-anchor="middle">🇪🇺</text>
+                    <text x="465" y="106" fill="#FFFFFF" font-size="13" font-weight="700" text-anchor="middle">EUR</text>
+                    <text x="465" y="120" fill="#7EE8B8" font-size="9" text-anchor="middle" font-family="monospace">Target</text>
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Legend Strip -->
+              <div class="nrg-legend-strip">
+                <div class="nrg-legend-item">
+                  <span class="nrg-legend-line optimal"></span>
+                  <span>Optimal Route (Wise • 0.75% Total Fee)</span>
                 </div>
-
-                <div class="fallback-metric-row danger">
-                  <div class="metric-left">
-                    <span class="metric-label">Direct Bank Wire Spread</span>
-                    <span class="metric-sub">Standard SWIFT FX corridor markup</span>
-                  </div>
-                  <div class="metric-right">
-                    <span class="metric-value red">-3.8% Loss</span>
-                  </div>
-                </div>
-
-                <div class="fallback-metric-divider"></div>
-
-                <div class="fallback-metric-row success">
-                  <div class="metric-left">
-                    <span class="metric-label">BypassFX Multi-Hop Route</span>
-                    <span class="metric-sub">USD ➔ EUR ➔ INR via Dijkstra routing</span>
-                  </div>
-                  <div class="metric-right">
-                    <span class="metric-value green">+2.4% Net Gain</span>
-                  </div>
+                <div class="nrg-legend-item">
+                  <span class="nrg-legend-line alternative"></span>
+                  <span>Alternative (Bank/PayPal • 1.8% – 3.8%)</span>
                 </div>
               </div>
 
-              <!-- Step-by-Step Route Simulation Strip -->
-              <div class="fallback-hops-strip">
-                <div class="hop-chip">
-                  <span class="hop-chip-num">01</span>
-                  <span class="hop-chip-cur">$1,000 USD</span>
-                </div>
-                <div class="hop-arrow">➔</div>
-                <div class="hop-chip highlight">
-                  <span class="hop-chip-num">02</span>
-                  <span class="hop-chip-cur">€925.10 EUR</span>
-                </div>
-                <div class="hop-arrow">➔</div>
-                <div class="hop-chip success">
-                  <span class="hop-chip-num">03</span>
-                  <span class="hop-chip-cur">₹86,850 INR</span>
-                </div>
-              </div>
-
-              <!-- Footer Details -->
-              <div class="fallback-footer-row">
-                <div class="fallback-footer-item">
-                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Real-Time Graph Optimization</span>
-                </div>
-                <div class="fallback-footer-stats">
-                  <span>Latency: <strong>&lt; 45ms</strong></span>
-                  <span>Hubs: <strong>USD, EUR, GBP, JPY, INR</strong></span>
-                </div>
+              <!-- Compact Route Summary Bar -->
+              <div class="nrg-route-summary-bar">
+                <span>Path: <strong>INR ➔ GBP ➔ EUR</strong></span>
+                <span style="color: var(--accent-lime); font-weight: 700;">+2.85% Extra Yield vs Bank Wire</span>
+                <span style="opacity: 0.85;">2 Hops · Latency &lt; 45ms</span>
               </div>
             </div>
           </div>
@@ -934,72 +1032,129 @@
             <a href="signup.html" class="btn-dark">Create Free Account</a>
           </div>
 
-          <!-- Visual Container -->
-          <div class="story-visual-container">
-            <img src="assets/architecture-diagram.jpg" alt="BypassFX System Architecture" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="story-visual-fallback" style="display: none;">
+          <!-- Visual Container: Native Capabilities Feature Showcase -->
+          <div class="story-visual-container has-native-ui" id="featuresShowcaseContainer">
+            <div class="native-features-showcase-panel" role="region" aria-label="BypassFX Capabilities Feature Showcase">
               <!-- Top Header -->
-              <div class="fallback-header-wrap">
+              <div class="nfs-header">
                 <div class="fallback-badge-row">
-                  <span class="fallback-pill">VERIFIED SAVINGS</span>
-                  <span class="fallback-live-indicator"><span class="pulse-dot"></span> BENCHMARK AUDITED</span>
+                  <span class="fallback-pill">CAPABILITY MATRIX</span>
+                  <span class="fallback-live-indicator"><span class="pulse-dot"></span> REAL-TIME ENGINE</span>
                 </div>
-                <div class="fallback-route-code">₹80,000 INR ➔ EUR</div>
+                <div class="fallback-route-code" style="color: var(--accent-lime);">BypassFX Core Engine</div>
               </div>
 
-              <!-- Main Amount & Net Savings Spotlight Card -->
-              <div class="fallback-graphic-card">
-                <div class="fallback-spotlight-top">
-                  <div class="spotlight-from-to">
-                    <span class="spotlight-amount-in">Send ₹80,000 INR</span>
-                    <span class="spotlight-arrow">➔</span>
-                    <span class="spotlight-amount-out">Receive €878.15 EUR</span>
+              <!-- 6-Card Responsive Feature Grid -->
+              <div class="nfs-grid">
+                <!-- Feature 1 -->
+                <div class="nfs-card">
+                  <div class="nfs-card-head">
+                    <div class="nfs-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                      </svg>
+                    </div>
+                    <span class="nfs-card-tag">Frankfurter API</span>
                   </div>
-                  <div class="spotlight-pill-gain">+€30.85 Extra in Pocket</div>
+                  <h4>Live FX Rates</h4>
+                  <p>Real-time European Central Bank rates refreshed continuously with zero bank markups.</p>
                 </div>
 
-                <div class="fallback-breakdown-table">
-                  <div class="breakdown-row">
-                    <span class="breakdown-label">BypassFX Optimized Yield</span>
-                    <span class="breakdown-val green">€878.15</span>
+                <!-- Feature 2 -->
+                <div class="nfs-card">
+                  <div class="nfs-card-head">
+                    <div class="nfs-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                      </svg>
+                    </div>
+                    <span class="nfs-card-tag">Corridor Scan</span>
                   </div>
-                  <div class="breakdown-row">
-                    <span class="breakdown-label">Standard Bank Yield</span>
-                    <span class="breakdown-val muted">€847.30</span>
+                  <h4>Smart Route Discovery</h4>
+                  <p>Compares direct wire options against multi-provider corridors across Wise and Bank Wire.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="nfs-card">
+                  <div class="nfs-card-head">
+                    <div class="nfs-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                      </svg>
+                    </div>
+                    <span class="nfs-card-tag">Dijkstra v2.4</span>
                   </div>
-                  <div class="breakdown-row highlight">
-                    <span class="breakdown-label">Total Fee Incurred</span>
-                    <span class="breakdown-val">0.5% (vs 3.5% Bank Spread)</span>
+                  <h4>DFS-Based Pathfinding</h4>
+                  <p>Hop-bounded traversal algorithm engineered for optimal capital retention across legs.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="nfs-card">
+                  <div class="nfs-card-head">
+                    <div class="nfs-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="17 1 21 5 17 9"></polyline>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                        <polyline points="7 23 3 19 7 15"></polyline>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                      </svg>
+                    </div>
+                    <span class="nfs-card-tag">1 - 3 Hops</span>
                   </div>
+                  <h4>Multi-Hop Arbitrage</h4>
+                  <p>Chains currency conversions through high-liquidity USD, EUR, and GBP routing hubs.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="nfs-card">
+                  <div class="nfs-card-head">
+                    <div class="nfs-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                      </svg>
+                    </div>
+                    <span class="nfs-card-tag">0% Hidden Fees</span>
+                  </div>
+                  <h4>Fee Comparison</h4>
+                  <p>Transparent breakdown of percentage commissions and fixed SWIFT transfer fees.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="nfs-card">
+                  <div class="nfs-card-head">
+                    <div class="nfs-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                      </svg>
+                    </div>
+                    <span class="nfs-card-tag">History Log</span>
+                  </div>
+                  <h4>Conversion History</h4>
+                  <p>Secure local and cloud logging to re-simulate and audit past multi-hop lookups.</p>
                 </div>
               </div>
 
-              <!-- Savings Metrics Bar -->
-              <div class="fallback-metrics-grid">
-                <div class="metric-stat-box">
-                  <span class="stat-num">3.6%</span>
-                  <span class="stat-lbl">Higher Yield</span>
+              <!-- Footer Verification Metrics -->
+              <div class="nfs-footer-metrics">
+                <div>
+                  <div class="nfs-metric-num">100%</div>
+                  <div class="nfs-metric-lbl">Mid-Market Rate</div>
                 </div>
-                <div class="metric-stat-box">
-                  <span class="stat-num">€0.00</span>
-                  <span class="stat-lbl">Hidden Fees</span>
+                <div>
+                  <div class="nfs-metric-num">+2.4% – 4.5%</div>
+                  <div class="nfs-metric-lbl">Typical Added Savings</div>
                 </div>
-                <div class="metric-stat-box">
-                  <span class="stat-num">&lt; 1 min</span>
-                  <span class="stat-lbl">Route Discovery</span>
-                </div>
-              </div>
-
-              <!-- Footer Details -->
-              <div class="fallback-footer-row">
-                <div class="fallback-footer-item">
-                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Instant Multi-Hop Graph Settlement</span>
-                </div>
-                <div class="fallback-footer-stats">
-                  <span>Verified: <strong>100% Mid-Market</strong></span>
+                <div>
+                  <div class="nfs-metric-num">&lt; 45ms</div>
+                  <div class="nfs-metric-lbl">Graph Traversal</div>
                 </div>
               </div>
             </div>

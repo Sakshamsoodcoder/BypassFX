@@ -4739,3 +4739,520 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ============================================================
+   BypassFX — Native Landing Page Components (Phase 2)
+   Replaces legacy static images with interactive, accessible UI
+   ============================================================ */
+
+.hero-image-wrapper.has-native-ui,
+.story-visual-container.has-native-ui {
+  aspect-ratio: auto;
+  min-height: 440px;
+  height: 100%;
+  align-items: stretch;
+  padding: 0;
+}
+
+/* ─── A. Hero Section — Interactive Currency Exchange Preview ─────────────────── */
+.hero-exchange-preview {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(20px, 3vw, 28px);
+  background:
+    radial-gradient(circle at top right, rgba(52, 211, 153, 0.18), transparent 55%),
+    radial-gradient(circle at bottom left, rgba(15, 81, 56, 0.3), transparent 60%),
+    linear-gradient(155deg, var(--panel-dark-2) 0%, var(--panel-dark) 60%, var(--panel-dark-deep) 100%);
+  color: var(--text-inverse);
+  box-sizing: border-box;
+  gap: 16px;
+  border-radius: inherit;
+}
+
+.hep-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.hep-badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-electric);
+  letter-spacing: 0.04em;
+}
+
+.hep-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-vibrant);
+  box-shadow: 0 0 10px var(--accent-vibrant);
+  animation: hepPulse 2s infinite ease-in-out;
+}
+
+@keyframes hepPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.hep-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hep-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-inverse-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.hep-tab-btn:hover {
+  color: var(--text-inverse);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hep-tab-btn.active {
+  background: var(--accent);
+  color: #FFFFFF;
+}
+
+/* Corridor Simulation Flow */
+.hep-route-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-lg);
+  padding: clamp(14px, 2vw, 18px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hep-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--accent-electric);
+}
+
+.hep-cheapest-tag {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid var(--accent-vibrant);
+  color: var(--accent-lime);
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.hep-nodes-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1.1fr auto 1.2fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.hep-node-box {
+  background: rgba(7, 34, 24, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: var(--transition-fast);
+}
+
+.hep-node-box.highlight {
+  border-color: var(--accent-vibrant);
+  background: rgba(15, 81, 56, 0.55);
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.2);
+}
+
+.hep-node-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-inverse-muted);
+}
+
+.hep-node-amount {
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  font-weight: 700;
+  color: var(--text-inverse);
+  letter-spacing: -0.01em;
+}
+
+.hep-node-box.highlight .hep-node-amount {
+  color: var(--accent-electric);
+}
+
+.hep-node-sub {
+  font-size: 0.7rem;
+  color: var(--text-inverse-subtle);
+  font-family: var(--font-mono);
+}
+
+.hep-arrow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--accent-electric);
+}
+
+.hep-arrow-icon {
+  animation: hepArrowShift 1.8s infinite ease-in-out;
+}
+
+@keyframes hepArrowShift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
+.hep-step-fee {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--text-inverse-muted);
+  white-space: nowrap;
+}
+
+/* Savings & Metric Summary */
+.hep-savings-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hep-saving-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-inverse-muted);
+}
+
+.hep-saving-value {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-lime);
+}
+
+.hep-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: var(--text-inverse-subtle);
+  font-family: var(--font-mono);
+  padding-top: 6px;
+}
+
+.hep-indicator-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-electric);
+}
+
+/* ─── B. Currency Route Visualization — Native Graph UI ─────────────────────── */
+.native-route-graph-card {
+  width: 100%;
+  height: 100%;
+  padding: clamp(18px, 2.5vw, 26px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-inverse);
+  background:
+    radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.16), transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(15, 81, 56, 0.35), transparent 60%),
+    linear-gradient(155deg, var(--panel-dark-2) 0%, var(--panel-dark) 80%, #061F16 100%);
+  border-radius: inherit;
+  box-sizing: border-box;
+}
+
+.nrg-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nrg-svg-container {
+  width: 100%;
+  flex: 1;
+  min-height: 230px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nrg-svg {
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+  overflow: visible;
+}
+
+.nrg-svg text {
+  font-family: var(--font-body);
+  user-select: none;
+}
+
+.nrg-node-group {
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.nrg-node-group:hover circle.nrg-node-circle {
+  filter: drop-shadow(0 0 8px var(--accent-vibrant));
+}
+
+.nrg-path-optimal {
+  stroke-dasharray: 8, 4;
+  animation: nrgDashPulse 20s linear infinite;
+}
+
+@keyframes nrgDashPulse {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+
+.nrg-legend-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+}
+
+.nrg-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nrg-legend-line {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.nrg-legend-line.optimal {
+  background: var(--accent-vibrant);
+  box-shadow: 0 0 8px var(--accent-vibrant);
+}
+
+.nrg-legend-line.alternative {
+  background: #6E8879;
+  border-top: 1px dashed #6E8879;
+}
+
+.nrg-route-summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-size: 0.76rem;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ─── C. Capabilities Feature Showcase ───────────────────────────────────────── */
+.native-features-showcase-panel {
+  width: 100%;
+  height: 100%;
+  padding: clamp(18px, 2.5vw, 26px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  color: var(--text-inverse);
+  background:
+    radial-gradient(circle at 15% 15%, rgba(52, 211, 153, 0.16), transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(15, 81, 56, 0.3), transparent 60%),
+    linear-gradient(155deg, var(--panel-dark-2) 0%, var(--panel-dark) 80%, #061F16 100%);
+  border-radius: inherit;
+  box-sizing: border-box;
+}
+
+.nfs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-dark);
+  padding-bottom: 10px;
+}
+
+.nfs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.nfs-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: var(--transition-fast);
+}
+
+.nfs-card:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(52, 211, 153, 0.35);
+  transform: translateY(-2px);
+}
+
+.nfs-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nfs-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(34, 197, 94, 0.16);
+  color: var(--accent-electric);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nfs-card-tag {
+  font-size: 0.62rem;
+  font-family: var(--font-mono);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  color: var(--accent-lime);
+}
+
+.nfs-card h4 {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-inverse);
+  margin: 0;
+}
+
+.nfs-card p {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--text-inverse-muted);
+  margin: 0;
+}
+
+.nfs-footer-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.nfs-metric-num {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-electric);
+}
+
+.nfs-metric-lbl {
+  font-size: 0.65rem;
+  color: var(--text-inverse-subtle);
+  font-family: var(--font-mono);
+}
+
+/* Responsive adjustments */
+@media (max-width: 680px) {
+  .hep-nodes-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .hep-arrow-step {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .hep-arrow-step svg {
+    transform: rotate(90deg);
+  }
+  .nfs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .nfs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+

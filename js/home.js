@@ -1099,7 +1099,109 @@
   }
 
   // ============================================================
-  // 17. Page Bootstrap
+  // 17. Hero Interactive Preview Component Controller
+  // ============================================================
+  function initHeroPreviewTabs() {
+    const previewContainer = document.getElementById('heroExchangePreview');
+    if (!previewContainer) return;
+
+    const CORRIDOR_PREVIEWS = {
+      'inr-eur': {
+        fromFlag: '🇮🇳', fromCode: 'INR', fromAmount: '₹1,00,000', fromSub: 'Source Amount',
+        fee1: 'Wise 0.45%', hubFlag: '🇺🇸', hubCode: 'USD Hub', hubAmount: '$1,146.22', hubSub: 'Liquidity Hop',
+        fee2: 'Wise 0.45%', toFlag: '🇪🇺', toCode: 'EUR Target', toAmount: '€1,059.67', toSub: 'Net Received',
+        compare: 'Direct Bank Yield: €1,024.70 (3.3% spread)', savings: '+€34.97 Added Value',
+        status: 'ECB Mid-Market Baseline • Latency ~45ms'
+      },
+      'usd-gbp': {
+        fromFlag: '🇺🇸', fromCode: 'USD', fromAmount: '$10,000', fromSub: 'Source Amount',
+        fee1: 'Wise 0.45%', hubFlag: '🇪🇺', hubCode: 'EUR Hub', hubAmount: '€9,203.40', hubSub: 'Liquidity Hop',
+        fee2: 'Wise 0.45%', toFlag: '🇬🇧', toCode: 'GBP Target', toAmount: '£7,882.15', toSub: 'Net Received',
+        compare: 'Direct Bank Yield: £7,645.70 (3.0% spread)', savings: '+£236.45 Added Value',
+        status: 'ECB Mid-Market Baseline • Latency ~40ms'
+      },
+      'eur-jpy': {
+        fromFlag: '🇪🇺', fromCode: 'EUR', fromAmount: '€5,000', fromSub: 'Source Amount',
+        fee1: 'Wise 0.45%', hubFlag: '🇺🇸', hubCode: 'USD Hub', hubAmount: '$5,385.50', hubSub: 'Liquidity Hop',
+        fee2: 'Wise 0.45%', toFlag: '🇯🇵', toCode: 'JPY Target', toAmount: '¥822,140', toSub: 'Net Received',
+        compare: 'Direct Bank Yield: ¥794,200 (3.4% spread)', savings: '+¥27,940 Added Value',
+        status: 'ECB Mid-Market Baseline • Latency ~50ms'
+      }
+    };
+
+    const tabButtons = previewContainer.querySelectorAll('.hep-tab-btn');
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const corridor = btn.dataset.corridor;
+        const data = CORRIDOR_PREVIEWS[corridor];
+        if (!data) return;
+
+        tabButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+
+        const el = (id) => document.getElementById(id);
+        if (el('hepFromFlag')) el('hepFromFlag').textContent = data.fromFlag;
+        if (el('hepFromCode')) el('hepFromCode').textContent = data.fromCode;
+        if (el('hepFromAmount')) el('hepFromAmount').textContent = data.fromAmount;
+        if (el('hepFromSub')) el('hepFromSub').textContent = data.fromSub;
+        if (el('hepFee1')) el('hepFee1').textContent = data.fee1;
+        if (el('hepHubFlag')) el('hepHubFlag').textContent = data.hubFlag;
+        if (el('hepHubCode')) el('hepHubCode').textContent = data.hubCode;
+        if (el('hepHubAmount')) el('hepHubAmount').textContent = data.hubAmount;
+        if (el('hepHubSub')) el('hepHubSub').textContent = data.hubSub;
+        if (el('hepFee2')) el('hepFee2').textContent = data.fee2;
+        if (el('hepToFlag')) el('hepToFlag').textContent = data.toFlag;
+        if (el('hepToCode')) el('hepToCode').textContent = data.toCode;
+        if (el('hepToAmount')) el('hepToAmount').textContent = data.toAmount;
+        if (el('hepToSub')) el('hepToSub').textContent = data.toSub;
+        if (el('hepCompareText')) el('hepCompareText').textContent = data.compare;
+        if (el('hepSavingsText')) el('hepSavingsText').textContent = data.savings;
+        if (el('hepStatusRate')) el('hepStatusRate').textContent = data.status;
+      });
+    });
+  }
+
+  // ============================================================
+  // 18. Native Currency Route Graph Interactivity
+  // ============================================================
+  function initRouteGraphInteractivity() {
+    const graphCard = document.querySelector('.native-route-graph-card');
+    if (!graphCard) return;
+
+    const summaryBar = graphCard.querySelector('.nrg-route-summary-bar');
+    const nodes = graphCard.querySelectorAll('.nrg-node-group');
+
+    const NODE_TIPS = {
+      'INR': 'Source Currency: ₹1,00,000 sent via Wise Liquidity Gateway',
+      'USD': 'Alternative Hub: Bypassed due to 2.5% wire spread markup',
+      'GBP': 'Optimal Intermediary Hub: 0.40% low-spread corridor selected',
+      'EUR': 'Target Destination: Highest net payout delivered (0.75% total fee)'
+    };
+
+    nodes.forEach(node => {
+      const textEl = node.querySelector('text[font-weight="700"]');
+      const code = textEl ? textEl.textContent.trim() : '';
+
+      node.addEventListener('mouseenter', () => {
+        if (summaryBar && NODE_TIPS[code]) {
+          summaryBar.innerHTML = `<span>Node: <strong>${escapeHtml(code)}</strong></span> <span style="color: var(--accent-lime);">${escapeHtml(NODE_TIPS[code])}</span>`;
+        }
+      });
+
+      node.addEventListener('mouseleave', () => {
+        if (summaryBar) {
+          summaryBar.innerHTML = `<span>Path: <strong>INR ➔ GBP ➔ EUR</strong></span> <span style="color: var(--accent-lime); font-weight: 700;">+2.85% Extra Yield vs Bank Wire</span> <span style="opacity: 0.85;">2 Hops · Latency &lt; 45ms</span>`;
+        }
+      });
+    });
+  }
+
+  // ============================================================
+  // 19. Page Bootstrap
   // ============================================================
   document.addEventListener('DOMContentLoaded', () => {
     updateNavbarAuth();
@@ -1110,6 +1212,9 @@
     initNavigation();
     initFlipCard();
     initBackToTop();
+    initHeroPreviewTabs();
+    initRouteGraphInteractivity();
   });
 
 })();
+
