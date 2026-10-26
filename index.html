@@ -744,16 +744,25 @@
             <div class="result-card-main highlight">
               <!-- Top Badges -->
               <div class="result-top-badge-row">
-                <span class="badge-best-route">
-                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
-                  </svg>
-                  BEST ROUTE FOUND
-                </span>
-                <span class="badge-savings-pill" id="resultSavingsBadge">
-                  +€2.13 EUR vs Direct Route
-                </span>
+                <div class="result-badges-left">
+                  <span class="badge-best-route" id="resultStatusBadge">
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>BEST ROUTE FOUND</span>
+                  </span>
+                  <span class="badge-freshness-pill" id="resultFreshnessBadge" style="display: none;"></span>
+                </div>
+                <div class="result-badges-right">
+                  <span class="badge-savings-pill" id="resultSavingsBadge">
+                    +€2.13 EUR vs Direct Route
+                  </span>
+                  <button type="button" class="btn-clear-result" id="btnClearResult" title="Clear this result" aria-label="Clear conversion result">✕</button>
+                </div>
               </div>
+
+              <!-- Input Modification / Stale Notice -->
+              <div class="result-stale-notice" id="resultStaleNotice" style="display: none;"></div>
 
               <!-- Summary Heading -->
               <div class="result-summary-heading" id="resultSummaryHeading">

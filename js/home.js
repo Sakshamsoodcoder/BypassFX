@@ -74,9 +74,10 @@
   };
 
   const STORAGE_KEYS = {
-    SESSION:     'bypassfx_session',
-    HISTORY:     'bypassfx_history',
-    RATES_CACHE: 'bypassfx_rates_cache'
+    SESSION:       'bypassfx_session',
+    HISTORY:       'bypassfx_history',
+    RATES_CACHE:   'bypassfx_rates_cache',
+    LATEST_RESULT: 'bypassfx_latest_result'
   };
 
   const ZERO_DECIMAL_CURRENCIES = new Set(['JPY', 'KRW', 'CLP', 'IDR', 'HUF']);
@@ -637,8 +638,9 @@
 
       try {
         const result = await findBestArbitrageRoute(fromCur, toCur, amount, maxHops);
-        renderConversionResult(fromCur, toCur, amount, result);
+        renderConversionResult(fromCur, toCur, amount, result, { isRestored: false, timestamp: Date.now() });
         saveConversionToHistory(fromCur, toCur, amount, result);
+        saveLatestResultLocally(fromCur, toCur, amount, maxHops, result);
       } catch (err) {
         console.error('Conversion calculation error:', err);
         alert('Unable to calculate optimal route at this moment. Please check your connection and try again.');
@@ -655,32 +657,268 @@
       }
     });
 
+    // Wire clear result button
+    const clearResultBtn = document.getElementById('btnClearResult');
+    if (clearResultBtn) {
+      clearResultBtn.addEventListener('click', () => {
+        clearSavedConversionResult();
+      });
+    }
+
+    // Attach real-time input change listeners to warn if user edits inputs after calculation
+    attachInputStaleListeners();
+
     // Load preset values from profile/other pages
     const presetFrom   = localStorage.getItem('bypassfx_preset_from');
     const presetTo     = localStorage.getItem('bypassfx_preset_to');
     const presetAmount = localStorage.getItem('bypassfx_preset_amount');
-    if (presetFrom)   { fromDropdownInstance.setValue(presetFrom, false);  localStorage.removeItem('bypassfx_preset_from'); }
-    if (presetTo)     { toDropdownInstance.setValue(presetTo, false);      localStorage.removeItem('bypassfx_preset_to'); }
+    let hasPresets = false;
+    if (presetFrom)   { fromDropdownInstance.setValue(presetFrom, false);  localStorage.removeItem('bypassfx_preset_from'); hasPresets = true; }
+    if (presetTo)     { toDropdownInstance.setValue(presetTo, false);      localStorage.removeItem('bypassfx_preset_to'); hasPresets = true; }
     if (presetAmount) {
       const amtEl = document.getElementById('convertAmount');
       if (amtEl) amtEl.value = presetAmount;
       localStorage.removeItem('bypassfx_preset_amount');
+      hasPresets = true;
+    }
+
+    // If no navigation presets are present, restore the latest saved conversion result
+    if (!hasPresets) {
+      restoreLatestConversionResult();
     }
   }
 
   // ============================================================
-  // 8. Result Visualization
+  // 8. Result Persistence & Visualization
   // ============================================================
-  function renderConversionResult(fromCur, toCur, amount, result) {
+  let activeResultParams = null;
+
+  function getLatestResultStorageKey() {
+    const session = getAuthSession();
+    const userId = session && (session.id || session._id || session.email);
+    return userId ? `${STORAGE_KEYS.LATEST_RESULT}_${userId}` : `${STORAGE_KEYS.LATEST_RESULT}_guest`;
+  }
+
+  function saveLatestResultLocally(fromCur, toCur, amount, maxHops, result) {
+    try {
+      const payload = {
+        fromCur,
+        toCur,
+        amount: parseFloat(amount),
+        maxHops: parseInt(maxHops, 10),
+        timestamp: Date.now(),
+        result
+      };
+      localStorage.setItem(getLatestResultStorageKey(), JSON.stringify(payload));
+    } catch (e) {
+      console.warn('Could not save latest conversion result locally:', e);
+    }
+  }
+
+  function clearSavedConversionResult() {
+    try {
+      localStorage.removeItem(getLatestResultStorageKey());
+    } catch (e) {}
+    activeResultParams = null;
+    const resultWrapper = document.getElementById('resultSection');
+    if (resultWrapper) {
+      resultWrapper.classList.remove('show');
+      resultWrapper.style.display = 'none';
+    }
+    const staleNotice = document.getElementById('resultStaleNotice');
+    if (staleNotice) staleNotice.style.display = 'none';
+  }
+
+  function attachInputStaleListeners() {
+    const amountInput = document.getElementById('convertAmount');
+    const fromContainer = document.getElementById('fromDropdownContainer');
+    const toContainer = document.getElementById('toDropdownContainer');
+    const hopsSelect = document.getElementById('maxHopsSelect');
+
+    function checkInputDiff() {
+      const staleNotice = document.getElementById('resultStaleNotice');
+      if (!staleNotice) return;
+
+      if (!activeResultParams) {
+        staleNotice.style.display = 'none';
+        return;
+      }
+
+      const curAmount = parseFloat(amountInput ? amountInput.value : 0);
+      const curFrom   = fromDropdownInstance ? fromDropdownInstance.getValue() : '';
+      const curTo     = toDropdownInstance ? toDropdownInstance.getValue() : '';
+
+      const isDifferent = isNaN(curAmount) ||
+                          Math.abs(curAmount - activeResultParams.amount) > 0.001 ||
+                          curFrom !== activeResultParams.fromCur ||
+                          curTo   !== activeResultParams.toCur;
+
+      if (isDifferent) {
+        const fromMeta = getCurrencyMeta(activeResultParams.fromCur);
+        staleNotice.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>Inputs modified. The result below reflects your previous calculation (<strong>${fromMeta.symbol}${formatCurrencyAmount(activeResultParams.amount, activeResultParams.fromCur)} ${activeResultParams.fromCur} ➔ ${activeResultParams.toCur}</strong>). Click <strong>Find Best Route</strong> to recalculate with live rates.</span>
+        `;
+        staleNotice.style.display = 'flex';
+      } else {
+        staleNotice.style.display = 'none';
+      }
+    }
+
+    if (amountInput) amountInput.addEventListener('input', checkInputDiff);
+    if (fromContainer) fromContainer.addEventListener('currencychange', checkInputDiff);
+    if (toContainer) toContainer.addEventListener('currencychange', checkInputDiff);
+    if (hopsSelect) hopsSelect.addEventListener('change', checkInputDiff);
+  }
+
+  async function restoreLatestConversionResult() {
+    const storageKey = getLatestResultStorageKey();
+    let savedData = null;
+
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        savedData = JSON.parse(raw);
+      }
+    } catch (err) {
+      console.warn('Error reading saved conversion from localStorage:', err);
+      try { localStorage.removeItem(storageKey); } catch (e) {}
+    }
+
+    // Secondary fallback: retrieve most recent record from MongoDB history if user is logged in
+    if (!savedData && window.BypassAPI && window.BypassAPI.isLoggedIn()) {
+      try {
+        const res = await window.BypassAPI.history.getAll({ limit: 1 });
+        if (res && res.data && res.data.length > 0) {
+          const doc = res.data[0];
+          const hops = (doc.hops && doc.hops.length > 0) ? doc.hops : [doc.from, doc.to];
+          savedData = {
+            fromCur: doc.from,
+            toCur: doc.to,
+            amount: doc.fromAmount,
+            maxHops: doc.maxHops || 3,
+            timestamp: new Date(doc.createdAt).getTime(),
+            result: {
+              best: {
+                hops: hops,
+                legs: doc.legs || [],
+                finalAmount: doc.toAmount,
+                totalFeeSource: doc.fromAmount * 0.0045,
+                isDirect: hops.length <= 2,
+                providerSummary: doc.provider || 'Optimal Route'
+              },
+              direct: {
+                hops: [doc.from, doc.to],
+                legs: [],
+                finalAmount: doc.toAmount - (doc.savings || 0),
+                totalFeeSource: 0,
+                isDirect: true,
+                providerSummary: 'Direct Route'
+              },
+              alternatives: [],
+              savings: doc.savings || 0,
+              savingsPct: doc.savingsPct || 0
+            }
+          };
+          try { localStorage.setItem(storageKey, JSON.stringify(savedData)); } catch (e) {}
+        }
+      } catch (e) {
+        console.warn('Could not fetch backend history fallback:', e);
+      }
+    }
+
+    if (!savedData || !savedData.result || !savedData.result.best) {
+      return;
+    }
+
+    const { fromCur, toCur, amount, maxHops, result, timestamp } = savedData;
+    if (!fromCur || !toCur || isNaN(amount) || amount <= 0 || !result.best.finalAmount) {
+      return;
+    }
+
+    // Populate form fields to reflect restored state
+    if (fromDropdownInstance) fromDropdownInstance.setValue(fromCur, false);
+    if (toDropdownInstance)   toDropdownInstance.setValue(toCur, false);
+    const amountInput = document.getElementById('convertAmount');
+    if (amountInput) amountInput.value = amount;
+    const hopsSelect  = document.getElementById('maxHopsSelect');
+    if (hopsSelect && maxHops) {
+      hopsSelect.value = String(maxHops);
+      const labelEl = document.getElementById('hopsTriggerLabel');
+      if (labelEl) {
+        const HOPS_LABELS = { '1': '1 (Direct Only)', '2': '2 Hops', '3': '3 Hops (Recommended)', '4': '4 Hops (Deep Scan)' };
+        labelEl.textContent = HOPS_LABELS[maxHops] || `${maxHops} Hops`;
+      }
+    }
+
+    // Render the preserved result with isRestored flag and without smooth-scrolling
+    renderConversionResult(fromCur, toCur, amount, result, {
+      isRestored: true,
+      timestamp: timestamp || Date.now(),
+      noScroll: true
+    });
+  }
+
+  function renderConversionResult(fromCur, toCur, amount, result, options = {}) {
     const resultWrapper = document.getElementById('resultSection');
     if (!resultWrapper) return;
 
-    const fromMeta = getCurrencyMeta(fromCur);
-    const toMeta   = getCurrencyMeta(toCur);
-    const best     = result.best;
-    const direct   = result.direct;
+    const fromMeta   = getCurrencyMeta(fromCur);
+    const toMeta     = getCurrencyMeta(toCur);
+    const best       = result.best;
+    const direct     = result.direct;
+    const isRestored = !!options.isRestored;
+    const timestamp  = options.timestamp || Date.now();
 
-    // 1. Savings Badge & Summary Heading
+    activeResultParams = {
+      fromCur,
+      toCur,
+      amount: parseFloat(amount),
+      maxHops: parseInt(options.maxHops || (document.getElementById('maxHopsSelect') ? document.getElementById('maxHopsSelect').value : '3'), 10),
+      timestamp,
+      isRestored
+    };
+
+    // 1. Freshness & Restored Status Badge
+    const freshnessBadge = document.getElementById('resultFreshnessBadge');
+    if (freshnessBadge) {
+      const dateObj = new Date(timestamp);
+      const isToday = (new Date()).toDateString() === dateObj.toDateString();
+      const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const dateStr = isToday ? timeStr : `${dateObj.toLocaleDateString([], { month: 'short', day: 'numeric' })}, ${timeStr}`;
+
+      if (isRestored) {
+        freshnessBadge.className = 'badge-freshness-pill restored';
+        freshnessBadge.innerHTML = `
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Saved Result · ${dateStr}</span>
+        `;
+        freshnessBadge.title = `Restored from your previous calculation at ${dateStr}. Click "Find Best Route" to recalculate with live rates.`;
+      } else {
+        freshnessBadge.className = 'badge-freshness-pill live';
+        freshnessBadge.innerHTML = `
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span>Live FX Rate · Just now</span>
+        `;
+        freshnessBadge.title = 'Calculated using real-time European Central Bank rates.';
+      }
+      freshnessBadge.style.display = 'inline-flex';
+    }
+
+    // Hide stale notice on new render
+    const staleNotice = document.getElementById('resultStaleNotice');
+    if (staleNotice) staleNotice.style.display = 'none';
+
+    // 2. Savings Badge & Summary Heading
     const savingsBadge = document.getElementById('resultSavingsBadge');
     if (savingsBadge) {
       if (result.savings > 0) {
@@ -700,10 +938,10 @@
       `;
     }
 
-    // 2. Node Chain Visualizer
+    // 3. Node Chain Visualizer
     const nodeContainer = document.getElementById('routeChainNodes');
     if (nodeContainer) {
-      const hops = best.hops;
+      const hops = best.hops || [fromCur, toCur];
       let chainHtml = '';
 
       hops.forEach((hopCode, idx) => {
@@ -749,7 +987,7 @@
       nodeContainer.innerHTML = chainHtml;
     }
 
-    // 3. Key Metrics Grid
+    // 4. Key Metrics Grid
     const metricFinalAmount = document.getElementById('metricFinalAmount');
     if (metricFinalAmount) metricFinalAmount.textContent = `${toMeta.symbol}${formatCurrencyAmount(best.finalAmount, toCur)}`;
 
@@ -763,27 +1001,28 @@
         : 'Optimal Direct';
     }
 
-    // 4. Alternative Routes Comparison
+    // 5. Alternative Routes Comparison
     const altList = document.getElementById('alternativeRoutesList');
     if (altList) {
-      const allRoutesToDisplay = [best, ...result.alternatives];
+      const allRoutesToDisplay = [best, ...(result.alternatives || [])];
       altList.innerHTML = allRoutesToDisplay.map((r, i) => {
         const isBest = i === 0;
-        const routeStr = r.hops.join(' → ');
-        const diffVsDirect  = r.finalAmount - direct.finalAmount;
+        const routeStr = r.hops ? r.hops.join(' → ') : `${fromCur} → ${toCur}`;
+        const directAmt = (direct && typeof direct.finalAmount === 'number') ? direct.finalAmount : best.finalAmount;
+        const diffVsDirect  = r.finalAmount - directAmt;
         const diffSign      = diffVsDirect >= 0 ? '+' : '';
         const diffFormatted = `${diffSign}${toMeta.symbol}${formatCurrencyAmount(diffVsDirect, toCur)}`;
 
         return `
           <div class="route-compare-item ${isBest ? 'best' : ''}">
             <div class="route-path-str">
-              <span style=color:black>${escapeHtml(routeStr)}</span>
+              <span style="color:var(--text-primary); font-weight:600;">${escapeHtml(routeStr)}</span>
               ${isBest ? `<span class="badge-mini-best">Best Yield</span>` : ''}
-              <span style="font-size:0.78rem; color:var(--text-secondary); margin-left:6px;">(${escapeHtml(r.providerSummary)})</span>
+              <span style="font-size:0.78rem; color:var(--text-secondary); margin-left:6px;">(${escapeHtml(r.providerSummary || 'Optimal')})</span>
             </div>
             <div class="route-outcome">
               <div class="outcome-amt">${toMeta.symbol}${formatCurrencyAmount(r.finalAmount, toCur)}</div>
-              <div class="outcome-diff ${diffVsDirect >= 0 ? 'positive' : ''}">${isBest && result.savings > 0 ? `${diffFormatted} vs Direct` : `${r.hops.length - 1} hop(s)`}</div>
+              <div class="outcome-diff ${diffVsDirect >= 0 ? 'positive' : ''}">${isBest && result.savings > 0 ? `${diffFormatted} vs Direct` : `${(r.hops ? r.hops.length - 1 : 1)} hop(s)`}</div>
             </div>
           </div>
         `;
@@ -793,7 +1032,11 @@
     // Reveal result section
     resultWrapper.classList.add('show');
     resultWrapper.style.display = 'block';
-    resultWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Only scroll smoothly if this is a fresh calculation, not a page reload restore
+    if (!options.noScroll) {
+      resultWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   // ============================================================
@@ -1092,6 +1335,7 @@
             await window.BypassAPI.history.clearAll();
           }
           localStorage.removeItem(STORAGE_KEYS.HISTORY);
+          clearSavedConversionResult();
           renderHistorySection();
         }
       });
