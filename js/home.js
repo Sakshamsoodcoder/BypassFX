@@ -1107,25 +1107,25 @@
 
     const CORRIDOR_PREVIEWS = {
       'inr-eur': {
-        fromFlag: '🇮🇳', fromCode: 'INR', fromAmount: '₹1,00,000', fromSub: 'Source Amount',
-        fee1: 'Wise 0.45%', hubFlag: '🇺🇸', hubCode: 'USD Hub', hubAmount: '$1,146.22', hubSub: 'Liquidity Hop',
-        fee2: 'Wise 0.45%', toFlag: '🇪🇺', toCode: 'EUR Target', toAmount: '€1,059.67', toSub: 'Net Received',
-        compare: 'Direct Bank Yield: €1,024.70 (3.3% spread)', savings: '+€34.97 Added Value',
-        status: 'ECB Mid-Market Baseline • Latency ~45ms'
+        fromFlag: '🇮🇳', fromCode: 'INR', fromAmount: '₹1,00,000', fromSub: 'Source',
+        fee1: 'Wise 0.45%', hubFlag: '🇺🇸', hubCode: 'USD', hubAmount: '$1,146.22', hubSub: 'Relay Hub',
+        fee2: 'Wise 0.45%', toFlag: '🇪🇺', toCode: 'EUR', toAmount: '€1,059.67', toSub: 'Target Yield',
+        compare: 'Direct Bank Yield: €1,024.70', savings: '+€34.97 Added Value',
+        status: 'ECB Mid-Market Baseline'
       },
       'usd-gbp': {
-        fromFlag: '🇺🇸', fromCode: 'USD', fromAmount: '$10,000', fromSub: 'Source Amount',
-        fee1: 'Wise 0.45%', hubFlag: '🇪🇺', hubCode: 'EUR Hub', hubAmount: '€9,203.40', hubSub: 'Liquidity Hop',
-        fee2: 'Wise 0.45%', toFlag: '🇬🇧', toCode: 'GBP Target', toAmount: '£7,882.15', toSub: 'Net Received',
-        compare: 'Direct Bank Yield: £7,645.70 (3.0% spread)', savings: '+£236.45 Added Value',
-        status: 'ECB Mid-Market Baseline • Latency ~40ms'
+        fromFlag: '🇺🇸', fromCode: 'USD', fromAmount: '$10,000', fromSub: 'Source',
+        fee1: 'Wise 0.45%', hubFlag: '🇪🇺', hubCode: 'EUR', hubAmount: '€9,203.40', hubSub: 'Relay Hub',
+        fee2: 'Wise 0.45%', toFlag: '🇬🇧', toCode: 'GBP', toAmount: '£7,882.15', toSub: 'Target Yield',
+        compare: 'Direct Bank Yield: £7,645.70', savings: '+£236.45 Added Value',
+        status: 'ECB Mid-Market Baseline'
       },
       'eur-jpy': {
-        fromFlag: '🇪🇺', fromCode: 'EUR', fromAmount: '€5,000', fromSub: 'Source Amount',
-        fee1: 'Wise 0.45%', hubFlag: '🇺🇸', hubCode: 'USD Hub', hubAmount: '$5,385.50', hubSub: 'Liquidity Hop',
-        fee2: 'Wise 0.45%', toFlag: '🇯🇵', toCode: 'JPY Target', toAmount: '¥822,140', toSub: 'Net Received',
-        compare: 'Direct Bank Yield: ¥794,200 (3.4% spread)', savings: '+¥27,940 Added Value',
-        status: 'ECB Mid-Market Baseline • Latency ~50ms'
+        fromFlag: '🇪🇺', fromCode: 'EUR', fromAmount: '€5,000', fromSub: 'Source',
+        fee1: 'Wise 0.45%', hubFlag: '🇺🇸', hubCode: 'USD', hubAmount: '$5,385.50', hubSub: 'Relay Hub',
+        fee2: 'Wise 0.45%', toFlag: '🇯🇵', toCode: 'JPY', toAmount: '¥822,140', toSub: 'Target Yield',
+        compare: 'Direct Bank Yield: ¥794,200', savings: '+¥27,940 Added Value',
+        status: 'ECB Mid-Market Baseline'
       }
     };
 

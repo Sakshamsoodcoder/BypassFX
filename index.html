@@ -145,11 +145,16 @@
         <!-- Right Hero Visual Container: Interactive Currency Exchange Preview -->
         <div class="hero-image-wrapper has-native-ui" id="heroVisualContainer">
           <div class="hero-exchange-preview" id="heroExchangePreview" role="region" aria-label="Interactive Currency Exchange Preview">
-            <!-- Header bar with live status and corridor selection tabs -->
+            <!-- Header bar with symmetrical two-row layout -->
             <div class="hep-header">
-              <div class="hep-badge-status">
-                <span class="hep-pulse-dot" aria-hidden="true"></span>
-                <span>LIVE FX ROUTE ENGINE</span>
+              <div class="hep-header-top">
+                <div class="hep-badge-status">
+                  <span class="hep-pulse-dot" aria-hidden="true"></span>
+                  <span>LIVE FX ROUTE ENGINE</span>
+                </div>
+                <div class="hep-status-pill">
+                  <span>ECB BENCHMARK</span>
+                </div>
               </div>
               <div class="hep-tabs" role="tablist" aria-label="Sample Corridors">
                 <button type="button" class="hep-tab-btn active" data-corridor="inr-eur" role="tab" aria-selected="true">INR ➔ EUR</button>
@@ -158,14 +163,14 @@
               </div>
             </div>
 
-            <!-- Route simulation card -->
+            <!-- Route simulation card: Perfectly symmetrical 3-node grid -->
             <div class="hep-route-card">
               <div class="hep-card-title-row">
                 <span>OPTIMAL MULTI-HOP ROUTE</span>
                 <span class="hep-cheapest-tag" id="hepRouteTag">CHEAPEST ROUTE FOUND ✓</span>
               </div>
 
-              <!-- Nodes flow row -->
+              <!-- Nodes flow row: Equal 1fr 34px 1fr 34px 1fr columns -->
               <div class="hep-nodes-row" id="hepNodesRow">
                 <!-- Node 1: Source -->
                 <div class="hep-node-box">
@@ -174,12 +179,12 @@
                     <span id="hepFromCode">INR</span>
                   </div>
                   <div class="hep-node-amount" id="hepFromAmount">₹1,00,000</div>
-                  <div class="hep-node-sub" id="hepFromSub">Source Amount</div>
+                  <div class="hep-node-sub" id="hepFromSub">Source</div>
                 </div>
 
                 <!-- Arrow 1 -->
                 <div class="hep-arrow-step">
-                  <svg class="hep-arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <svg class="hep-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
@@ -190,15 +195,15 @@
                 <div class="hep-node-box">
                   <div class="hep-node-top">
                     <span id="hepHubFlag">🇺🇸</span>
-                    <span id="hepHubCode">USD Hub</span>
+                    <span id="hepHubCode">USD</span>
                   </div>
                   <div class="hep-node-amount" id="hepHubAmount">$1,146.22</div>
-                  <div class="hep-node-sub" id="hepHubSub">Liquidity Hop</div>
+                  <div class="hep-node-sub" id="hepHubSub">Relay Hub</div>
                 </div>
 
                 <!-- Arrow 2 -->
                 <div class="hep-arrow-step">
-                  <svg class="hep-arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <svg class="hep-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
@@ -209,35 +214,38 @@
                 <div class="hep-node-box highlight">
                   <div class="hep-node-top">
                     <span id="hepToFlag">🇪🇺</span>
-                    <span id="hepToCode" style="color: var(--accent-electric);">EUR Target</span>
+                    <span id="hepToCode" style="color: var(--accent-electric);">EUR</span>
                   </div>
                   <div class="hep-node-amount" id="hepToAmount">€1,059.67</div>
-                  <div class="hep-node-sub" id="hepToSub">Net Received</div>
+                  <div class="hep-node-sub" id="hepToSub">Target Yield</div>
                 </div>
               </div>
             </div>
 
-            <!-- Savings banner -->
+            <!-- Savings banner: Balanced two-column grid -->
             <div class="hep-savings-strip">
               <div class="hep-saving-label">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-electric)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                 </svg>
-                <span id="hepCompareText">Direct Bank Yield: €1,024.70 (3.3% spread)</span>
+                <div class="hep-saving-info">
+                  <span class="hep-saving-title" id="hepCompareText">Direct Bank Yield: €1,024.70</span>
+                  <span class="hep-saving-sub">Standard 3.3% SWIFT wire markup</span>
+                </div>
               </div>
-              <div class="hep-saving-value" id="hepSavingsText">+€34.97 Added Value</div>
+              <div class="hep-saving-value-badge" id="hepSavingsText">+€34.97 Added Value</div>
             </div>
 
-            <!-- Footer status bar -->
+            <!-- Footer status bar: Symmetrical left & right -->
             <div class="hep-footer-bar">
               <span class="hep-indicator-live">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
-                <span id="hepStatusRate">ECB Mid-Market Baseline • Latency ~45ms</span>
+                <span id="hepStatusRate">ECB Mid-Market Baseline</span>
               </span>
-              <span style="opacity: 0.85;">Dijkstra-Optimized Corridors</span>
+              <span class="hep-footer-sub">Latency &lt; 45ms • Dijkstra v2.4</span>
             </div>
           </div>
         </div>
