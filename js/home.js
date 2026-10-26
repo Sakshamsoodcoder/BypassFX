@@ -777,7 +777,7 @@
         return `
           <div class="route-compare-item ${isBest ? 'best' : ''}">
             <div class="route-path-str">
-              <span>${escapeHtml(routeStr)}</span>
+              <span style=color:black>${escapeHtml(routeStr)}</span>
               ${isBest ? `<span class="badge-mini-best">Best Yield</span>` : ''}
               <span style="font-size:0.78rem; color:var(--text-secondary); margin-left:6px;">(${escapeHtml(r.providerSummary)})</span>
             </div>
