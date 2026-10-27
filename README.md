@@ -140,8 +140,8 @@ Bypass-FX/
 |   |   |-- auth.js            # JWT Bearer token verification
 |   |   |-- rateLimiter.js     # Rate limiting against brute-force attacks
 |   |-- models/
-|   |   |-- User.model.js      # User schema with bcrypt pre-save hook
-|   |   |-- Conversion.model.js# Multi-hop conversion schema
+|   |   |-- User.js            # User schema with bcrypt pre-save hook
+|   |   |-- History.js         # Multi-hop conversion schema
 |   |-- routes/
 |   |   |-- auth.routes.js     # /api/auth routes
 |   |   |-- user.routes.js     # /api/user routes
@@ -150,22 +150,25 @@ Bypass-FX/
 |   |-- package.json           # Backend dependencies & nodemon script
 |   |-- server.js              # Express app entry point
 |
-|-- js/
-|   |-- api.js                 # Centralised frontend API client (BypassAPI)
-|   |-- auth.js                # Auth forms handler wired to BypassAPI
-|   |-- home.js                # Converter, pathfinding, and live history
-|   |-- charts.js              # Chart.js rates streaming
-|   |-- ticker.js              # Ticker animation
+|-- frontend/                  # Phase 2 Frontend Web Client
+|   |-- assets/                # Media assets, icons, and logos
+|   |-- css/                   # Design system stylesheets
+|   |-- js/
+|   |   |-- api.js             # Centralised frontend API client (BypassAPI)
+|   |   |-- auth.js            # Auth forms handler wired to BypassAPI
+|   |   |-- home.js            # Converter, pathfinding, and live history
+|   |   |-- charts.js          # Chart.js rates streaming
+|   |   |-- ticker.js          # Ticker animation
+|   |-- index.html             # Main landing page
+|   |-- login.html             # Sign in
+|   |-- signup.html            # Registration
+|   |-- profile.html           # User profile dashboard
+|   |-- rates.html             # Live FX charts
+|   |-- forgot-password.html   # Password recovery
 |
-|-- css/                       # Design system stylesheets
-|-- assets/                    # Media assets and logos
 |-- render.yaml                # Render Blueprint deployment specification
-|-- index.html                 # Main landing page
-|-- login.html                 # Sign in
-|-- signup.html                # Registration
-|-- profile.html               # User profile dashboard
-|-- rates.html                 # Live FX charts
-|-- package.json               # Root scripts (starts backend via nodemon)
+|-- vercel.json                # Vercel deployment & routing configuration
+|-- package.json               # Root scripts
 |-- README.md
 ```
 

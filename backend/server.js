@@ -124,7 +124,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // ─── Frontend Static Files ───────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '..'), {
+app.use(express.static(path.join(__dirname, '../frontend'), {
   index: 'index.html',
   dotfiles: 'ignore'
 }));
